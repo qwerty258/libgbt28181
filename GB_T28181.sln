@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osip2", "osip\platform\vsne
 		{44F46B7E-0E51-4304-9735-330DFBAB41E5} = {44F46B7E-0E51-4304-9735-330DFBAB41E5}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testLibosip", "testLibosip\testLibosip.vcxproj", "{1CC6679D-3277-4A34-B364-C8D2EB1C4C57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -34,6 +36,12 @@ Global
 		{85255507-5D16-4218-85E2-F683BB2F04DA}.Release|Win32.Build.0 = Release|Win32
 		{85255507-5D16-4218-85E2-F683BB2F04DA}.Release|x64.ActiveCfg = Release|x64
 		{85255507-5D16-4218-85E2-F683BB2F04DA}.Release|x64.Build.0 = Release|x64
+		{1CC6679D-3277-4A34-B364-C8D2EB1C4C57}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1CC6679D-3277-4A34-B364-C8D2EB1C4C57}.Debug|Win32.Build.0 = Debug|Win32
+		{1CC6679D-3277-4A34-B364-C8D2EB1C4C57}.Debug|x64.ActiveCfg = Debug|Win32
+		{1CC6679D-3277-4A34-B364-C8D2EB1C4C57}.Release|Win32.ActiveCfg = Release|Win32
+		{1CC6679D-3277-4A34-B364-C8D2EB1C4C57}.Release|Win32.Build.0 = Release|Win32
+		{1CC6679D-3277-4A34-B364-C8D2EB1C4C57}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
