@@ -172,12 +172,6 @@
     <ClInclude Include="..\..\..\osip\include\osip2\osip_mt.h" />
     <ClInclude Include="..\..\..\osip\src\osip2\xixt.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\osip\platform\vsnet\osipparser2.vcxproj">
-      <Project>{44f46b7e-0e51-4304-9735-330dfbab41e5}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
