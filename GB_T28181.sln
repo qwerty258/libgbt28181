@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osipparser2", "osip\platform\vsnet\osipparser2.vcxproj", "{44F46B7E-0E51-4304-9735-330DFBAB41E5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "osip2", "osip\platform\vsnet\osip2.vcxproj", "{85255507-5D16-4218-85E2-F683BB2F04DA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{44F46B7E-0E51-4304-9735-330DFBAB41E5} = {44F46B7E-0E51-4304-9735-330DFBAB41E5}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
