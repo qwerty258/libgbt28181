@@ -92,3 +92,4 @@ EXPORTS
      add_gettimeofday @135
      osip_cond_wait @136
      osip_transaction_set_srv_record @137
+    osip_free @138
