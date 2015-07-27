@@ -221,6 +221,9 @@
     <ClInclude Include="..\..\..\osip\src\osipparser2\parser.h" />
     <ClInclude Include="..\..\..\osip\include\osipparser2\sdp_message.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="osipparser2.def" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

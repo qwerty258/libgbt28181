@@ -172,6 +172,9 @@
     <ClInclude Include="..\..\..\osip\include\osip2\osip_mt.h" />
     <ClInclude Include="..\..\..\osip\src\osip2\xixt.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="osip2.def" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
