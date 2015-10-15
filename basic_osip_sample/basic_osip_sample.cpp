@@ -73,17 +73,17 @@ int BuildResponse(const osip_message_t *request, osip_message_t **response)
 
 void cb_RcvICTRes(int, osip_transaction_t *, osip_message_t *)
 {
-    OutputDebugString(TEXT("cb_RcvICTRes fired"));
+    OutputDebugString(TEXT("cb_RcvICTRes fired\r\n"));
 }
 
 void cb_RcvNICTRes(int, osip_transaction_t *, osip_message_t *)
 {
-    OutputDebugString(TEXT("cb_RcvNICTRes fired"));
+    OutputDebugString(TEXT("cb_RcvNICTRes fired\r\n"));
 }
 
 void cb_ISTTranKill(int, osip_transaction_t *)
 {
-    OutputDebugString(TEXT("cb_ISTTranKill fired"));
+    OutputDebugString(TEXT("cb_ISTTranKill fired\r\n"));
 }
 
 void* Notify(void* arg)
@@ -195,7 +195,7 @@ void* TransportFun(void* arg)
     int rc;
     osip_t* osip = static_cast<osip_t*>(arg);
 
-    OutputDebugString(TEXT("initialize network"));
+    OutputDebugString(TEXT("initialize network\r\n"));
     g_sock = InitNet();
     assert(0 < g_sock);
     char buf[BUFFSIZE];
@@ -215,7 +215,7 @@ void* TransportFun(void* arg)
         rc = osip_find_transaction_and_add_event(osip, evt);
         if(0 != rc)
         {
-            OutputDebugString(TEXT("this event has no transaction, create a new one."));
+            OutputDebugString(TEXT("this event has no transaction, create a new one.\r\n"));
             ProcessNewReq(osip, evt);
         }
     }
