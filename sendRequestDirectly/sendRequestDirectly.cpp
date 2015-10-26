@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 
     char* message = (char*)malloc(2048);
 
-    result = sprintf(message, "MESSAGE sip:34020000001320000001@3402000000 SIP/2.0\r\nVia: SIP/2.0/UDP 192.168.10.29:20004;rport;branch=z9hG4bK2976927360\r\nFrom: <sip:34020000002000000009@192.168.10.29>;tag=4644278517\r\nTo: <sip:34020000001320000001@192.168.10.181>\r\nCall-ID:232151665230564\r\nCSeq:1 MESSAGE\r\nMax-Forwards: 70\r\nContact:<sip:34020000002000000009@192.168.10.29>\r\nContent-Type: Application/MANSCDP+xml\r\nContent-Length: 128\r\n\r\n<?xml version=\"1.0\"?><Query><CmdType>DeviceInfo</CmdType><SN>2</SN><DeviceID>34020000001320000001</DeviceID></Query>");
+    result = sprintf(message, "REGISTER sip:34020000002000000001@3402000000 SIP/2.0\r\nVia: SIP/2.0/UDP 192.168.10.29:5060;rport;branch=z9hG4bK1566165472\r\nFrom: <sip:34020000001320000001@3402000000>;tag=377124889\r\nTo: <sip:34020000001320000001@3402000000>\r\nCall-ID: 1830394338\r\nCSeq: 1 REGISTER\r\nContact: <sip:34020000001320000001@192.168.10.29:5060>\r\nMax-Forwards: 70\r\nUser-Agent: Client\r\nExpires: 3600\r\nContent-Length: 0");
 
     result = sendto(sock, message, strlen(message), 0, (sockaddr*)&sockSIPServerAddr, sizeof(sockaddr_in));
 
