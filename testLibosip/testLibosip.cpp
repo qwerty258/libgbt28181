@@ -189,3 +189,13 @@ void osip_nist_register_received(int type, osip_transaction_t* p_osip_transactio
 {
     cout << "osip_nist_register_received" << endl;
 }
+
+int cb_send_message(osip_transaction_t *p_osip_transaction_t, osip_message_t *p_osip_message_t, char *p_char, int a, int b)
+{
+    osip_transaction_t* p_osip_transaction_t_temp = p_osip_transaction_t;
+    osip_message_t* p_osip_message_t_temp = p_osip_message_t;
+    char* p_char_temp = p_char;
+    int a_temp = a;
+    int b_temp = b;
+    return 0;
+}
