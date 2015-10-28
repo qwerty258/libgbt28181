@@ -18,10 +18,10 @@ you could do other messages using similar mechainsm.This will compile and work f
 #define EXPIRES_TIME_INSECS         3600
 
 #define USER_ID     "7929"
-#define SIP_PROXY   "sip:192.168.10.242"
-#define SIP_FROM    "sip:7929@192.168.10.29"
-#define SIP_TO      "sip:7929@192.168.10.29"
-#define SIP_CONTACT "sip:7929@192.168.10.29"
+#define SIP_PROXY   "sip:192.168.10.67"
+#define SIP_FROM    "sip:7929@3402000000"
+#define SIP_TO      "sip:7929@3402000000"
+#define SIP_CONTACT "sip:7929@3402000000"
 #define LOCAL_IP    "192.168.10.29"
 
 osip_t *osip;
@@ -73,7 +73,7 @@ int networkMsgRecv(int sock, char *msgP, int msgLen, struct sockaddr_in *address
     dataLen = recvfrom(sock, msgP, msgLen, 0, (struct sockaddr *)address, &addrLen);
     if(dataLen < 0)
     {
-        perror("networkMsgRecv: recvfrom error");
+        perror("networkMsgRecv: recvfrom error: %d", WSAGetLastError());
         return -1;
     }
     return dataLen;
@@ -83,7 +83,7 @@ int SendMsg(osip_transaction_t *tr, osip_message_t *sip, char *host, int port, i
 {
     int len = 0;
     char *msgP;
-    int msgLen;
+    size_t msgLen;
     int i;
     int status;
 
@@ -222,7 +222,7 @@ int bSipRegisterBuild(osip_message_t **regMsgPtrPtr)
     sprintf(callidNumberStr, "%u", number);
     osip_call_id_set_number(callidPtr, callidNumberStr);
 
-    osip_call_id_set_host(callidPtr, osip_strdup("192.168.10.242"));
+    osip_call_id_set_host(callidPtr, osip_strdup(LOCAL_IP));
 
     regMsgPtr->call_id = callidPtr;
 
@@ -251,7 +251,7 @@ int bSipRegisterBuild(osip_message_t **regMsgPtrPtr)
 
     osip_message_set_content_length(regMsgPtr, "0");
 
-    osip_message_set_user_agent(regMsgPtr, "TotalView 1.0");
+    osip_message_set_user_agent(regMsgPtr, "osip");
 
     AddSupportedMethods(regMsgPtr);
     *regMsgPtrPtr = regMsgPtr;
@@ -299,7 +299,12 @@ void processSipMsg()
             return;
         }
     }
-    osip_message_fix_last_via_header(sipevent->sip, (char *)inet_ntoa(sa.sin_addr), ntohs(sa.sin_port));
+
+    char* IP[20];
+
+    strncpy(IP, inet_ntoa(sa.sin_addr), 20);
+
+    osip_message_fix_last_via_header(sipevent->sip, IP, ntohs(sa.sin_port));
     if((status = osip_find_transaction_and_add_event(osip, sipevent)) != 0)
     {
         printf("New transaction!\n");
