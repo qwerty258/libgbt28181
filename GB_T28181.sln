@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sendRequestDirectly", "send
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "regist", "regist\regist.vcxproj", "{8D134931-AB51-41B0-A7F0-F51EC0A04309}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "uas", "serverwithsipwithlib\uas.vcxproj", "{89D09790-E407-4023-821B-6B5DF22498B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -51,6 +53,14 @@ Global
 		{8D134931-AB51-41B0-A7F0-F51EC0A04309}.Release|Win32.Build.0 = Release|Win32
 		{8D134931-AB51-41B0-A7F0-F51EC0A04309}.Release|x64.ActiveCfg = Release|x64
 		{8D134931-AB51-41B0-A7F0-F51EC0A04309}.Release|x64.Build.0 = Release|x64
+		{89D09790-E407-4023-821B-6B5DF22498B0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{89D09790-E407-4023-821B-6B5DF22498B0}.Debug|Win32.Build.0 = Debug|Win32
+		{89D09790-E407-4023-821B-6B5DF22498B0}.Debug|x64.ActiveCfg = Debug|x64
+		{89D09790-E407-4023-821B-6B5DF22498B0}.Debug|x64.Build.0 = Debug|x64
+		{89D09790-E407-4023-821B-6B5DF22498B0}.Release|Win32.ActiveCfg = Release|Win32
+		{89D09790-E407-4023-821B-6B5DF22498B0}.Release|Win32.Build.0 = Release|Win32
+		{89D09790-E407-4023-821B-6B5DF22498B0}.Release|x64.ActiveCfg = Release|x64
+		{89D09790-E407-4023-821B-6B5DF22498B0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
