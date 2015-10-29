@@ -33,12 +33,12 @@ int networkInit()
     WSAStartup(MAKEWORD(2, 2), &wsaData);
 
     struct sockaddr_in address;
-    if((sipSock = socket(PF_INET, SOCK_DGRAM, 0)) < 0)
+    if((sipSock = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
         perror("networkInit: error opening socket");
         return -1;
     }
-    address.sin_family = PF_INET;
+    address.sin_family = AF_INET;
     address.sin_addr.s_addr = htonl(INADDR_ANY);
     address.sin_port = htons(SIP_PORT);
     printf("sipSock = %d\n", sipSock);
@@ -54,7 +54,7 @@ int networkInit()
 int networkMsgSend(int sock, char *msgP, int msgLen, char *host, int port)
 {
     struct sockaddr_in address;
-    address.sin_family = PF_INET;
+    address.sin_family = AF_INET;
     address.sin_addr.s_addr = inet_addr(host);
     address.sin_port = htons(port);
     if(sendto(sock, msgP, msgLen, 0, (struct sockaddr *)&address, sizeof(address)) < 0)
@@ -136,7 +136,7 @@ int AddSupportedMethods(osip_message_t *msgPtr)
     return 0;
 }
 
-int bSipSend(osip_message_t    *msgPtr, osip_fsm_type_t   transactionType)
+int bSipSend(osip_message_t *msgPtr, osip_fsm_type_t transactionType)
 {
     int status;
     osip_transaction_t *transactionPtr;
