@@ -35,7 +35,7 @@ int networkInit()
     struct sockaddr_in address;
     if((sipSock = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
-        perror("networkInit: error opening socket");
+        printf("networkInit: error opening socket: %d", WSAGetLastError());
         return -1;
     }
     address.sin_family = AF_INET;
@@ -44,7 +44,7 @@ int networkInit()
     printf("sipSock = %d\n", sipSock);
     if(bind(sipSock, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
-        perror("networkInit: error binding socket");
+        printf("networkInit: error binding socket: %d", WSAGetLastError());
         return -1;
     }
 
@@ -59,7 +59,7 @@ int networkMsgSend(int sock, char *msgP, int msgLen, char *host, int port)
     address.sin_port = htons(port);
     if(sendto(sock, msgP, msgLen, 0, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
-        perror("networkMsgSend: sendto error");
+        printf("networkMsgSend: sendto error: %d", WSAGetLastError());
         return -1;
     }
     return 0;
@@ -73,7 +73,7 @@ int networkMsgRecv(int sock, char *msgP, int msgLen, struct sockaddr_in *address
     dataLen = recvfrom(sock, msgP, msgLen, 0, (struct sockaddr *)address, &addrLen);
     if(dataLen < 0)
     {
-        perror("networkMsgRecv: recvfrom error: %d", WSAGetLastError());
+        printf("networkMsgRecv: recvfrom error: %d", WSAGetLastError());
         return -1;
     }
     return dataLen;
@@ -89,6 +89,7 @@ int SendMsg(osip_transaction_t *tr, osip_message_t *sip, char *host, int port, i
 
     printf("SendMsg\n");
 
+    // 
     if((i = osip_message_to_str(sip, &msgP, &msgLen)) != 0)
     {
         OSIP_TRACE(osip_trace(__FILE__, __LINE__, OSIP_BUG, NULL, "failed to convert message\n"));
@@ -96,6 +97,8 @@ int SendMsg(osip_transaction_t *tr, osip_message_t *sip, char *host, int port, i
     }
     if(!networkMsgSend(sipSock, msgP, strlen(msgP), host, port))
         OSIP_TRACE(osip_trace(__FILE__, __LINE__, OSIP_INFO1, NULL, "Time: Udp message sent: \n%s\n", msgP));
+
+    osip_free(msgP);
 
     return 0;
 }
@@ -300,7 +303,7 @@ void processSipMsg()
         }
     }
 
-    char* IP[20];
+    char IP[20];
 
     strncpy(IP, inet_ntoa(sa.sin_addr), 20);
 
@@ -354,7 +357,7 @@ int main()
         result = select(FD_SETSIZE, &readfds, 0, 0, &tv);
         if(result < 0)
         {
-            perror("main: select error");
+            printf("main: select error");
             exit(1);
         }
         if(FD_ISSET(sipSock, &readfds))
