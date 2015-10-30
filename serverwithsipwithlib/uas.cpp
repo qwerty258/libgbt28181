@@ -7,10 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <Winsock2.h>
-/*
-££include <netinet/in.h>
-££include <sys/socket.h>
-££include <sys/types.h>*/
 
 int main(int argc, char *argv[])
 {
