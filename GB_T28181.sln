@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "regist", "regist\regist.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "uas", "serverwithsipwithlib\uas.vcxproj", "{89D09790-E407-4023-821B-6B5DF22498B0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "31767677main", "31767677main\31767677main.vcxproj", "{322B4324-F330-4476-A791-1F760A85DA3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -61,6 +63,14 @@ Global
 		{89D09790-E407-4023-821B-6B5DF22498B0}.Release|Win32.Build.0 = Release|Win32
 		{89D09790-E407-4023-821B-6B5DF22498B0}.Release|x64.ActiveCfg = Release|x64
 		{89D09790-E407-4023-821B-6B5DF22498B0}.Release|x64.Build.0 = Release|x64
+		{322B4324-F330-4476-A791-1F760A85DA3E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{322B4324-F330-4476-A791-1F760A85DA3E}.Debug|Win32.Build.0 = Debug|Win32
+		{322B4324-F330-4476-A791-1F760A85DA3E}.Debug|x64.ActiveCfg = Debug|x64
+		{322B4324-F330-4476-A791-1F760A85DA3E}.Debug|x64.Build.0 = Debug|x64
+		{322B4324-F330-4476-A791-1F760A85DA3E}.Release|Win32.ActiveCfg = Release|Win32
+		{322B4324-F330-4476-A791-1F760A85DA3E}.Release|Win32.Build.0 = Release|Win32
+		{322B4324-F330-4476-A791-1F760A85DA3E}.Release|x64.ActiveCfg = Release|x64
+		{322B4324-F330-4476-A791-1F760A85DA3E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
