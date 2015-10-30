@@ -11,14 +11,8 @@
 ＃include <netinet/in.h>
 ＃include <sys/socket.h>
 ＃include <sys/types.h>*/
-#pragma comment(lib, "osip2.lib")
-#pragma comment(lib, "osipparser2.lib")
-#pragma comment(lib, "eXosip.lib")
-#pragma comment(lib, "Iphlpapi.lib")
-#pragma comment(lib, "Dnsapi.lib")
-#pragma comment(lib, "ws2_32.lib")
-int
-main(int argc, char *argv[])
+
+int main(int argc, char *argv[])
 {
     eXosip_event_t *je = NULL;
     osip_message_t *ack = NULL;
@@ -55,10 +49,10 @@ main(int argc, char *argv[])
     for(;;)
     {
         //侦听是否有消息到来
-        je = eXosip_event_wait(p_eXosip_t,0, 50);
+        je = eXosip_event_wait(p_eXosip_t, 0, 50);
         //协议栈带有此语句,具体作用未知
         eXosip_lock(p_eXosip_t);
-        eXosip_default_action(p_eXosip_t,je);
+        eXosip_default_action(p_eXosip_t, je);
         eXosip_automatic_refresh(p_eXosip_t);
         eXosip_unlock(p_eXosip_t);
         if(je == NULL)//没有接收到消息
@@ -77,8 +71,8 @@ main(int argc, char *argv[])
                         //printf ("the cid is %s, did is %s\n", je->did, je->cid);
                     }
                     //按照规则，需要回复OK信息
-                    eXosip_message_build_answer(p_eXosip_t,je->tid, 200, &answer);
-                    eXosip_message_send_answer(p_eXosip_t,je->tid, 200, answer);
+                    eXosip_message_build_answer(p_eXosip_t, je->tid, 200, &answer);
+                    eXosip_message_send_answer(p_eXosip_t, je->tid, 200, answer);
                 }
                 break;
             case EXOSIP_CALL_INVITE:
@@ -86,17 +80,17 @@ main(int argc, char *argv[])
                 printf("Received a INVITE msg from %s:%s, UserName is %s, password is %s\n", je->request->req_uri->host,
               je->request->req_uri->port, je->request->req_uri->username, je->request->req_uri->password);
                 //得到消息体,认为该消息就是SDP格式.
-                remote_sdp = eXosip_get_remote_sdp(p_eXosip_t,je->did);
+                remote_sdp = eXosip_get_remote_sdp(p_eXosip_t, je->did);
                 call_id = je->cid;
                 dialog_id = je->did;
 
                 eXosip_lock(p_eXosip_t);
-                eXosip_call_send_answer(p_eXosip_t,je->tid, 180, NULL);
-                i = eXosip_call_build_answer(p_eXosip_t,je->tid, 200, &answer);
+                eXosip_call_send_answer(p_eXosip_t, je->tid, 180, NULL);
+                i = eXosip_call_build_answer(p_eXosip_t, je->tid, 200, &answer);
                 if(i != 0)
                 {
                     printf("This request msg is invalid!Cann't response!\n");
-                    eXosip_call_send_answer(p_eXosip_t,je->tid, 400, NULL);
+                    eXosip_call_send_answer(p_eXosip_t, je->tid, 400, NULL);
                 }
                 else
                 {
@@ -112,7 +106,7 @@ main(int argc, char *argv[])
                     osip_message_set_body(answer, tmp, strlen(tmp));
                     osip_message_set_content_type(answer, "application/sdp");
 
-                    eXosip_call_send_answer(p_eXosip_t,je->tid, 200, answer);
+                    eXosip_call_send_answer(p_eXosip_t, je->tid, 200, answer);
                     printf("send 200 over!\n");
                 }
                 eXosip_unlock(p_eXosip_t);
@@ -137,7 +131,7 @@ main(int argc, char *argv[])
                 printf("the remote hold the session!\n");
                 // eXosip_call_build_ack(dialog_id, &ack);
                 //eXosip_call_send_ack(dialog_id, ack); 
-                i = eXosip_call_build_answer(p_eXosip_t,je->tid, 200, &answer);
+                i = eXosip_call_build_answer(p_eXosip_t, je->tid, 200, &answer);
                 if(i != 0)
                 {
                     printf("This request msg is invalid!Cann't response!\n");
