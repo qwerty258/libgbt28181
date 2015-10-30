@@ -53,9 +53,9 @@ void process_event()
 
         switch (event->type)
         {
-        case EXOSIP_REGISTRATION_NEW:
-            printf("received new registration\n");
-            break;
+        //case EXOSIP_REGISTRATION_NEW:
+        //    printf("received new registration\n");
+        //    break;
         case EXOSIP_REGISTRATION_SUCCESS:
         {
             printf("EXOSIP_REGISTRATION_SUCCESS\n");
