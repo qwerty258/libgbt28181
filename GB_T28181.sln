@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "31767677main", "31767677mai
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "csenn_eXosip", "csenn_eXosip\csenn_eXosip.vcxproj", "{4DF8F09A-D332-407F-AA68-2D307E31A53E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libGBT28181Client", "libGBT28181Client\libGBT28181Client.vcxproj", "{75CF1FD0-E83A-45D4-B9DD-235E233DC82A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -71,6 +73,14 @@ Global
 		{4DF8F09A-D332-407F-AA68-2D307E31A53E}.Release|Win32.Build.0 = Release|Win32
 		{4DF8F09A-D332-407F-AA68-2D307E31A53E}.Release|x64.ActiveCfg = Release|x64
 		{4DF8F09A-D332-407F-AA68-2D307E31A53E}.Release|x64.Build.0 = Release|x64
+		{75CF1FD0-E83A-45D4-B9DD-235E233DC82A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{75CF1FD0-E83A-45D4-B9DD-235E233DC82A}.Debug|Win32.Build.0 = Debug|Win32
+		{75CF1FD0-E83A-45D4-B9DD-235E233DC82A}.Debug|x64.ActiveCfg = Debug|x64
+		{75CF1FD0-E83A-45D4-B9DD-235E233DC82A}.Debug|x64.Build.0 = Debug|x64
+		{75CF1FD0-E83A-45D4-B9DD-235E233DC82A}.Release|Win32.ActiveCfg = Release|Win32
+		{75CF1FD0-E83A-45D4-B9DD-235E233DC82A}.Release|Win32.Build.0 = Release|Win32
+		{75CF1FD0-E83A-45D4-B9DD-235E233DC82A}.Release|x64.ActiveCfg = Release|x64
+		{75CF1FD0-E83A-45D4-B9DD-235E233DC82A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
