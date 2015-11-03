@@ -107,7 +107,7 @@ int _tmain(int argc, _TCHAR* argv[])
         event = eXosip_event_wait(ctx, 0, 1);
         if(NULL == event)
         {
-            osip_usleep(10000);
+            osip_usleep(100000);
             continue;
         }
         eXosip_automatic_action(ctx);
