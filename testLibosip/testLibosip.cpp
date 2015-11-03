@@ -29,7 +29,7 @@ void* register_proc(void* arg)
         result = eXosip_register_send_register(regparam->ctx, regparam->regid, NULL);
         if(0 > result)
         {
-            printf("eXosip_register_send_register error, file: %s, line: %d", __FILE__, __LINE__);
+            printf("eXosip_register_send_register error, file: %s, line: %d\n", __FILE__, __LINE__);
             exit(APIERROR);
         }
         regparam->auth = 0;
@@ -41,6 +41,8 @@ void* register_proc(void* arg)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+    system("pause");
+
     int result = 0;
     regparam_t regparam = {NULL, 0, 3600, 0};
     osip_message_t* reg = NULL;
@@ -58,14 +60,14 @@ int _tmain(int argc, _TCHAR* argv[])
     result = eXosip_init(ctx);
     if(0 != result)
     {
-        printf("eXosip_init error, file: %s, line: %d", __FILE__, __LINE__);
+        printf("eXosip_init error, file: %s, line: %d\n", __FILE__, __LINE__);
         exit(APIERROR);
     }
 
     result = eXosip_listen_addr(ctx, IPPROTO_UDP, NULL, 5060, AF_INET, 0);
     if(0 != result)
     {
-        printf("eXosip_listen_addr error, file: %s, line: %d", __FILE__, __LINE__);
+        printf("eXosip_listen_addr error, file: %s, line: %d\n", __FILE__, __LINE__);
         exit(APIERROR);
     }
 
@@ -74,7 +76,7 @@ int _tmain(int argc, _TCHAR* argv[])
     result = eXosip_add_authentication_info(ctx, "4768465", "4768465", "123456", NULL, NULL);
     if(0 != result)
     {
-        printf("eXosip_add_authentication_info error, file: %s, line: %d", __FILE__, __LINE__);
+        printf("eXosip_add_authentication_info error, file: %s, line: %d\n", __FILE__, __LINE__);
         exit(APIERROR);
     }
 
@@ -82,21 +84,21 @@ int _tmain(int argc, _TCHAR* argv[])
     regparam.regid = eXosip_register_build_initial_register(ctx, "sip:4768465@192.168.10.29", "sip:34020000002000000001@192.168.10.67", NULL, 3600, &reg);
     if(regparam.regid < 1)
     {
-        printf("eXosip_register_build_initial_register error, file: %s, line: %d", __FILE__, __LINE__);
+        printf("eXosip_register_build_initial_register error, file: %s, line: %d\n", __FILE__, __LINE__);
         exit(APIERROR);
     }
 
     result = eXosip_register_send_register(ctx, regparam.regid, reg);
     if(0 != result)
     {
-        printf("eXosip_register_send_register error, file: %s, line: %d", __FILE__, __LINE__);
+        printf("eXosip_register_send_register error, file: %s, line: %d\n", __FILE__, __LINE__);
         exit(APIERROR);
     }
 
     register_thread = osip_thread_create(20000, register_proc, &regparam);
     if(NULL == register_thread)
     {
-        printf("osip_thread_create error, file: %s, line: %d", __FILE__, __LINE__);
+        printf("osip_thread_create error, file: %s, line: %d\n", __FILE__, __LINE__);
         exit(APIERROR);
     }
 
@@ -112,12 +114,12 @@ int _tmain(int argc, _TCHAR* argv[])
         switch(event->type)
         {
             case EXOSIP_REGISTRATION_SUCCESS:
-                printf("registrered successfully");
+                printf("registrered successfully\n");
                 break;
             case EXOSIP_REGISTRATION_FAILURE:
                 regparam.auth = 1;
             default:
-                printf("recieved unknown eXosip event (type, did, cid) = (%d, %d, %d)", event->type, event->did, event->cid);
+                printf("recieved unknown eXosip event (type, did, cid) = (%d, %d, %d)\n", event->type, event->did, event->cid);
                 break;
         }
         eXosip_event_free(event);
