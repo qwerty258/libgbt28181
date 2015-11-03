@@ -11,12 +11,11 @@
 
 typedef struct regparam_t
 {
+    eXosip_t* ctx;
     int regid;
     int expiry;
     int auth;
 }regparam_t;
-
-eXosip_t* ctx = NULL;
 
 void* register_proc(void* arg)
 {
@@ -26,15 +25,15 @@ void* register_proc(void* arg)
     while(true)
     {
         Sleep((regparam->expiry / 2) * 1000);
-        eXosip_lock(ctx);
-        result = eXosip_register_send_register(ctx, regparam->regid, NULL);
+        eXosip_lock(regparam->ctx);
+        result = eXosip_register_send_register(regparam->ctx, regparam->regid, NULL);
         if(0 > result)
         {
             printf("eXosip_register_send_register error, file: %s, line: %d", __FILE__, __LINE__);
             exit(APIERROR);
         }
         regparam->auth = 0;
-        eXosip_unlock(ctx);
+        eXosip_unlock(regparam->ctx);
     }
 
     return NULL;
@@ -43,7 +42,7 @@ void* register_proc(void* arg)
 int _tmain(int argc, _TCHAR* argv[])
 {
     int result = 0;
-    regparam_t regparam = {0, 3600, 0};
+    regparam_t regparam = {NULL, 0, 3600, 0};
     osip_message_t* reg = NULL;
     struct osip_thread* register_thread = NULL;
     eXosip_event_t* event = NULL;
@@ -53,6 +52,8 @@ int _tmain(int argc, _TCHAR* argv[])
     {
         exit(MEMERROR);
     }
+
+    regparam.ctx = ctx;
 
     result = eXosip_init(ctx);
     if(0 != result)
