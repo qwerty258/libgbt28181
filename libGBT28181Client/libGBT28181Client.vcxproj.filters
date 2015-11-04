@@ -18,9 +18,18 @@
     <ClInclude Include="libGBT28181Client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="workingThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clientConfigDefine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libGBT28181Client.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="workingThread.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
