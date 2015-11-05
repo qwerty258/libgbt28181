@@ -2,10 +2,6 @@
 #include "clientConfigDefine.h"
 #include "workingThread.h"
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif // _MSC_VER
-
 #define CHECK_NULL_AND_RETURN(pointer)  \
 if(NULL == (pointer))                   \
 {                                       \
@@ -34,8 +30,9 @@ LIBGBT28181CLIENT_API int GBT28181_client_initial(void)
 {
     global_client_configurations.online = false;
     global_client_configurations.initialed = true;
+    InitializeCriticalSectionAndSpinCount(&global_client_configurations.critical_section, 4000);
     global_client_configurations.client_user_name = NULL;
-    global_client_configurations.client_user_ID = NULL;
+    global_client_configurations.client_authentication_ID = NULL;
     global_client_configurations.client_password = NULL;
     global_client_configurations.client_IP = NULL;
     global_client_configurations.client_port = 5060;
@@ -53,7 +50,9 @@ LIBGBT28181CLIENT_API int GBT28181_client_initial(void)
     global_client_configurations.registration_ID = 0;
     global_client_configurations.register_thread = NULL;
     global_client_configurations.event_thread = NULL;
+    global_client_configurations.keepalive_thread = NULL;
     global_client_configurations.thread_loop = false;
+    global_client_configurations.MANSCDP_SN = 1;
     CHECK_NULL_AND_RETURN(global_client_configurations.exosip_context)
 }
 
@@ -74,9 +73,9 @@ LIBGBT28181CLIENT_API int GBT28181_set_client_ID(char* SIP_user_ID)
 
     CHECK_NULL_PARAMETER(SIP_user_ID)
 
-    global_client_configurations.client_user_ID = osip_strdup(SIP_user_ID);
+    global_client_configurations.client_authentication_ID = osip_strdup(SIP_user_ID);
 
-    CHECK_NULL_AND_RETURN(global_client_configurations.client_user_ID)
+    CHECK_NULL_AND_RETURN(global_client_configurations.client_authentication_ID)
 }
 
 LIBGBT28181CLIENT_API int GBT28181_set_client_password(char* SIP_password)
@@ -227,7 +226,7 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
     CHECK_INITIALED(global_client_configurations.initialed)
 
     if(NULL == global_client_configurations.client_user_name ||
-       NULL == global_client_configurations.client_user_ID ||
+       NULL == global_client_configurations.client_authentication_ID ||
        NULL == global_client_configurations.client_password ||
        NULL == global_client_configurations.client_IP ||
        NULL == global_client_configurations.server_ID ||
@@ -273,7 +272,7 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
     result = eXosip_add_authentication_info(
         global_client_configurations.exosip_context,
         global_client_configurations.client_user_name,
-        global_client_configurations.client_user_ID,
+        global_client_configurations.client_authentication_ID,
         global_client_configurations.client_password,
         NULL,
         NULL);
@@ -324,13 +323,13 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
 
     global_client_configurations.thread_loop = true;
 
-    global_client_configurations.register_thread = osip_thread_create(20000, register_thread, &global_client_configurations);
+    global_client_configurations.register_thread = osip_thread_create(20000, register_working_thread, &global_client_configurations);
     if(NULL == global_client_configurations.register_thread)
     {
         return GBT28181_THREAD_CREATE_FAILED;
     }
 
-    global_client_configurations.event_thread = osip_thread_create(20000, event_thread, &global_client_configurations);
+    global_client_configurations.event_thread = osip_thread_create(20000, event_working_thread, &global_client_configurations);
     if(NULL == global_client_configurations.event_thread)
     {
         return GBT28181_THREAD_CREATE_FAILED;
@@ -343,8 +342,10 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
 {
     CHECK_INITIALED(global_client_configurations.initialed)
 
+    DeleteCriticalSection(&global_client_configurations.critical_section);
+
     osip_free(global_client_configurations.client_user_name);
-    osip_free(global_client_configurations.client_user_ID);
+    osip_free(global_client_configurations.client_authentication_ID);
     osip_free(global_client_configurations.client_password);
     osip_free(global_client_configurations.client_IP);
     osip_free(global_client_configurations.server_ID);
