@@ -4,7 +4,7 @@
 void* register_working_thread(void* arg)
 {
     client_configurations* thread_parameter = (client_configurations*)arg;
-    int result;
+    int result = OSIP_SUCCESS;
 
     while(thread_parameter->thread_loop)
     {
@@ -32,7 +32,7 @@ void* event_working_thread(void* arg)
     eXosip_event_t* event = NULL;
     osip_content_type_t* content_type = NULL;
     char* string_buffer = osip_malloc(1500);
-    int result;
+    int result = OSIP_SUCCESS;
 
     while(thread_parameter->thread_loop)
     {
@@ -98,7 +98,7 @@ void* event_working_thread(void* arg)
 void* keepalive_working_thread(void* arg)
 {
     client_configurations* thread_parameter = (client_configurations*)arg;
-    int result = 0;
+    int result = OSIP_SUCCESS;
     osip_message_t* keepalive_message = NULL;
     char* from = NULL;
     char* to = NULL;
