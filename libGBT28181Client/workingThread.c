@@ -1,6 +1,5 @@
 #include "workingThread.h"
 #include "clientConfigDefine.h"
-#include <Windows.h>
 
 void* register_working_thread(void* arg)
 {
@@ -31,6 +30,9 @@ void* event_working_thread(void* arg)
 {
     client_configurations* thread_parameter = (client_configurations*)arg;
     eXosip_event_t* event = NULL;
+    osip_content_type_t* content_type = NULL;
+    char* string_buffer = osip_malloc(1500);
+    int result;
 
     while(thread_parameter->thread_loop)
     {
@@ -44,7 +46,9 @@ void* event_working_thread(void* arg)
         switch(event->type)
         {
             case EXOSIP_REGISTRATION_SUCCESS:
+#ifdef _DEBUG
                 printf("registrered successfully\n");
+#endif // _DEBUG
                 thread_parameter->keepalive_thread = osip_thread_create(20000, keepalive_working_thread, thread_parameter);
                 if(NULL == thread_parameter->keepalive_thread)
                 {
@@ -52,15 +56,42 @@ void* event_working_thread(void* arg)
                 }
                 break;
             case EXOSIP_REGISTRATION_FAILURE:
+#ifdef _DEBUG
                 printf("registrered failed\n");
+#endif // _DEBUG
+                break;
+            case EXOSIP_MESSAGE_NEW:
+                content_type = osip_message_get_content_type(event->request);
+#ifdef _DEBUG
+                printf("%s\n", event->request->sip_method);
+                printf("%s/%s\n", content_type->type, content_type->subtype);
+#endif // _DEBUG
+                if(0 == strncmp(content_type->type, "application", strlen("application")) &&
+                   0 == strncmp(content_type->subtype, "MANSCDP+xml", strlen("MANSCDP+xml")))
+                {
+                    result = osip_message_get_body(event->request, 0, string_buffer);
+                    if(OSIP_SUCCESS == result)
+                    {
+
+                    }
+                }
+                else
+                {
+
+                }
+                break;
             default:
+#ifdef _DEBUG
                 printf("recieved unknown eXosip event (type, did, cid) = (%d, %d, %d)\n", event->type, event->did, event->cid);
+#endif // _DEBUG
                 break;
         }
         eXosip_event_free(event);
     }
 
     osip_thread_exit();
+
+    osip_free(string_buffer);
     return NULL;
 }
 
@@ -89,28 +120,28 @@ void* keepalive_working_thread(void* arg)
 
     snprintf(to, 512, "sip:%s@%s", thread_parameter->server_ID, thread_parameter->server_IP);
 
-    result = eXosip_message_build_request(
-        thread_parameter->exosip_context,
-        &keepalive_message,
-        "MESSAGE",
-        to,
-        from,
-        NULL);
-    if(OSIP_SUCCESS != result)
-    {
-        // to do: handle error
-        return NULL;
-    }
-
-    result = osip_message_set_content_type(keepalive_message, "application/MANSCDP+xml");
-    if(OSIP_SUCCESS != result)
-    {
-        // to do: handle error
-        return NULL;
-    }
-
     while(thread_parameter->thread_loop)
     {
+        result = eXosip_message_build_request(
+            thread_parameter->exosip_context,
+            &keepalive_message,
+            "MESSAGE",
+            to,
+            from,
+            NULL);
+        if(OSIP_SUCCESS != result)
+        {
+            // to do: handle error
+            return NULL;
+        }
+
+        result = osip_message_set_content_type(keepalive_message, "application/MANSCDP+xml");
+        if(OSIP_SUCCESS != result)
+        {
+            // to do: handle error
+            return NULL;
+        }
+
         snprintf(message_body, 512, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<Notify>\r\n<CmdType>Keepalive</CmdType>\r\n<SN>%u</SN>\r\n<DeviceID>%s</DeviceID><Status>OK</Status></Notify>", thread_parameter->MANSCDP_SN, thread_parameter->client_user_name);
 
         result = osip_message_set_body(keepalive_message, message_body, strnlen(message_body, 512));
@@ -134,8 +165,6 @@ void* keepalive_working_thread(void* arg)
 
         osip_usleep(thread_parameter->heartbeat_interval * 1000 * 1000);
     }
-
-    osip_message_free(keepalive_message);
 
     osip_free(from);
     osip_free(to);
