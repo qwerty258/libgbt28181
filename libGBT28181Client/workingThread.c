@@ -1,7 +1,6 @@
 #include "workingThread.h"
 #include "clientConfigDefine.h"
-#include <libxml/parser.h>
-#include <libxml/tree.h>
+#include "XMLUtility.h"
 
 void* register_working_thread(void* arg)
 {
