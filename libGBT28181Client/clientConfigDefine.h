@@ -4,13 +4,19 @@
 #include <stdbool.h>
 #include <osip2\osip_mt.h>
 #include <eXosip2\eXosip.h>
+#include <Windows.h>
+
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif // _MSC_VER
 
 typedef struct _client_configurations
 {
     bool online;
     bool initialed;
+    CRITICAL_SECTION critical_section;
     char* client_user_name;
-    char* client_user_ID;
+    char* client_authentication_ID;
     char* client_password;
     char* client_IP;
     int client_port;
@@ -28,7 +34,9 @@ typedef struct _client_configurations
     int registration_ID;
     struct osip_thread* register_thread;
     struct osip_thread* event_thread;
+    struct osip_thread* keepalive_thread;
     bool thread_loop;
+    unsigned long long MANSCDP_SN;
 }client_configurations;
 
 #endif // !_CLIENT_CONFIG_DEFINE_H_
