@@ -154,10 +154,12 @@
     <ClInclude Include="clientConfigDefine.h" />
     <ClInclude Include="libGBT28181Client.h" />
     <ClInclude Include="workingThread.h" />
+    <ClInclude Include="XMLUtility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libGBT28181Client.c" />
     <ClCompile Include="workingThread.c" />
+    <ClCompile Include="XMLUtility.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
