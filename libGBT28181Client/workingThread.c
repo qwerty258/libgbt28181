@@ -33,7 +33,7 @@ void* event_working_thread(void* arg)
     client_configurations* thread_parameter = (client_configurations*)arg;
     eXosip_event_t* event = NULL;
     osip_content_type_t* content_type = NULL;
-    char* string_buffer = osip_malloc(1500);
+    osip_body_t* message_body = NULL;
     int result = OSIP_SUCCESS;
     xmlDocPtr xml_document_pointer = NULL;
 
@@ -72,12 +72,13 @@ void* event_working_thread(void* arg)
                 if(0 == strncmp(content_type->type, "application", strlen("application")) &&
                    0 == strncmp(content_type->subtype, "MANSCDP+xml", strlen("MANSCDP+xml")))
                 {
-                    result = osip_message_get_body(event->request, 0, &string_buffer);
+                    result = osip_message_get_body(event->request, 0, &message_body);
+
                     if(OSIP_SUCCESS == result)
                     {
                         LIBXML_TEST_VERSION
 
-                        xml_document_pointer = xmlReadMemory(string_buffer, 1500, "no_name.xml", NULL, 0);
+                        xml_document_pointer = xmlReadMemory(message_body->body, message_body->length, "no_name.xml", NULL, 0);
 
                         xmlFreeDoc(xml_document_pointer);
 
@@ -99,8 +100,6 @@ void* event_working_thread(void* arg)
     }
 
     osip_thread_exit();
-
-    osip_free(string_buffer);
     return NULL;
 }
 
