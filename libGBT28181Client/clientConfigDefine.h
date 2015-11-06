@@ -39,5 +39,31 @@ typedef struct _client_configurations
     unsigned long long MANSCDP_SN;
 }client_configurations;
 
+typedef enum _MANSCDP_xml_type
+{
+    MANSCDP_xml_Unknown,
+    MANSCDP_xml_Control,
+    MANSCDP_xml_Query,
+    MANSCDP_xml_Notify,
+    MANSCDP_xml_Response
+}MANSCDP_xml_type;
+
+typedef enum _MANSCDP_command_type
+{
+    MANSCDP_command_type_unknown,
+    MANSCDP_DeviceInfo,
+    MANSCDP_DeviceStatus,
+    MANSCDP_Catalog
+}MANSCDP_command_type;
+
+typedef struct _MANSCDP_xml
+{
+    MANSCDP_xml_type xml_type;
+    MANSCDP_command_type command_type;
+    unsigned long long MANSCDP_SN;
+    char* DeviceID;
+    client_configurations* p_client_configurations;
+}MANSCDP_xml;
+
 #endif // !_CLIENT_CONFIG_DEFINE_H_
 
