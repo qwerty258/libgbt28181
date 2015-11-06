@@ -17,6 +17,8 @@
 
 C_EXPORT_BEGIN
 
+#include "callbackDefines.h"
+
 #define GBT28181_SUCCESS                            0
 #define GBT28181_UNDEFINED_ERROR                    -1
 #define GBT28181_BADPARAMETER                       -2
@@ -39,6 +41,7 @@ C_EXPORT_BEGIN
 #define GBT28181_INTERVAL_TOO_SMALL                 -10001
 #define GBT28181_THREAD_CREATE_FAILED               -10002
 #define GBT28181_ESSENTIAL_CLIENT_PARAMETER_ERROR   -10003
+#define GBT28181_CALLBACK_NOTSET                    -10004
 
 LIBGBT28181CLIENT_API int GBT28181_client_initial(void);
 
@@ -77,6 +80,10 @@ LIBGBT28181CLIENT_API int GBT28181_set_address_family(int address_family);
 LIBGBT28181CLIENT_API int GBT28181_set_IP_protocol(int protocol);
 
 LIBGBT28181CLIENT_API int GBT28181_client_go_online(void);
+
+LIBGBT28181CLIENT_API int GBT28181_set_query_deviceInfo_callback(function_query_deviceInfo_callback cb);
+
+LIBGBT28181CLIENT_API int GBT28181_query_deviceInfo(char* target_sip_user_name);
 
 LIBGBT28181CLIENT_API int GBT28181_free_client(void);
 
