@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="callbackDefines.h" />
     <ClInclude Include="clientConfigDefine.h" />
     <ClInclude Include="libGBT28181Client.h" />
     <ClInclude Include="workingThread.h" />

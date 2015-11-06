@@ -27,6 +27,9 @@
     <ClInclude Include="XMLUtility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="callbackDefines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libGBT28181Client.c">
