@@ -32,9 +32,6 @@ typedef struct _client_configurations
     int protocol;
     struct eXosip_t* exosip_context;
     int registration_ID;
-    struct osip_thread* register_thread;
-    struct osip_thread* event_thread;
-    struct osip_thread* keepalive_thread;
     bool thread_loop;
     unsigned long long MANSCDP_SN;
     function_query_deviceInfo_callback give_out_query_deviceInfo_result;

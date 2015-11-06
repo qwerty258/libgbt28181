@@ -55,8 +55,7 @@ void* event_working_thread(void* arg)
 #ifdef _DEBUG
                 printf("registrered successfully\n");
 #endif // _DEBUG
-                thread_parameter->keepalive_thread = osip_thread_create(20000, keepalive_working_thread, thread_parameter);
-                if(NULL == thread_parameter->keepalive_thread)
+                if(NULL == osip_thread_create(20000, keepalive_working_thread, thread_parameter))
                 {
                     // to do: handle error
                 }

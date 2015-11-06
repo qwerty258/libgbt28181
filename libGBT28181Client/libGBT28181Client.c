@@ -53,9 +53,6 @@ LIBGBT28181CLIENT_API int GBT28181_client_initial(void)
     global_client_configurations.protocol = GBT28181_IPPROTO_UDP;
     global_client_configurations.exosip_context = eXosip_malloc();
     global_client_configurations.registration_ID = 0;
-    global_client_configurations.register_thread = NULL;
-    global_client_configurations.event_thread = NULL;
-    global_client_configurations.keepalive_thread = NULL;
     global_client_configurations.thread_loop = false;
     global_client_configurations.MANSCDP_SN = 1;
     global_client_configurations.give_out_query_deviceInfo_result = NULL;
@@ -329,14 +326,12 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
 
     global_client_configurations.thread_loop = true;
 
-    global_client_configurations.register_thread = osip_thread_create(20000, register_working_thread, &global_client_configurations);
-    if(NULL == global_client_configurations.register_thread)
+    if(NULL == osip_thread_create(20000, register_working_thread, &global_client_configurations))
     {
         return GBT28181_THREAD_CREATE_FAILED;
     }
 
-    global_client_configurations.event_thread = osip_thread_create(20000, event_working_thread, &global_client_configurations);
-    if(NULL == global_client_configurations.event_thread)
+    if(NULL == osip_thread_create(20000, event_working_thread, &global_client_configurations))
     {
         return GBT28181_THREAD_CREATE_FAILED;
     }
