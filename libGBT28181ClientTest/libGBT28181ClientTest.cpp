@@ -1,14 +1,26 @@
 #include <libGBT28181Client.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+void query_deviceInfo_callback(char* device_ID, char* device_type, char* manufacturer, char* model, char* firmware, unsigned long long max_camera, unsigned long long max_alarm)
+{
+    printf("device_ID   : %s\n", device_ID);
+    printf("device_type : %s\n", device_type);
+    printf("manufacturer: %s\n", manufacturer);
+    printf("model       : %s\n", model);
+    printf("firmware    : %s\n", firmware);
+    printf("max_camera  : %u\n", max_camera);
+    printf("max_alarm   : %u\n", max_alarm);
+}
 
 int main(int argc, char* argv[])
 {
     int result;
     GBT28181_client_initial();
 
-    result = GBT28181_set_client_name("34020000001320000001");
+    result = GBT28181_set_client_name("34020000001320000029");
 
-    result = GBT28181_set_client_ID("34020000001320000001");
+    result = GBT28181_set_client_ID("34020000001320000029");
 
     result = GBT28181_set_client_password("123456");
 
@@ -36,7 +48,13 @@ int main(int argc, char* argv[])
 
     result = GBT28181_client_go_online();
 
-    scanf("%d", &result);
+    system("pause");
+
+    result = GBT28181_set_query_deviceInfo_callback(query_deviceInfo_callback);
+
+    result = GBT28181_query_deviceInfo("34020000001320000141");
+
+    system("pause");
 
     result = GBT28181_free_client();
     return 0;
