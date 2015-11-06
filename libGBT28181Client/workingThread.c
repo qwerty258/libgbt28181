@@ -318,14 +318,17 @@ void* MANSCDP_xml_message_working_thread(void* arg)
                 case MANSCDP_command_type_unknown:
                     break;
                 case MANSCDP_DeviceInfo:
-                    p_MANSCDP_xml->p_client_configurations->give_out_query_deviceInfo_result(
-                        p_MANSCDP_xml->DeviceID,
-                        p_MANSCDP_xml->DeviceType,
-                        p_MANSCDP_xml->Manufacturer,
-                        p_MANSCDP_xml->Model,
-                        p_MANSCDP_xml->Firmware,
-                        p_MANSCDP_xml->MaxCamera,
-                        p_MANSCDP_xml->MaxAlarm);
+                    if(NULL != p_MANSCDP_xml->p_client_configurations->give_out_query_deviceInfo_result)
+                    {
+                        p_MANSCDP_xml->p_client_configurations->give_out_query_deviceInfo_result(
+                            p_MANSCDP_xml->DeviceID,
+                            p_MANSCDP_xml->DeviceType,
+                            p_MANSCDP_xml->Manufacturer,
+                            p_MANSCDP_xml->Model,
+                            p_MANSCDP_xml->Firmware,
+                            p_MANSCDP_xml->MaxCamera,
+                            p_MANSCDP_xml->MaxAlarm);
+                    }
                     break;
                 case MANSCDP_DeviceStatus:
                     break;
