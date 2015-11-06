@@ -31,7 +31,6 @@ typedef struct _client_configurations
     int address_family;
     int protocol;
     struct eXosip_t* exosip_context;
-    osip_message_t* registration_message;
     int registration_ID;
     struct osip_thread* register_thread;
     struct osip_thread* event_thread;

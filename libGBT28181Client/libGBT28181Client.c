@@ -52,7 +52,6 @@ LIBGBT28181CLIENT_API int GBT28181_client_initial(void)
     global_client_configurations.address_family = GBT28181_AF_INET;
     global_client_configurations.protocol = GBT28181_IPPROTO_UDP;
     global_client_configurations.exosip_context = eXosip_malloc();
-    global_client_configurations.registration_message = NULL;
     global_client_configurations.registration_ID = 0;
     global_client_configurations.register_thread = NULL;
     global_client_configurations.event_thread = NULL;
@@ -244,7 +243,7 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
     }
 
     int result = 0;
-
+    osip_message_t* registration_message = NULL;
     char* from = osip_malloc(512);
     char* proxy = osip_malloc(512);
 
@@ -308,7 +307,7 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
         proxy,
         NULL,
         global_client_configurations.expiration_interval,
-        &global_client_configurations.registration_message);
+        &registration_message);
     if(global_client_configurations.registration_ID < 1)
     {
         osip_free(from);
@@ -322,7 +321,7 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
     result = eXosip_register_send_register(
         global_client_configurations.exosip_context,
         global_client_configurations.registration_ID,
-        global_client_configurations.registration_message);
+        registration_message);
     if(GBT28181_SUCCESS != result)
     {
         return result;
@@ -459,8 +458,6 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
     global_client_configurations.thread_loop = false;
 
     eXosip_quit(global_client_configurations.exosip_context);
-
-    osip_message_free(global_client_configurations.registration_message);
 
     return GBT28181_SUCCESS;
 }
