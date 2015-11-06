@@ -19,9 +19,15 @@ if(NULL == (pointer))                   \
 }
 
 #define CHECK_INITIALED(bool_initialed) \
-if(!bool_initialed)                     \
+if(!(bool_initialed))                   \
 {                                       \
     return GBT28181_CLIENT_UNINITIALED; \
+}
+
+#define CHECK_CALLBACK(pointer)         \
+if(NULL == (pointer))                   \
+{                                       \
+    return GBT28181_CALLBACK_NOTSET;    \
 }
 
 client_configurations global_client_configurations;
@@ -53,6 +59,7 @@ LIBGBT28181CLIENT_API int GBT28181_client_initial(void)
     global_client_configurations.keepalive_thread = NULL;
     global_client_configurations.thread_loop = false;
     global_client_configurations.MANSCDP_SN = 1;
+    global_client_configurations.give_out_query_deviceInfo_result = NULL;
     CHECK_NULL_AND_RETURN(global_client_configurations.exosip_context)
 }
 
@@ -334,6 +341,103 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
     {
         return GBT28181_THREAD_CREATE_FAILED;
     }
+
+    return GBT28181_SUCCESS;
+}
+
+LIBGBT28181CLIENT_API int GBT28181_set_query_deviceInfo_callback(function_query_deviceInfo_callback cb)
+{
+    CHECK_INITIALED(global_client_configurations.initialed)
+
+    CHECK_NULL_PARAMETER(cb)
+
+    global_client_configurations.give_out_query_deviceInfo_result = cb;
+
+    return GBT28181_SUCCESS;
+}
+
+LIBGBT28181CLIENT_API int GBT28181_query_deviceInfo(char* target_sip_user_name)
+{
+    CHECK_CALLBACK(global_client_configurations.give_out_query_deviceInfo_result)
+
+    int result = OSIP_SUCCESS;
+    osip_message_t* query_deviceInfo_message = NULL;
+    char* from = osip_malloc(512);
+    char* to = osip_malloc(512);
+    char* proxy = osip_malloc(512);
+    char* message_body = osip_malloc(1500);
+
+    if(NULL == from || NULL == to || NULL == message_body)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return GBT28181_NOMEM;
+    }
+
+    snprintf(from, 512, "sip:%s@%s", global_client_configurations.client_user_name, global_client_configurations.client_IP);
+    snprintf(to, 512, "sip:%s@%s", target_sip_user_name, global_client_configurations.server_domain);
+    snprintf(proxy, 512, "sip:%s@%s", global_client_configurations.server_ID, global_client_configurations.server_IP);
+
+    result = eXosip_message_build_request(
+        global_client_configurations.exosip_context,
+        &query_deviceInfo_message,
+        "MESSAGE",
+        to,
+        from,
+        proxy);
+    if(OSIP_SUCCESS != result)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return result;
+    }
+
+    result = osip_message_set_content_type(query_deviceInfo_message, "application/MANSCDP+xml");
+    if(OSIP_SUCCESS != result)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return result;
+    }
+
+    snprintf(message_body, 1500, "<?xml version=\"1.0\"?><Query><CmdType>DeviceInfo</CmdType><SN>%u</SN><DeviceID>%s</DeviceID></Query>", global_client_configurations.MANSCDP_SN, target_sip_user_name);
+
+    result = osip_message_set_body(query_deviceInfo_message, message_body, strnlen(message_body, 1500));
+    if(OSIP_SUCCESS != result)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return result;
+    }
+
+    eXosip_lock(global_client_configurations.exosip_context);
+    result = eXosip_message_send_request(global_client_configurations.exosip_context, query_deviceInfo_message);
+    eXosip_unlock(global_client_configurations.exosip_context);
+    if(OSIP_SUCCESS != result)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return result;
+    }
+
+    EnterCriticalSection(&global_client_configurations.critical_section);
+    global_client_configurations.MANSCDP_SN++;
+    LeaveCriticalSection(&global_client_configurations.critical_section);
+
+    osip_free(from);
+    osip_free(to);
+    osip_free(proxy);
+    osip_free(message_body);
 
     return GBT28181_SUCCESS;
 }
