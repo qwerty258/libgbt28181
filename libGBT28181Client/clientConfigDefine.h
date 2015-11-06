@@ -1,6 +1,7 @@
 #ifndef _CLIENT_CONFIG_DEFINE_H_
 #define _CLIENT_CONFIG_DEFINE_H_
 
+#include "callbackDefines.h"
 #include <stdbool.h>
 #include <osip2\osip_mt.h>
 #include <eXosip2\eXosip.h>
@@ -37,6 +38,7 @@ typedef struct _client_configurations
     struct osip_thread* keepalive_thread;
     bool thread_loop;
     unsigned long long MANSCDP_SN;
+    function_query_deviceInfo_callback give_out_query_deviceInfo_result;
 }client_configurations;
 
 typedef enum _MANSCDP_xml_type
@@ -62,6 +64,13 @@ typedef struct _MANSCDP_xml
     MANSCDP_command_type command_type;
     unsigned long long MANSCDP_SN;
     char* DeviceID;
+    char* Result;
+    char* DeviceType;
+    char* Manufacturer;
+    char* Model;
+    char* Firmware;
+    unsigned long long MaxCamera;
+    unsigned long long MaxAlarm;
     client_configurations* p_client_configurations;
 }MANSCDP_xml;
 
