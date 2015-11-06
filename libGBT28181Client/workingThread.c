@@ -108,6 +108,41 @@ void* event_working_thread(void* arg)
                                 {
                                     p_MANSCDP_xml->DeviceID = osip_strdup(xmlDocPtr_temp->children->content);
                                 }
+                                xmlDocPtr_temp = find_element(xml_current_node->children, "Result");
+                                if(NULL != xmlDocPtr_temp)
+                                {
+                                    p_MANSCDP_xml->Result = osip_strdup(xmlDocPtr_temp->children->content);
+                                }
+                                xmlDocPtr_temp = find_element(xml_current_node->children, "DeviceType");
+                                if(NULL != xmlDocPtr_temp)
+                                {
+                                    p_MANSCDP_xml->DeviceType = osip_strdup(xmlDocPtr_temp->children->content);
+                                }
+                                xmlDocPtr_temp = find_element(xml_current_node->children, "Manufacturer");
+                                if(NULL != xmlDocPtr_temp)
+                                {
+                                    p_MANSCDP_xml->Manufacturer = osip_strdup(xmlDocPtr_temp->children->content);
+                                }
+                                xmlDocPtr_temp = find_element(xml_current_node->children, "Model");
+                                if(NULL != xmlDocPtr_temp)
+                                {
+                                    p_MANSCDP_xml->Model = osip_strdup(xmlDocPtr_temp->children->content);
+                                }
+                                xmlDocPtr_temp = find_element(xml_current_node->children, "Firmware");
+                                if(NULL != xmlDocPtr_temp)
+                                {
+                                    p_MANSCDP_xml->Firmware = osip_strdup(xmlDocPtr_temp->children->content);
+                                }
+                                xmlDocPtr_temp = find_element(xml_current_node->children, "MaxCamera");
+                                if(NULL != xmlDocPtr_temp)
+                                {
+                                    p_MANSCDP_xml->MaxCamera = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
+                                }
+                                xmlDocPtr_temp = find_element(xml_current_node->children, "MaxAlarm");
+                                if(NULL != xmlDocPtr_temp)
+                                {
+                                    p_MANSCDP_xml->MaxAlarm = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
+                                }
 
                                 if(NULL == osip_thread_create(20000, MANSCDP_xml_message_working_thread, p_MANSCDP_xml))
                                 {
@@ -278,6 +313,25 @@ void* MANSCDP_xml_message_working_thread(void* arg)
         case MANSCDP_xml_Notify:
             break;
         case MANSCDP_xml_Response:
+            switch(p_MANSCDP_xml->command_type)
+            {
+                case MANSCDP_command_type_unknown:
+                    break;
+                case MANSCDP_DeviceInfo:
+                    p_MANSCDP_xml->p_client_configurations->give_out_query_deviceInfo_result(
+                        p_MANSCDP_xml->DeviceID,
+                        p_MANSCDP_xml->DeviceType,
+                        p_MANSCDP_xml->Manufacturer,
+                        p_MANSCDP_xml->Model,
+                        p_MANSCDP_xml->Firmware,
+                        p_MANSCDP_xml->MaxCamera,
+                        p_MANSCDP_xml->MaxAlarm);
+                    break;
+                case MANSCDP_DeviceStatus:
+                    break;
+                case MANSCDP_Catalog:
+                    break;
+            }
             break;
     }
 
@@ -328,7 +382,12 @@ void* MANSCDP_xml_message_working_thread(void* arg)
     osip_free(from);
     osip_free(to);
     osip_free(xml_buffer);
-    osip_free(arg);
+    osip_free(p_MANSCDP_xml->DeviceID);
+    osip_free(p_MANSCDP_xml->Result);
+    osip_free(p_MANSCDP_xml->DeviceType);
+    osip_free(p_MANSCDP_xml->Model);
+    osip_free(p_MANSCDP_xml->Firmware);
+    osip_free(p_MANSCDP_xml);
 
 #ifdef _DEBUG
     printf("MANSCDP_xml_message_working_thread exited\n");
