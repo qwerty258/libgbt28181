@@ -567,6 +567,10 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
 
+    global_client_configurations.thread_loop = false;
+
+    eXosip_quit(global_client_configurations.exosip_context);
+
     DeleteCriticalSection(&global_client_configurations.critical_section);
 
     osip_free(global_client_configurations.client_user_name);
@@ -576,10 +580,6 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
     osip_free(global_client_configurations.server_ID);
     osip_free(global_client_configurations.server_domain);
     osip_free(global_client_configurations.server_IP);
-
-    global_client_configurations.thread_loop = false;
-
-    eXosip_quit(global_client_configurations.exosip_context);
 
     return GBT28181_SUCCESS;
 }
