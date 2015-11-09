@@ -91,6 +91,10 @@ LIBGBT28181CLIENT_API int GBT28181_set_query_device_status_callback(function_que
 
 LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_name);
 
+LIBGBT28181CLIENT_API int GBT28181_set_query_catalog_callback(function_query_catalog_callback cb);
+
+LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name);
+
 LIBGBT28181CLIENT_API int GBT28181_free_client(void);
 
 C_EXPORT_END

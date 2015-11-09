@@ -580,6 +580,106 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_nam
     return GBT28181_SUCCESS;
 }
 
+LIBGBT28181CLIENT_API int GBT28181_set_query_catalog_callback(function_query_catalog_callback cb)
+{
+    CHECK_NULL_PARAMETER(cb);
+    CHECK_INITIALED(global_client_configurations.initialed);
+    CHECK_ONLINE_NO_SET(global_client_configurations.online);
+
+    global_client_configurations.give_out_query_catalog_result = cb;
+
+    return OSIP_SUCCESS;
+}
+
+LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name)
+{
+    CHECK_NULL_PARAMETER(target_sip_user_name);
+    CHECK_INITIALED(global_client_configurations.initialed);
+    CHECK_MUST_ON_LINE(global_client_configurations.online);
+    CHECK_CALLBACK(global_client_configurations.give_out_query_catalog_result);
+
+    int result = OSIP_SUCCESS;
+    osip_message_t* query_catalog_message = NULL;
+    char* from = osip_malloc(512);
+    char* to = osip_malloc(512);
+    char* proxy = osip_malloc(512);
+    char* message_body = osip_malloc(1500);
+
+    if(NULL == from || NULL == to || NULL == proxy || NULL == message_body)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return GBT28181_NOMEM;
+    }
+
+    snprintf(from, 512, "sip:%s@%s", global_client_configurations.client_user_name, global_client_configurations.client_IP);
+    snprintf(to, 512, "sip:%s@%s", target_sip_user_name, global_client_configurations.server_domain);
+    snprintf(proxy, 512, "sip:%s@%s", global_client_configurations.server_ID, global_client_configurations.server_IP);
+
+    result = eXosip_message_build_request(
+        global_client_configurations.exosip_context,
+        &query_catalog_message,
+        "MESSAGE",
+        to,
+        from,
+        proxy);
+    if(OSIP_SUCCESS != result)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return result;
+    }
+
+    result = osip_message_set_content_type(query_catalog_message, "application/MANSCDP+xml");
+    if(OSIP_SUCCESS != result)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return result;
+    }
+
+    snprintf(message_body, 1500, "<?xml version=\"1.0\"?><Query><CmdType>Catalog</CmdType><SN>%u</SN><DeviceID>%s</DeviceID></Query>", global_client_configurations.MANSCDP_SN, target_sip_user_name);
+
+    result = osip_message_set_body(query_catalog_message, message_body, strnlen(message_body, 1500));
+    if(OSIP_SUCCESS != result)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return result;
+    }
+
+    eXosip_lock(global_client_configurations.exosip_context);
+    result = eXosip_message_send_request(global_client_configurations.exosip_context, query_catalog_message);
+    eXosip_unlock(global_client_configurations.exosip_context);
+    if(OSIP_SUCCESS != result)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return result;
+    }
+
+    EnterCriticalSection(&global_client_configurations.critical_section);
+    global_client_configurations.MANSCDP_SN++;
+    LeaveCriticalSection(&global_client_configurations.critical_section);
+
+    osip_free(from);
+    osip_free(to);
+    osip_free(proxy);
+    osip_free(message_body);
+
+    return GBT28181_SUCCESS;
+}
+
 LIBGBT28181CLIENT_API int GBT28181_free_client(void)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
