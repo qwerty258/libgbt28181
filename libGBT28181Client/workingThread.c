@@ -151,6 +151,15 @@ void* event_working_thread(void* arg)
                                 {
                                     p_MANSCDP_xml->status = get_MANSCDP_statues(xmlDocPtr_temp->children->content);
                                 }
+                                if(MANSCDP_Catalog == p_MANSCDP_xml->command_type)
+                                {
+                                    xmlDocPtr_temp = find_element(xml_current_node->children, "SumNum");
+                                    p_MANSCDP_xml->catalog_sum_num = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
+                                    if(0 < p_MANSCDP_xml->catalog_sum_num)
+                                    {
+                                        // to do: parse catalog xml
+                                    }
+                                }
 
                                 if(NULL == osip_thread_create(20000, MANSCDP_xml_message_working_thread, p_MANSCDP_xml))
                                 {
@@ -348,6 +357,10 @@ void* MANSCDP_xml_message_working_thread(void* arg)
                     }
                     break;
                 case MANSCDP_Catalog:
+                    if(NULL != p_MANSCDP_xml->p_client_configurations->give_out_query_catalog_result)
+                    {
+                        // to do
+                    }
                     break;
             }
             break;
