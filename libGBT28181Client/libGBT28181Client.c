@@ -388,7 +388,7 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name)
     char* proxy = osip_malloc(512);
     char* message_body = osip_malloc(1500);
 
-    if(NULL == from || NULL == to || NULL == message_body)
+    if(NULL == from || NULL == to || NULL == proxy || NULL == message_body)
     {
         osip_free(from);
         osip_free(to);
