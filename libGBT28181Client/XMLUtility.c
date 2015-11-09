@@ -23,7 +23,7 @@ xmlDocPtr find_element(xmlDocPtr xml_document_pointer, char* element_name)
 
 MANSCDP_xml_type get_xml_type(char* xml_type_string)
 {
-    if(NULL==xml_type_string)
+    if(NULL == xml_type_string)
     {
         return MANSCDP_xml_Unknown;
     }
@@ -69,4 +69,32 @@ MANSCDP_command_type get_MANSCDP_command_type(char* MANSCDP_command_string)
     }
 
     return MANSCDP_command_type_unknown;
+}
+
+MANSCDP_on_off_line get_MANSCDP_online(char* MANSCDP_string)
+{
+    if(0 == xmlStrncmp(MANSCDP_string, "ONLINE", xmlStrlen("ONLINE")))
+    {
+        return MANSCDP_ONLINE;
+    }
+    if(0 == xmlStrncmp(MANSCDP_string, "OFFLINE", xmlStrlen("OFFLINE")))
+    {
+        return MANSCDP_OFFLINE;
+    }
+
+    return MANSCDP_UNKNOWN_ON_OFF_LINE;
+}
+
+MANSCDP_result_type get_MANSCDP_statues(char* MANSCDP_string)
+{
+    if(0 == xmlStrncmp(MANSCDP_string, "OK", xmlStrlen("OK")))
+    {
+        return MANSCDP_OK;
+    }
+    if(0 == xmlStrncmp(MANSCDP_string, "ERROR", xmlStrlen("ERROR")))
+    {
+        return MANSCDP_ERROR;
+    }
+
+    return MANSCDP_UNKNOWN_RESULT_TYPE;
 }
