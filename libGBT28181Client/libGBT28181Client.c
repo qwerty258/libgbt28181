@@ -567,7 +567,60 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
 
+    int result = 0;
+    osip_message_t* registration_message = NULL;
+    char* from = osip_malloc(512);
+    char* proxy = osip_malloc(512);
+
+    if(NULL == from || NULL == proxy)
+    {
+        osip_free(from);
+        osip_free(proxy);
+        return GBT28181_BADPARAMETER;
+    }
+
+    snprintf(
+        from,
+        256,
+        "sip:%s@%s",
+        global_client_configurations.client_user_name,
+        global_client_configurations.client_IP);
+
+    snprintf(
+        proxy,
+        256,
+        "sip:%s@%s",
+        global_client_configurations.server_ID,
+        global_client_configurations.server_IP);
+
+    result = eXosip_register_build_initial_register(
+        global_client_configurations.exosip_context,
+        from,
+        proxy,
+        NULL,
+        0,
+        &registration_message);
+    if(global_client_configurations.registration_ID < 1)
+    {
+        osip_free(from);
+        osip_free(proxy);
+        return GBT28181_UNDEFINED_ERROR;
+    }
+
+    result = eXosip_register_send_register(
+        global_client_configurations.exosip_context,
+        global_client_configurations.registration_ID,
+        registration_message);
+    if(GBT28181_SUCCESS != result)
+    {
+        osip_free(from);
+        osip_free(proxy);
+        return result;
+    }
+
     global_client_configurations.thread_loop = false;
+
+    osip_usleep(1000000);
 
     eXosip_quit(global_client_configurations.exosip_context);
 
@@ -580,6 +633,9 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
     osip_free(global_client_configurations.server_ID);
     osip_free(global_client_configurations.server_domain);
     osip_free(global_client_configurations.server_IP);
+
+    osip_free(from);
+    osip_free(proxy);
 
     return GBT28181_SUCCESS;
 }
