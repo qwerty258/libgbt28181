@@ -352,6 +352,8 @@ LIBGBT28181CLIENT_API int GBT28181_set_query_deviceInfo_callback(function_query_
 
 LIBGBT28181CLIENT_API int GBT28181_query_deviceInfo(char* target_sip_user_name)
 {
+    CHECK_INITIALED(global_client_configurations.initialed)
+    CHECK_NULL_PARAMETER(target_sip_user_name);
     CHECK_CALLBACK(global_client_configurations.give_out_query_deviceInfo_result)
 
     int result = OSIP_SUCCESS;
