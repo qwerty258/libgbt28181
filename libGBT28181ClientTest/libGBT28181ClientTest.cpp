@@ -13,6 +13,35 @@ void query_deviceInfo_callback(char* device_ID, char* device_type, char* manufac
     printf("max_alarm   : %u\n", max_alarm);
 }
 
+void query_device_status_callback(char* deviceID, MANSCDP_on_off_line online, MANSCDP_result_type status)
+{
+    printf("device_ID: %s\n", deviceID);
+    switch(online)
+    {
+        case MANSCDP_ONLINE:
+            printf("online   : ONLINE\n");
+            break;
+        case MANSCDP_OFFLINE:
+            printf("online   : OFFLINE\n");
+            break;
+        case MANSCDP_UNKNOWN_ON_OFF_LINE:
+            printf("online   : UNKNOWN\n");
+            break;
+    }
+    switch(status)
+    {
+        case MANSCDP_OK:
+            printf("status   : OK\n");
+            break;
+        case MANSCDP_ERROR:
+            printf("status   : ERROR\n");
+            break;
+        case MANSCDP_UNKNOWN_RESULT_TYPE:
+            printf("status   : UNKNOWN\n");
+            break;
+    }
+}
+
 int main(int argc, char* argv[])
 {
     int result = GBT28181_client_initial();
@@ -47,11 +76,21 @@ int main(int argc, char* argv[])
 
     result = GBT28181_set_query_device_info_callback(query_deviceInfo_callback);
 
+    result = GBT28181_set_query_device_status_callback(query_device_status_callback);
+
     result = GBT28181_client_go_online();
 
     system("pause");
 
+    printf("\n\ncall query device info\n\n");
+
     result = GBT28181_query_device_info("34020000001320000141");
+
+    system("pause");
+
+    printf("\n\ncall query device status\n\n");
+
+    result = GBT28181_query_device_status("34020000001320000141");
 
     system("pause");
 
