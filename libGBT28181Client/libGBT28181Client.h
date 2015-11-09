@@ -42,6 +42,8 @@ C_EXPORT_BEGIN
 #define GBT28181_THREAD_CREATE_FAILED               -10002
 #define GBT28181_ESSENTIAL_CLIENT_PARAMETER_ERROR   -10003
 #define GBT28181_CALLBACK_NOTSET                    -10004
+#define GBT28181_ALREADY_ONLINE                     -10005
+#define GBT28181_MUST_ONLINE                        -10006
 
 LIBGBT28181CLIENT_API int GBT28181_client_initial(void);
 
