@@ -35,6 +35,7 @@ typedef struct _client_configurations
     bool thread_loop;
     unsigned long long MANSCDP_SN;
     function_query_device_info_callback give_out_query_device_info_result;
+    function_query_device_status_callback give_out_query_device_status_result;
 }client_configurations;
 
 typedef enum _MANSCDP_xml_type
