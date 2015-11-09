@@ -382,7 +382,7 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name)
     CHECK_CALLBACK(global_client_configurations.give_out_query_device_info_result);
 
     int result = OSIP_SUCCESS;
-    osip_message_t* query_deviceInfo_message = NULL;
+    osip_message_t* query_query_device_message = NULL;
     char* from = osip_malloc(512);
     char* to = osip_malloc(512);
     char* proxy = osip_malloc(512);
@@ -403,7 +403,7 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name)
 
     result = eXosip_message_build_request(
         global_client_configurations.exosip_context,
-        &query_deviceInfo_message,
+        &query_query_device_message,
         "MESSAGE",
         to,
         from,
@@ -417,7 +417,7 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name)
         return result;
     }
 
-    result = osip_message_set_content_type(query_deviceInfo_message, "application/MANSCDP+xml");
+    result = osip_message_set_content_type(query_query_device_message, "application/MANSCDP+xml");
     if(OSIP_SUCCESS != result)
     {
         osip_free(from);
@@ -429,7 +429,7 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name)
 
     snprintf(message_body, 1500, "<?xml version=\"1.0\"?><Query><CmdType>DeviceInfo</CmdType><SN>%u</SN><DeviceID>%s</DeviceID></Query>", global_client_configurations.MANSCDP_SN, target_sip_user_name);
 
-    result = osip_message_set_body(query_deviceInfo_message, message_body, strnlen(message_body, 1500));
+    result = osip_message_set_body(query_query_device_message, message_body, strnlen(message_body, 1500));
     if(OSIP_SUCCESS != result)
     {
         osip_free(from);
@@ -440,7 +440,7 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name)
     }
 
     eXosip_lock(global_client_configurations.exosip_context);
-    result = eXosip_message_send_request(global_client_configurations.exosip_context, query_deviceInfo_message);
+    result = eXosip_message_send_request(global_client_configurations.exosip_context, query_query_device_message);
     eXosip_unlock(global_client_configurations.exosip_context);
     if(OSIP_SUCCESS != result)
     {
