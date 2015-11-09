@@ -83,9 +83,9 @@ LIBGBT28181CLIENT_API int GBT28181_set_IP_protocol(int protocol);
 
 LIBGBT28181CLIENT_API int GBT28181_client_go_online(void);
 
-LIBGBT28181CLIENT_API int GBT28181_set_query_deviceInfo_callback(function_query_deviceInfo_callback cb);
+LIBGBT28181CLIENT_API int GBT28181_set_query_device_info_callback(function_query_device_info_callback cb);
 
-LIBGBT28181CLIENT_API int GBT28181_query_deviceInfo(char* target_sip_user_name);
+LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name);
 
 LIBGBT28181CLIENT_API int GBT28181_free_client(void);
 

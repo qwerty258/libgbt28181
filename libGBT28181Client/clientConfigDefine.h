@@ -34,7 +34,7 @@ typedef struct _client_configurations
     int registration_ID;
     bool thread_loop;
     unsigned long long MANSCDP_SN;
-    function_query_deviceInfo_callback give_out_query_deviceInfo_result;
+    function_query_device_info_callback give_out_query_device_info_result;
 }client_configurations;
 
 typedef enum _MANSCDP_xml_type

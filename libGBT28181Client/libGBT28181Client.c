@@ -69,7 +69,7 @@ LIBGBT28181CLIENT_API int GBT28181_client_initial(void)
     global_client_configurations.registration_ID = 0;
     global_client_configurations.thread_loop = false;
     global_client_configurations.MANSCDP_SN = 1;
-    global_client_configurations.give_out_query_deviceInfo_result = NULL;
+    global_client_configurations.give_out_query_device_info_result = NULL;
 
     CHECK_NULL_AND_RETURN(global_client_configurations.exosip_context);
 }
@@ -363,23 +363,23 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_query_deviceInfo_callback(function_query_deviceInfo_callback cb)
+LIBGBT28181CLIENT_API int GBT28181_set_query_device_info_callback(function_query_device_info_callback cb)
 {
     CHECK_NULL_PARAMETER(cb);
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_ONLINE_NO_SET(global_client_configurations.online);
 
-    global_client_configurations.give_out_query_deviceInfo_result = cb;
+    global_client_configurations.give_out_query_device_info_result = cb;
 
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_query_deviceInfo(char* target_sip_user_name)
+LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name)
 {
     CHECK_NULL_PARAMETER(target_sip_user_name);
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_MUST_ON_LINE(global_client_configurations.online);
-    CHECK_CALLBACK(global_client_configurations.give_out_query_deviceInfo_result);
+    CHECK_CALLBACK(global_client_configurations.give_out_query_device_info_result);
 
     int result = OSIP_SUCCESS;
     osip_message_t* query_deviceInfo_message = NULL;

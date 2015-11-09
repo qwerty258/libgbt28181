@@ -317,9 +317,9 @@ void* MANSCDP_xml_message_working_thread(void* arg)
                 case MANSCDP_command_type_unknown:
                     break;
                 case MANSCDP_DeviceInfo:
-                    if(NULL != p_MANSCDP_xml->p_client_configurations->give_out_query_deviceInfo_result)
+                    if(NULL != p_MANSCDP_xml->p_client_configurations->give_out_query_device_info_result)
                     {
-                        p_MANSCDP_xml->p_client_configurations->give_out_query_deviceInfo_result(
+                        p_MANSCDP_xml->p_client_configurations->give_out_query_device_info_result(
                             p_MANSCDP_xml->DeviceID,
                             p_MANSCDP_xml->DeviceType,
                             p_MANSCDP_xml->Manufacturer,

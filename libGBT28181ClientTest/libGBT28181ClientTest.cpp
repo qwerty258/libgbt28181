@@ -46,13 +46,13 @@ int main(int argc, char* argv[])
 
     result = GBT28181_set_IP_protocol(GBT28181_IPPROTO_UDP);
 
-    result = GBT28181_set_query_deviceInfo_callback(query_deviceInfo_callback);
+    result = GBT28181_set_query_device_info_callback(query_deviceInfo_callback);
 
     result = GBT28181_client_go_online();
 
     system("pause");
 
-    result = GBT28181_query_deviceInfo("34020000001320000141");
+    result = GBT28181_query_device_info("34020000001320000141");
 
     system("pause");
 
