@@ -617,7 +617,7 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
         NULL,
         0,
         &registration_message);
-    if(global_client_configurations.registration_ID < 1)
+    if(result < 1)
     {
         osip_free(from);
         osip_free(proxy);
@@ -626,7 +626,7 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
 
     result = eXosip_register_send_register(
         global_client_configurations.exosip_context,
-        global_client_configurations.registration_ID,
+        result,
         registration_message);
     if(GBT28181_SUCCESS != result)
     {
