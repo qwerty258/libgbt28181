@@ -141,6 +141,16 @@ void* event_working_thread(void* arg)
                                 {
                                     p_MANSCDP_xml->MaxAlarm = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
                                 }
+                                xmlDocPtr_temp = find_element(xml_current_node->children, "Online");
+                                if(NULL != xmlDocPtr_temp)
+                                {
+                                    p_MANSCDP_xml->online = get_MANSCDP_online(xmlDocPtr_temp->children->content);
+                                }
+                                xmlDocPtr_temp = find_element(xml_current_node->children, "Status");
+                                if(NULL != xmlDocPtr_temp)
+                                {
+                                    p_MANSCDP_xml->status = get_MANSCDP_statues(xmlDocPtr_temp->children->content);
+                                }
 
                                 if(NULL == osip_thread_create(20000, MANSCDP_xml_message_working_thread, p_MANSCDP_xml))
                                 {
@@ -329,6 +339,13 @@ void* MANSCDP_xml_message_working_thread(void* arg)
                     }
                     break;
                 case MANSCDP_DeviceStatus:
+                    if(NULL != p_MANSCDP_xml->p_client_configurations->give_out_query_device_status_result)
+                    {
+                        p_MANSCDP_xml->p_client_configurations->give_out_query_device_status_result(
+                            p_MANSCDP_xml->DeviceID,
+                            p_MANSCDP_xml->online,
+                            p_MANSCDP_xml->status);
+                    }
                     break;
                 case MANSCDP_Catalog:
                     break;
