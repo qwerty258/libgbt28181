@@ -68,6 +68,8 @@ typedef struct _MANSCDP_xml
     char* Firmware;
     unsigned long long MaxCamera;
     unsigned long long MaxAlarm;
+    MANSCDP_on_off_line online;
+    MANSCDP_result_type status;
     client_configurations* p_client_configurations;
 }MANSCDP_xml;
 
