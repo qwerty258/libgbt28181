@@ -42,10 +42,9 @@ void* event_working_thread(void* arg)
 
     while(thread_parameter->thread_loop)
     {
-        event = eXosip_event_wait(thread_parameter->exosip_context, 0, 1);
+        event = eXosip_event_wait(thread_parameter->exosip_context, 0, 50);
         if(NULL == event)
         {
-            osip_usleep(100000);
             continue;
         }
         eXosip_automatic_action(thread_parameter->exosip_context);
@@ -379,6 +378,7 @@ void* MANSCDP_xml_message_working_thread(void* arg)
 
             break;
         }
+        break;
     }
 
     osip_free(from);
