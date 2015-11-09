@@ -10,7 +10,7 @@ if(NULL == (pointer))                   \
 else                                    \
 {                                       \
     return GBT28181_SUCCESS;            \
-}
+}                                       \
 
 #define CHECK_NULL_PARAMETER(pointer)   \
 if(NULL == (pointer))                   \
@@ -56,46 +56,42 @@ LIBGBT28181CLIENT_API int GBT28181_client_initial(void)
     global_client_configurations.thread_loop = false;
     global_client_configurations.MANSCDP_SN = 1;
     global_client_configurations.give_out_query_deviceInfo_result = NULL;
-    CHECK_NULL_AND_RETURN(global_client_configurations.exosip_context)
+    CHECK_NULL_AND_RETURN(global_client_configurations.exosip_context);
 }
 
 LIBGBT28181CLIENT_API int GBT28181_set_client_name(char* SIP_user_name)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
-
-    CHECK_NULL_PARAMETER(SIP_user_name)
+    CHECK_INITIALED(global_client_configurations.initialed);
+    CHECK_NULL_PARAMETER(SIP_user_name);
 
     global_client_configurations.client_user_name = osip_strdup(SIP_user_name);
 
-    CHECK_NULL_AND_RETURN(global_client_configurations.client_user_name)
+    CHECK_NULL_AND_RETURN(global_client_configurations.client_user_name);
 }
 
 LIBGBT28181CLIENT_API int GBT28181_set_client_ID(char* SIP_user_ID)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
-
-    CHECK_NULL_PARAMETER(SIP_user_ID)
+    CHECK_INITIALED(global_client_configurations.initialed);
+    CHECK_NULL_PARAMETER(SIP_user_ID);
 
     global_client_configurations.client_authentication_ID = osip_strdup(SIP_user_ID);
 
-    CHECK_NULL_AND_RETURN(global_client_configurations.client_authentication_ID)
+    CHECK_NULL_AND_RETURN(global_client_configurations.client_authentication_ID);
 }
 
 LIBGBT28181CLIENT_API int GBT28181_set_client_password(char* SIP_password)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
-
-    CHECK_NULL_PARAMETER(SIP_password)
+    CHECK_INITIALED(global_client_configurations.initialed);
+    CHECK_NULL_PARAMETER(SIP_password);
 
     global_client_configurations.client_password = osip_strdup(SIP_password);
 
-    CHECK_NULL_AND_RETURN(global_client_configurations.client_password)
+    CHECK_NULL_AND_RETURN(global_client_configurations.client_password);
 }
 
 LIBGBT28181CLIENT_API int GBT28181_set_client_IP(char* client_IP)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
-
+    CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_NULL_PARAMETER(client_IP);
 
     global_client_configurations.client_IP = osip_strdup(client_IP);
@@ -105,7 +101,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_client_IP(char* client_IP)
 
 LIBGBT28181CLIENT_API int GBT28181_set_client_port(int local_port)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
+    CHECK_INITIALED(global_client_configurations.initialed);
 
     global_client_configurations.client_port = local_port;
 
@@ -114,40 +110,37 @@ LIBGBT28181CLIENT_API int GBT28181_set_client_port(int local_port)
 
 LIBGBT28181CLIENT_API int GBT28181_set_SIP_server_ID(char* server_ID)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
-
-    CHECK_NULL_PARAMETER(server_ID)
+    CHECK_INITIALED(global_client_configurations.initialed);
+    CHECK_NULL_PARAMETER(server_ID);
 
     global_client_configurations.server_ID = osip_strdup(server_ID);
 
-    CHECK_NULL_AND_RETURN(global_client_configurations.server_ID)
+    CHECK_NULL_AND_RETURN(global_client_configurations.server_ID);
 }
 
 LIBGBT28181CLIENT_API int GBT28181_set_SIP_server_domain(char* server_domain)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
-
-    CHECK_NULL_PARAMETER(server_domain)
+    CHECK_INITIALED(global_client_configurations.initialed);
+    CHECK_NULL_PARAMETER(server_domain);
 
     global_client_configurations.server_domain = osip_strdup(server_domain);
 
-    CHECK_NULL_AND_RETURN(global_client_configurations.server_domain)
+    CHECK_NULL_AND_RETURN(global_client_configurations.server_domain);
 }
 
 LIBGBT28181CLIENT_API int GBT28181_set_SIP_server_IP(char* server_IP)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
-
+    CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_NULL_PARAMETER(server_IP);
 
     global_client_configurations.server_IP = osip_strdup(server_IP);
 
-    CHECK_NULL_AND_RETURN(global_client_configurations.server_IP)
+    CHECK_NULL_AND_RETURN(global_client_configurations.server_IP);
 }
 
 LIBGBT28181CLIENT_API int GBT28181_set_SIP_server_port(int server_port)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
+    CHECK_INITIALED(global_client_configurations.initialed);
 
     global_client_configurations.server_port = server_port;
 
@@ -156,7 +149,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_SIP_server_port(int server_port)
 
 LIBGBT28181CLIENT_API int GBT28181_set_expiration_interval(int seconds)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
+    CHECK_INITIALED(global_client_configurations.initialed);
 
     if(seconds < 3600)
     {
@@ -170,7 +163,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_expiration_interval(int seconds)
 
 LIBGBT28181CLIENT_API int GBT28181_set_heartbeat_interval(int seconds)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
+    CHECK_INITIALED(global_client_configurations.initialed);
 
     if(seconds < 60)
     {
@@ -184,7 +177,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_heartbeat_interval(int seconds)
 
 LIBGBT28181CLIENT_API int GBT28181_set_max_time_out_number(int max_number)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
+    CHECK_INITIALED(global_client_configurations.initialed);
 
     if(max_number < 3)
     {
@@ -198,7 +191,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_max_time_out_number(int max_number)
 
 LIBGBT28181CLIENT_API int GBT28181_set_address_family(int address_family)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
+    CHECK_INITIALED(global_client_configurations.initialed);
 
     if(address_family < 2 || 30 < address_family)
     {
@@ -212,7 +205,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_address_family(int address_family)
 
 LIBGBT28181CLIENT_API int GBT28181_set_IP_protocol(int protocol)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
+    CHECK_INITIALED(global_client_configurations.initialed);
 
     if(protocol < 6 || 30 < protocol)
     {
@@ -226,7 +219,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_IP_protocol(int protocol)
 
 LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
+    CHECK_INITIALED(global_client_configurations.initialed);
 
     if(NULL == global_client_configurations.client_user_name ||
        NULL == global_client_configurations.client_authentication_ID ||
@@ -341,9 +334,9 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
 
 LIBGBT28181CLIENT_API int GBT28181_set_query_deviceInfo_callback(function_query_deviceInfo_callback cb)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
+    CHECK_INITIALED(global_client_configurations.initialed);
 
-    CHECK_NULL_PARAMETER(cb)
+    CHECK_NULL_PARAMETER(cb);
 
     global_client_configurations.give_out_query_deviceInfo_result = cb;
 
@@ -352,9 +345,9 @@ LIBGBT28181CLIENT_API int GBT28181_set_query_deviceInfo_callback(function_query_
 
 LIBGBT28181CLIENT_API int GBT28181_query_deviceInfo(char* target_sip_user_name)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
+    CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_NULL_PARAMETER(target_sip_user_name);
-    CHECK_CALLBACK(global_client_configurations.give_out_query_deviceInfo_result)
+    CHECK_CALLBACK(global_client_configurations.give_out_query_deviceInfo_result);
 
     int result = OSIP_SUCCESS;
     osip_message_t* query_deviceInfo_message = NULL;
@@ -440,7 +433,7 @@ LIBGBT28181CLIENT_API int GBT28181_query_deviceInfo(char* target_sip_user_name)
 
 LIBGBT28181CLIENT_API int GBT28181_free_client(void)
 {
-    CHECK_INITIALED(global_client_configurations.initialed)
+    CHECK_INITIALED(global_client_configurations.initialed);
 
     DeleteCriticalSection(&global_client_configurations.critical_section);
 
