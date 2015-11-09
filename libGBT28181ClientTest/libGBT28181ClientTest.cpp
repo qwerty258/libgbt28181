@@ -42,6 +42,11 @@ void query_device_status_callback(char* deviceID, MANSCDP_on_off_line online, MA
     }
 }
 
+void query_device_status_callback(char* deviceID, unsigned long long sum_num, MANSCDP_device* p_MANSCDP_device_array)
+{
+
+}
+
 int main(int argc, char* argv[])
 {
     int result = GBT28181_client_initial();
@@ -78,6 +83,8 @@ int main(int argc, char* argv[])
 
     result = GBT28181_set_query_device_status_callback(query_device_status_callback);
 
+    result = GBT28181_set_query_catalog_callback(query_device_status_callback);
+
     result = GBT28181_client_go_online();
 
     system("pause");
@@ -91,6 +98,12 @@ int main(int argc, char* argv[])
     printf("\n\ncall query device status\n\n");
 
     result = GBT28181_query_device_status("34020000001320000141");
+
+    system("pause");
+
+    printf("\n\ncall query catalog\n\n");
+
+    result = GBT28181_query_catalog("34020000001320000141");
 
     system("pause");
 
