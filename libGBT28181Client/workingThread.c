@@ -151,7 +151,7 @@ void* event_working_thread(void* arg)
                                 {
                                     p_MANSCDP_xml->status = get_MANSCDP_statues(xmlDocPtr_temp->children->content);
                                 }
-                                if(MANSCDP_Catalog == p_MANSCDP_xml->command_type)
+                                if(MANSCDP_xml_Response == p_MANSCDP_xml->xml_type && MANSCDP_Catalog == p_MANSCDP_xml->command_type)
                                 {
                                     xmlDocPtr_temp = find_element(xml_current_node->children, "SumNum");
                                     p_MANSCDP_xml->catalog_sum_num = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
