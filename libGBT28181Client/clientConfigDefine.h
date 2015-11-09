@@ -36,6 +36,7 @@ typedef struct _client_configurations
     unsigned long long MANSCDP_SN;
     function_query_device_info_callback give_out_query_device_info_result;
     function_query_device_status_callback give_out_query_device_status_result;
+    function_query_catalog_callback give_out_query_catalog_result;
 }client_configurations;
 
 typedef enum _MANSCDP_xml_type
@@ -68,6 +69,7 @@ typedef struct _MANSCDP_xml
     char* Firmware;
     unsigned long long MaxCamera;
     unsigned long long MaxAlarm;
+    unsigned long long catalog_sum_num;
     MANSCDP_on_off_line online;
     MANSCDP_result_type status;
     client_configurations* p_client_configurations;
