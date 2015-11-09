@@ -276,6 +276,8 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
     result = eXosip_init(global_client_configurations.exosip_context);
     if(GBT28181_SUCCESS != result)
     {
+        osip_free(from);
+        osip_free(proxy);
         return result;
     }
 
@@ -288,6 +290,8 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
         0);
     if(GBT28181_SUCCESS != result)
     {
+        osip_free(from);
+        osip_free(proxy);
         eXosip_quit(global_client_configurations.exosip_context);
         return result;
     }
@@ -303,6 +307,9 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
         NULL);
     if(GBT28181_SUCCESS != result)
     {
+        osip_free(from);
+        osip_free(proxy);
+        eXosip_quit(global_client_configurations.exosip_context);
         return result;
     }
 
@@ -331,6 +338,7 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
     {
         osip_free(from);
         osip_free(proxy);
+        eXosip_quit(global_client_configurations.exosip_context);
         return GBT28181_UNDEFINED_ERROR;
     }
 
@@ -343,6 +351,9 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
         registration_message);
     if(GBT28181_SUCCESS != result)
     {
+        osip_free(from);
+        osip_free(proxy);
+        eXosip_quit(global_client_configurations.exosip_context);
         return result;
     }
 
@@ -350,11 +361,17 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
 
     if(NULL == osip_thread_create(20000, register_working_thread, &global_client_configurations))
     {
+        osip_free(from);
+        osip_free(proxy);
+        eXosip_quit(global_client_configurations.exosip_context);
         return GBT28181_THREAD_CREATE_FAILED;
     }
 
     if(NULL == osip_thread_create(20000, event_working_thread, &global_client_configurations))
     {
+        osip_free(from);
+        osip_free(proxy);
+        eXosip_quit(global_client_configurations.exosip_context);
         return GBT28181_THREAD_CREATE_FAILED;
     }
 
