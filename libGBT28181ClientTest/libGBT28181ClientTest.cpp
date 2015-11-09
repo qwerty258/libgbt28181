@@ -15,8 +15,7 @@ void query_deviceInfo_callback(char* device_ID, char* device_type, char* manufac
 
 int main(int argc, char* argv[])
 {
-    int result;
-    GBT28181_client_initial();
+    int result = GBT28181_client_initial();
 
     result = GBT28181_set_client_name("34020000001320000029");
 
