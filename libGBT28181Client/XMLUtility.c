@@ -109,6 +109,21 @@ void free_MANSCDP_xml_pointer(MANSCDP_xml** pointer)
         osip_free((*pointer)->Manufacturer);
         osip_free((*pointer)->Model);
         osip_free((*pointer)->Firmware);
+        for(unsigned long long i = 0; i < (*pointer)->catalog_sum_num; i++)
+        {
+            osip_free((*pointer)->p_MANSCDP_device[i].DeviceID);
+            osip_free((*pointer)->p_MANSCDP_device[i].Name);
+            osip_free((*pointer)->p_MANSCDP_device[i].Manufacturer);
+            osip_free((*pointer)->p_MANSCDP_device[i].Model);
+            osip_free((*pointer)->p_MANSCDP_device[i].Owner);
+            osip_free((*pointer)->p_MANSCDP_device[i].CivilCode);
+            osip_free((*pointer)->p_MANSCDP_device[i].Address);
+            osip_free((*pointer)->p_MANSCDP_device[i].Parental);
+            osip_free((*pointer)->p_MANSCDP_device[i].SafetyWay);
+            osip_free((*pointer)->p_MANSCDP_device[i].RegisterWay);
+            osip_free((*pointer)->p_MANSCDP_device[i].Secrecy);
+            osip_free((*pointer)->p_MANSCDP_device[i].Status);
+        }
         osip_free((*pointer)->p_MANSCDP_device);
         // do not free p_client_configurations
         //osip_free((*pointer)->p_client_configurations);
