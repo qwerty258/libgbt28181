@@ -13,7 +13,7 @@ xmlDocPtr find_element(xmlDocPtr xml_document_pointer, char* element_name)
             }
             if(0 == xmlStrncmp(xml_document_pointer->name, element_name, xmlStrlen(element_name)))
             {
-                return xml_document_pointer;
+                return (xmlDocPtr)xml_document_pointer;
             }
             xml_document_pointer = xml_document_pointer->next;
         }
