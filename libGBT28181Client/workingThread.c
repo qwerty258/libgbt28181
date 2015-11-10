@@ -86,7 +86,7 @@ void* event_working_thread(void* arg)
 
                     if(OSIP_SUCCESS == result)
                     {
-                        size_t wchar_length = 2 * message_body->length;
+                        size_t wchar_length = 2 * (message_body->length + 100);
                         wchar_t* xml_in_wide_char = osip_malloc(wchar_length + 100);
                         MultiByteToWideChar(936, MB_PRECOMPOSED, message_body->body, message_body->length, xml_in_wide_char, message_body->length);
 
@@ -183,6 +183,7 @@ void* event_working_thread(void* arg)
                                         p_MANSCDP_xml->p_MANSCDP_device = osip_malloc(sizeof(MANSCDP_device) * p_MANSCDP_xml->catalog_sum_num);
                                         xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "DeviceList");
                                         // to do: parse catalog xml
+                                        parse_MANSCDP_xml_device_list(xmlDocPtr_temp, p_MANSCDP_xml->catalog_sum_num, p_MANSCDP_xml->p_MANSCDP_device);
                                     }
                                 }
 
@@ -384,7 +385,10 @@ void* MANSCDP_xml_message_working_thread(void* arg)
                 case MANSCDP_Catalog:
                     if(NULL != p_MANSCDP_xml->p_client_configurations->give_out_query_catalog_result)
                     {
-                        // to do
+                        p_MANSCDP_xml->p_client_configurations->give_out_query_catalog_result(
+                            p_MANSCDP_xml->DeviceID,
+                            p_MANSCDP_xml->catalog_sum_num,
+                            p_MANSCDP_xml->p_MANSCDP_device);
                     }
                     break;
             }
