@@ -72,7 +72,8 @@ typedef struct _MANSCDP_xml
     unsigned long long catalog_sum_num;
     MANSCDP_on_off_line online;
     MANSCDP_result_type status;
-    client_configurations* p_client_configurations;
+    MANSCDP_device* p_MANSCDP_device;
+    client_configurations* p_client_configurations; // do not free in free_MANSCDP_xml_pointer
 }MANSCDP_xml;
 
 #endif // !_CLIENT_CONFIG_DEFINE_H_
