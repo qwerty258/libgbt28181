@@ -98,3 +98,21 @@ MANSCDP_result_type get_MANSCDP_statues(char* MANSCDP_string)
 
     return MANSCDP_UNKNOWN_RESULT_TYPE;
 }
+
+void free_MANSCDP_xml_pointer(MANSCDP_xml** pointer)
+{
+    if(NULL != pointer || NULL != (*pointer))
+    {
+        osip_free((*pointer)->DeviceID);
+        osip_free((*pointer)->Result);
+        osip_free((*pointer)->DeviceType);
+        osip_free((*pointer)->Manufacturer);
+        osip_free((*pointer)->Model);
+        osip_free((*pointer)->Firmware);
+        osip_free((*pointer)->p_MANSCDP_device);
+        // do not free p_client_configurations
+        //osip_free((*pointer)->p_client_configurations);
+    }
+
+    osip_free(*pointer);
+}
