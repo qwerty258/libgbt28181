@@ -44,7 +44,24 @@ void query_device_status_callback(char* deviceID, MANSCDP_on_off_line online, MA
 
 void query_device_status_callback(char* deviceID, unsigned long long sum_num, MANSCDP_device* p_MANSCDP_device_array)
 {
-
+    printf("device_ID: %s\n", deviceID);
+    printf("count    : %u\n", sum_num);
+    for(unsigned long long i = 0; i < sum_num; i++)
+    {
+        printf("device number: %u\n", i + 1);
+        printf("DeviceID    : %s\n", p_MANSCDP_device_array->DeviceID);
+        printf("Name        : %s\n", p_MANSCDP_device_array->Name);
+        printf("Manufacturer: %s\n", p_MANSCDP_device_array->Manufacturer);
+        printf("Model       : %s\n", p_MANSCDP_device_array->Model);
+        printf("Owner       : %s\n", p_MANSCDP_device_array->Owner);
+        printf("CivilCode   : %s\n", p_MANSCDP_device_array->CivilCode);
+        printf("Address     : %s\n", p_MANSCDP_device_array->Address);
+        printf("Parental    : %s\n", p_MANSCDP_device_array->Parental);
+        printf("SafetyWay   : %s\n", p_MANSCDP_device_array->SafetyWay);
+        printf("RegisterWay : %s\n", p_MANSCDP_device_array->RegisterWay);
+        printf("Secrecy     : %s\n", p_MANSCDP_device_array->Secrecy);
+        printf("Status      : %s\n", p_MANSCDP_device_array->Status);
+    }
 }
 
 int main(int argc, char* argv[])
