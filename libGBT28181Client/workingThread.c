@@ -34,6 +34,7 @@ void* event_working_thread(void* arg)
 {
     client_configurations* thread_parameter = (client_configurations*)arg;
     eXosip_event_t* event = NULL;
+    osip_message_t* sip_message_answer = NULL;
     osip_content_type_t* content_type = NULL;
     osip_body_t* message_body = NULL;
     int result = OSIP_SUCCESS;
@@ -65,6 +66,14 @@ void* event_working_thread(void* arg)
 #endif // _DEBUG
                 break;
             case EXOSIP_MESSAGE_NEW:
+                if(0 == osip_strcasecmp(event->request->sip_method, "MESSAGE"))
+                {
+                    result = eXosip_lock(thread_parameter->exosip_context);
+                    result = eXosip_message_build_answer(thread_parameter->exosip_context, event->tid, 200, &sip_message_answer);
+                    result = eXosip_message_send_answer(thread_parameter->exosip_context, event->tid, 200, sip_message_answer);
+                    result = eXosip_unlock(thread_parameter->exosip_context);
+                }
+
                 content_type = osip_message_get_content_type(event->request);
 #ifdef _DEBUG
                 printf("%s\n", event->request->sip_method);
@@ -79,7 +88,7 @@ void* event_working_thread(void* arg)
                     {
                         size_t wchar_length = 2 * MultiByteToWideChar(936, MB_PRECOMPOSED, message_body->body, message_body->length, NULL, 0);
                         wchar_t* xml_in_wide_char = osip_malloc(wchar_length + 100);
-                        MultiByteToWideChar(936, MB_PRECOMPOSED, message_body->body, message_body->length, xml_in_wide_char, wchar_length);
+                        MultiByteToWideChar(936, MB_PRECOMPOSED, message_body->body, message_body->length, xml_in_wide_char, wchar_length / 2);
 
                         size_t UTF8_length = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, xml_in_wide_char, wchar_length, NULL, 0, NULL, NULL);
                         char* xml_in_UTF_8 = osip_malloc(UTF8_length + 100);
@@ -198,7 +207,7 @@ void* event_working_thread(void* arg)
                 break;
             case EXOSIP_MESSAGE_ANSWERED:
 #ifdef _DEBUG
-                printf("SIP 200 OK, received\n");
+                printf("SIP %d, received\n", osip_message_get_status_code(event->response));
 #endif // _DEBUG
 
                 break;
