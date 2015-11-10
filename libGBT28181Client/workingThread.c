@@ -86,9 +86,9 @@ void* event_working_thread(void* arg)
 
                     if(OSIP_SUCCESS == result)
                     {
-                        size_t wchar_length = 2 * MultiByteToWideChar(936, MB_PRECOMPOSED, message_body->body, message_body->length, NULL, 0);
+                        size_t wchar_length = 2 * message_body->length;
                         wchar_t* xml_in_wide_char = osip_malloc(wchar_length + 100);
-                        MultiByteToWideChar(936, MB_PRECOMPOSED, message_body->body, message_body->length, xml_in_wide_char, wchar_length / 2);
+                        MultiByteToWideChar(936, MB_PRECOMPOSED, message_body->body, message_body->length, xml_in_wide_char, message_body->length);
 
                         size_t UTF8_length = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, xml_in_wide_char, wchar_length, NULL, 0, NULL, NULL);
                         char* xml_in_UTF_8 = osip_malloc(UTF8_length + 100);
