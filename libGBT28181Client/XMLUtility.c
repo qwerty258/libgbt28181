@@ -15,7 +15,7 @@ xmlDocPtr find_element(xmlDocPtr xml_document_pointer, char* element_name)
             {
                 return (xmlDocPtr)xml_document_pointer;
             }
-            xml_document_pointer = xml_document_pointer->next;
+            xml_document_pointer = (xmlDocPtr)xml_document_pointer->next;
         }
     }
     return NULL;
@@ -130,4 +130,84 @@ void free_MANSCDP_xml_pointer(MANSCDP_xml** pointer)
     }
 
     osip_free(*pointer);
+}
+
+void parse_MANSCDP_xml_device_list(xmlDocPtr xml_device_list, unsigned long long count, MANSCDP_device* p_MANSCDP_device)
+{
+    xml_device_list = (xmlDocPtr)xml_device_list->children;
+    xmlDocPtr xmlDocPtr_temp = NULL;
+    if(NULL != xml_device_list)
+    {
+        for(unsigned long long i = 0; i < count; i++)
+        {
+            while(0 != xmlStrncmp(xml_device_list->name, "Item", xmlStrlen("Item")))
+            {
+                xml_device_list = (xmlDocPtr)xml_device_list->next;
+                if(NULL == xml_device_list)
+                {
+                    break;
+                }
+            }
+            xmlDocPtr_temp = find_element((xmlDocPtr)xml_device_list->children, "DeviceID");
+            if(NULL != xmlDocPtr_temp)
+            {
+                p_MANSCDP_device[i].DeviceID = osip_strdup(xmlDocPtr_temp->children->content);
+            }
+            xmlDocPtr_temp = find_element((xmlDocPtr)xml_device_list->children, "Name");
+            if(NULL != xmlDocPtr_temp)
+            {
+                p_MANSCDP_device[i].Name = osip_strdup(xmlDocPtr_temp->children->content);
+            }
+            xmlDocPtr_temp = find_element((xmlDocPtr)xml_device_list->children, "Manufacturer");
+            if(NULL != xmlDocPtr_temp)
+            {
+                p_MANSCDP_device[i].Manufacturer = osip_strdup(xmlDocPtr_temp->children->content);
+            }
+            xmlDocPtr_temp = find_element((xmlDocPtr)xml_device_list->children, "Model");
+            if(NULL != xmlDocPtr_temp)
+            {
+                p_MANSCDP_device[i].Model = osip_strdup(xmlDocPtr_temp->children->content);
+            }
+            xmlDocPtr_temp = find_element((xmlDocPtr)xml_device_list->children, "Owner");
+            if(NULL != xmlDocPtr_temp)
+            {
+                p_MANSCDP_device[i].Owner = osip_strdup(xmlDocPtr_temp->children->content);
+            }
+            xmlDocPtr_temp = find_element((xmlDocPtr)xml_device_list->children, "CivilCode");
+            if(NULL != xmlDocPtr_temp)
+            {
+                p_MANSCDP_device[i].CivilCode = osip_strdup(xmlDocPtr_temp->children->content);
+            }
+            xmlDocPtr_temp = find_element((xmlDocPtr)xml_device_list->children, "Address");
+            if(NULL != xmlDocPtr_temp)
+            {
+                p_MANSCDP_device[i].Address = osip_strdup(xmlDocPtr_temp->children->content);
+            }
+            xmlDocPtr_temp = find_element((xmlDocPtr)xml_device_list->children, "Parental");
+            if(NULL != xmlDocPtr_temp)
+            {
+                p_MANSCDP_device[i].Parental = osip_strdup(xmlDocPtr_temp->children->content);
+            }
+            xmlDocPtr_temp = find_element((xmlDocPtr)xml_device_list->children, "SafetyWay");
+            if(NULL != xmlDocPtr_temp)
+            {
+                p_MANSCDP_device[i].SafetyWay = osip_strdup(xmlDocPtr_temp->children->content);
+            }
+            xmlDocPtr_temp = find_element((xmlDocPtr)xml_device_list->children, "RegisterWay");
+            if(NULL != xmlDocPtr_temp)
+            {
+                p_MANSCDP_device[i].RegisterWay = osip_strdup(xmlDocPtr_temp->children->content);
+            }
+            xmlDocPtr_temp = find_element((xmlDocPtr)xml_device_list->children, "Secrecy");
+            if(NULL != xmlDocPtr_temp)
+            {
+                p_MANSCDP_device[i].Secrecy = osip_strdup(xmlDocPtr_temp->children->content);
+            }
+            xmlDocPtr_temp = find_element((xmlDocPtr)xml_device_list->children, "Status");
+            if(NULL != xmlDocPtr_temp)
+            {
+                p_MANSCDP_device[i].Status = osip_strdup(xmlDocPtr_temp->children->content);
+            }
+        }
+    }
 }
