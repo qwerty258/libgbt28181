@@ -180,18 +180,19 @@ void* event_working_thread(void* arg)
                                     p_MANSCDP_xml->catalog_sum_num = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
                                     if(0 < p_MANSCDP_xml->catalog_sum_num)
                                     {
+                                        p_MANSCDP_xml->p_MANSCDP_device = osip_malloc(sizeof(MANSCDP_device) * p_MANSCDP_xml->catalog_sum_num);
                                         // to do: parse catalog xml
                                     }
                                 }
 
                                 if(NULL == osip_thread_create(20000, MANSCDP_xml_message_working_thread, p_MANSCDP_xml))
                                 {
-                                    osip_free(p_MANSCDP_xml);
+                                    free_MANSCDP_xml_pointer(&p_MANSCDP_xml);
                                 }
                             }
                             else
                             {
-                                osip_free(p_MANSCDP_xml);
+                                free_MANSCDP_xml_pointer(&p_MANSCDP_xml);
                             }
                         }
 
@@ -437,12 +438,7 @@ void* MANSCDP_xml_message_working_thread(void* arg)
     osip_free(from);
     osip_free(to);
     osip_free(xml_buffer);
-    osip_free(p_MANSCDP_xml->DeviceID);
-    osip_free(p_MANSCDP_xml->Result);
-    osip_free(p_MANSCDP_xml->DeviceType);
-    osip_free(p_MANSCDP_xml->Model);
-    osip_free(p_MANSCDP_xml->Firmware);
-    osip_free(p_MANSCDP_xml);
+    free_MANSCDP_xml_pointer(&p_MANSCDP_xml);
 
 #ifdef _DEBUG
     printf("MANSCDP_xml_message_working_thread exited\n");
