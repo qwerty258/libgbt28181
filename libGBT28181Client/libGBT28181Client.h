@@ -44,6 +44,8 @@ C_EXPORT_BEGIN
 #define GBT28181_CALLBACK_NOTSET                    -10004
 #define GBT28181_ALREADY_ONLINE                     -10005
 #define GBT28181_MUST_ONLINE                        -10006
+#define GBT28181_HANDLE_DEPLETED                    -10007
+#define GBT28181_INVALID_HANDLE                     -10008
 
 LIBGBT28181CLIENT_API int GBT28181_client_initial(void);
 
@@ -87,6 +89,8 @@ LIBGBT28181CLIENT_API int GBT28181_set_query_device_status_callback(function_que
 
 LIBGBT28181CLIENT_API int GBT28181_set_query_catalog_callback(function_query_catalog_callback cb);
 
+LIBGBT28181CLIENT_API int GBT28181_set_max_number_of_live_video(uint32_t max_number);
+
 LIBGBT28181CLIENT_API int GBT28181_client_go_online(void);
 
 LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name);
@@ -94,6 +98,12 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name)
 LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_name);
 
 LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name);
+
+LIBGBT28181CLIENT_API int GBT28181_get_idle_live_video_handle(uint32_t* handle);
+
+LIBGBT28181CLIENT_API int GBT28181_set_RTP_port(uint32_t handle, uint16_t port);
+
+LIBGBT28181CLIENT_API int GBT28181_get_live_video(uint32_t handle, char* target_sip_user_name);
 
 LIBGBT28181CLIENT_API int GBT28181_free_client(void);
 
