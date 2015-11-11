@@ -81,17 +81,17 @@ LIBGBT28181CLIENT_API int GBT28181_set_address_family(int address_family);
 
 LIBGBT28181CLIENT_API int GBT28181_set_IP_protocol(int protocol);
 
-LIBGBT28181CLIENT_API int GBT28181_client_go_online(void);
-
 LIBGBT28181CLIENT_API int GBT28181_set_query_device_info_callback(function_query_device_info_callback cb);
-
-LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name);
 
 LIBGBT28181CLIENT_API int GBT28181_set_query_device_status_callback(function_query_device_status_callback cb);
 
-LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_name);
-
 LIBGBT28181CLIENT_API int GBT28181_set_query_catalog_callback(function_query_catalog_callback cb);
+
+LIBGBT28181CLIENT_API int GBT28181_client_go_online(void);
+
+LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name);
+
+LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_name);
 
 LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name);
 
