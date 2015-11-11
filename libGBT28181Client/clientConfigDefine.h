@@ -76,5 +76,11 @@ typedef struct _MANSCDP_xml
     client_configurations* p_client_configurations; // do not free in free_MANSCDP_xml_pointer
 }MANSCDP_xml;
 
+typedef struct _live_video_context
+{
+    uint16_t port;
+    int call_id;
+}live_video_context;
+
 #endif // !_CLIENT_CONFIG_DEFINE_H_
 
