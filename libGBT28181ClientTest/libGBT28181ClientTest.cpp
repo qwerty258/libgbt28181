@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void query_deviceInfo_callback(char* device_ID, char* device_type, char* manufacturer, char* model, char* firmware, unsigned long long max_camera, unsigned long long max_alarm)
+void query_deviceInfo_callback(char* device_ID, char* device_type, char* manufacturer, char* model, char* firmware, uint64_t max_camera, uint64_t max_alarm)
 {
     printf("device_ID   : %s\n", device_ID);
     printf("device_type : %s\n", device_type);
@@ -42,11 +42,11 @@ void query_device_status_callback(char* deviceID, MANSCDP_on_off_line online, MA
     }
 }
 
-void query_device_status_callback(char* deviceID, unsigned long long sum_num, MANSCDP_device* p_MANSCDP_device_array)
+void query_device_status_callback(char* deviceID, uint64_t sum_num, MANSCDP_device* p_MANSCDP_device_array)
 {
     printf("device_ID: %s\n", deviceID);
     printf("count    : %u\n", sum_num);
-    for(unsigned long long i = 0; i < sum_num; i++)
+    for(uint64_t i = 0; i < sum_num; i++)
     {
         printf("device number: %u\n", i + 1);
         printf("DeviceID    : %s\n", p_MANSCDP_device_array->DeviceID);

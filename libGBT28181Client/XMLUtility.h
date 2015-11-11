@@ -12,6 +12,6 @@ MANSCDP_command_type get_MANSCDP_command_type(char* MANSCDP_command_string);
 MANSCDP_on_off_line get_MANSCDP_online(char* MANSCDP_string);
 MANSCDP_result_type get_MANSCDP_statues(char* MANSCDP_string);
 void free_MANSCDP_xml_pointer(MANSCDP_xml** pointer);
-void parse_MANSCDP_xml_device_list(xmlDocPtr xml_device_list, unsigned long long count, MANSCDP_device* p_MANSCDP_device);
+void parse_MANSCDP_xml_device_list(xmlDocPtr xml_device_list, uint64_t count, MANSCDP_device* p_MANSCDP_device);
 
 #endif // _XMLUTILITY_H_

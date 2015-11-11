@@ -33,7 +33,7 @@ typedef struct _client_configurations
     struct eXosip_t* exosip_context;
     int registration_ID;
     bool thread_loop;
-    unsigned long long MANSCDP_SN;
+    uint64_t MANSCDP_SN;
     function_query_device_info_callback give_out_query_device_info_result;
     function_query_device_status_callback give_out_query_device_status_result;
     function_query_catalog_callback give_out_query_catalog_result;
@@ -60,16 +60,16 @@ typedef struct _MANSCDP_xml
 {
     MANSCDP_xml_type xml_type;
     MANSCDP_command_type command_type;
-    unsigned long long MANSCDP_SN;
+    uint64_t MANSCDP_SN;
     char* DeviceID;
     char* Result;
     char* DeviceType;
     char* Manufacturer;
     char* Model;
     char* Firmware;
-    unsigned long long MaxCamera;
-    unsigned long long MaxAlarm;
-    unsigned long long catalog_sum_num;
+    uint64_t MaxCamera;
+    uint64_t MaxAlarm;
+    uint64_t catalog_sum_num;
     MANSCDP_on_off_line online;
     MANSCDP_result_type status;
     MANSCDP_device* p_MANSCDP_device;

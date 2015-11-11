@@ -2,8 +2,9 @@
 #define _CALLBACK_DEFINES_H_
 
 #include <stdbool.h>
+#include <stdint.h>
 
-typedef void(*function_query_device_info_callback)(char* device_ID, char* device_type, char* manufacturer, char* model, char* firmware, unsigned long long max_camera, unsigned long long max_alarm);
+typedef void(*function_query_device_info_callback)(char* device_ID, char* device_type, char* manufacturer, char* model, char* firmware, uint64_t max_camera, uint64_t max_alarm);
 
 typedef enum _MANSCDP_result_type
 {
@@ -37,6 +38,6 @@ typedef struct _MANSCDP_device
     char* Status;
 }MANSCDP_device;
 
-typedef void(*function_query_catalog_callback)(char* device_ID, unsigned long long sum_num, MANSCDP_device* p_MANSCDP_device_array);
+typedef void(*function_query_catalog_callback)(char* device_ID, uint64_t sum_num, MANSCDP_device* p_MANSCDP_device_array);
 
 #endif // !_CALLBACK_DEFINES_H_

@@ -109,7 +109,7 @@ void free_MANSCDP_xml_pointer(MANSCDP_xml** pointer)
         osip_free((*pointer)->Manufacturer);
         osip_free((*pointer)->Model);
         osip_free((*pointer)->Firmware);
-        for(unsigned long long i = 0; i < (*pointer)->catalog_sum_num; i++)
+        for(uint64_t i = 0; i < (*pointer)->catalog_sum_num; i++)
         {
             osip_free((*pointer)->p_MANSCDP_device[i].DeviceID);
             osip_free((*pointer)->p_MANSCDP_device[i].Name);
@@ -132,13 +132,13 @@ void free_MANSCDP_xml_pointer(MANSCDP_xml** pointer)
     osip_free(*pointer);
 }
 
-void parse_MANSCDP_xml_device_list(xmlDocPtr xml_device_list, unsigned long long count, MANSCDP_device* p_MANSCDP_device)
+void parse_MANSCDP_xml_device_list(xmlDocPtr xml_device_list, uint64_t count, MANSCDP_device* p_MANSCDP_device)
 {
     xml_device_list = (xmlDocPtr)xml_device_list->children;
     xmlDocPtr xmlDocPtr_temp = NULL;
     if(NULL != xml_device_list)
     {
-        for(unsigned long long i = 0; i < count; i++)
+        for(uint64_t i = 0; i < count; i++)
         {
             while(0 != xmlStrncmp(xml_device_list->name, "Item", xmlStrlen("Item")))
             {
