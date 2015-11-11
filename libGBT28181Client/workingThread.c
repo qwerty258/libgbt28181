@@ -250,9 +250,20 @@ void* keepalive_working_thread(void* arg)
         return NULL;
     }
 
-    snprintf(from, 512, "sip:%s@%s", thread_parameter->client_user_name, thread_parameter->client_IP);
-
-    snprintf(to, 512, "sip:%s@%s", thread_parameter->server_ID, thread_parameter->server_IP);
+    snprintf(
+        from,
+        512,
+        "sip:%s@%s:%d",
+        thread_parameter->client_user_name,
+        thread_parameter->client_IP,
+        thread_parameter->client_port);
+    snprintf(
+        to,
+        512,
+        "sip:%s@%s:%d",
+        thread_parameter->server_ID,
+        thread_parameter->server_domain,
+        thread_parameter->server_port);
 
     while(thread_parameter->thread_loop)
     {
@@ -327,8 +338,20 @@ void* MANSCDP_xml_message_working_thread(void* arg)
     }
     memset(xml_buffer, 0x0, 1500);
 
-    snprintf(from, 512, "sip:%s@%s", p_MANSCDP_xml->p_client_configurations->client_user_name, p_MANSCDP_xml->p_client_configurations->client_IP);
-    snprintf(to, 512, "sip:%s@%s", p_MANSCDP_xml->p_client_configurations->server_ID, p_MANSCDP_xml->p_client_configurations->server_IP);
+    snprintf(
+        from,
+        512,
+        "sip:%s@%s:%d",
+        p_MANSCDP_xml->p_client_configurations->client_user_name,
+        p_MANSCDP_xml->p_client_configurations->client_IP,
+        p_MANSCDP_xml->p_client_configurations->client_port);
+    snprintf(
+        to,
+        512,
+        "sip:%s@%s:%d",
+        p_MANSCDP_xml->p_client_configurations->server_ID,
+        p_MANSCDP_xml->p_client_configurations->server_IP,
+        p_MANSCDP_xml->p_client_configurations->server_port);
 
     switch(p_MANSCDP_xml->xml_type)
     {

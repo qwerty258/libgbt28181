@@ -316,16 +316,18 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
     snprintf(
         from,
         256,
-        "sip:%s@%s",
+        "sip:%s@%s:%d",
         global_client_configurations.client_user_name,
-        global_client_configurations.client_IP);
+        global_client_configurations.client_IP,
+        global_client_configurations.client_port);
 
     snprintf(
         proxy,
         256,
-        "sip:%s@%s",
+        "sip:%s@%s:%d",
         global_client_configurations.server_ID,
-        global_client_configurations.server_IP);
+        global_client_configurations.server_IP,
+        global_client_configurations.server_port);
 
     global_client_configurations.registration_ID = eXosip_register_build_initial_register(
         global_client_configurations.exosip_context,
@@ -414,9 +416,26 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name)
         return GBT28181_NOMEM;
     }
 
-    snprintf(from, 512, "sip:%s@%s", global_client_configurations.client_user_name, global_client_configurations.client_IP);
-    snprintf(to, 512, "sip:%s@%s", target_sip_user_name, global_client_configurations.server_domain);
-    snprintf(proxy, 512, "sip:%s@%s", global_client_configurations.server_ID, global_client_configurations.server_IP);
+    snprintf(
+        from,
+        512,
+        "sip:%s@%s:%d",
+        global_client_configurations.client_user_name,
+        global_client_configurations.client_IP,
+        global_client_configurations.client_port);
+    snprintf(
+        to,
+        512,
+        "sip:%s@%s",
+        target_sip_user_name,
+        global_client_configurations.server_domain);
+    snprintf(
+        proxy,
+        512,
+        "sip:%s@%s:%d",
+        global_client_configurations.server_ID,
+        global_client_configurations.server_IP,
+        global_client_configurations.server_port);
 
     result = eXosip_message_build_request(
         global_client_configurations.exosip_context,
@@ -514,9 +533,26 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_nam
         return GBT28181_NOMEM;
     }
 
-    snprintf(from, 512, "sip:%s@%s", global_client_configurations.client_user_name, global_client_configurations.client_IP);
-    snprintf(to, 512, "sip:%s@%s", target_sip_user_name, global_client_configurations.server_domain);
-    snprintf(proxy, 512, "sip:%s@%s", global_client_configurations.server_ID, global_client_configurations.server_IP);
+    snprintf(
+        from,
+        512,
+        "sip:%s@%s:%d",
+        global_client_configurations.client_user_name,
+        global_client_configurations.client_IP,
+        global_client_configurations.client_port);
+    snprintf(
+        to,
+        512,
+        "sip:%s@%s",
+        target_sip_user_name,
+        global_client_configurations.server_domain);
+    snprintf(
+        proxy,
+        512,
+        "sip:%s@%s:%d",
+        global_client_configurations.server_ID,
+        global_client_configurations.server_IP,
+        global_client_configurations.server_port);
 
     result = eXosip_message_build_request(
         global_client_configurations.exosip_context,
@@ -614,9 +650,26 @@ LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name)
         return GBT28181_NOMEM;
     }
 
-    snprintf(from, 512, "sip:%s@%s", global_client_configurations.client_user_name, global_client_configurations.client_IP);
-    snprintf(to, 512, "sip:%s@%s", target_sip_user_name, global_client_configurations.server_domain);
-    snprintf(proxy, 512, "sip:%s@%s", global_client_configurations.server_ID, global_client_configurations.server_IP);
+    snprintf(
+        from,
+        512,
+        "sip:%s@%s:%d",
+        global_client_configurations.client_user_name,
+        global_client_configurations.client_IP,
+        global_client_configurations.client_port);
+    snprintf(
+        to,
+        512,
+        "sip:%s@%s",
+        target_sip_user_name,
+        global_client_configurations.server_domain);
+    snprintf(
+        proxy,
+        512,
+        "sip:%s@%s:%d",
+        global_client_configurations.server_ID,
+        global_client_configurations.server_IP,
+        global_client_configurations.server_port);
 
     result = eXosip_message_build_request(
         global_client_configurations.exosip_context,
@@ -698,17 +751,18 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
 
     snprintf(
         from,
-        256,
-        "sip:%s@%s",
+        512,
+        "sip:%s@%s:%d",
         global_client_configurations.client_user_name,
-        global_client_configurations.client_IP);
-
+        global_client_configurations.client_IP,
+        global_client_configurations.client_port);
     snprintf(
         proxy,
-        256,
-        "sip:%s@%s",
+        512,
+        "sip:%s@%s:%d",
         global_client_configurations.server_ID,
-        global_client_configurations.server_IP);
+        global_client_configurations.server_IP,
+        global_client_configurations.server_port);
 
     result = eXosip_register_build_initial_register(
         global_client_configurations.exosip_context,
