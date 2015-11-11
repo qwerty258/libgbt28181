@@ -182,7 +182,6 @@ void* event_working_thread(void* arg)
                                     {
                                         p_MANSCDP_xml->p_MANSCDP_device = osip_malloc(sizeof(MANSCDP_device) * p_MANSCDP_xml->catalog_sum_num);
                                         xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "DeviceList");
-                                        // to do: parse catalog xml
                                         parse_MANSCDP_xml_device_list(xmlDocPtr_temp, p_MANSCDP_xml->catalog_sum_num, p_MANSCDP_xml->p_MANSCDP_device);
                                     }
                                 }
