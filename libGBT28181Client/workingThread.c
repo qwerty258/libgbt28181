@@ -211,7 +211,11 @@ void* event_working_thread(void* arg)
 #ifdef _DEBUG
                 printf("SIP %d, received\n", osip_message_get_status_code(event->response));
 #endif // _DEBUG
-
+                break;
+            case EXOSIP_CALL_PROCEEDING:
+#ifdef _DEBUG
+                printf("SIP %d, received\n", osip_message_get_status_code(event->response));
+#endif // _DEBUG
                 break;
             default:
 #ifdef _DEBUG
