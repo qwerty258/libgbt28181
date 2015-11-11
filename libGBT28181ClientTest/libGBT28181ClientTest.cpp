@@ -1,6 +1,9 @@
 #include <libGBT28181Client.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <WinSock2.h>
+
+#define _DEBUG_FOR_HANDLE 0
 
 void query_deviceInfo_callback(char* device_ID, char* device_type, char* manufacturer, char* model, char* firmware, uint64_t max_camera, uint64_t max_alarm)
 {
@@ -64,6 +67,52 @@ void query_device_status_callback(char* deviceID, uint64_t sum_num, MANSCDP_devi
     }
 }
 
+typedef struct _receiving_thread_parameter
+{
+    uint16_t port;
+    BOOL loop;
+}receiving_thread_parameter;
+
+DWORD WINAPI receiving_thread(LPVOID lpParam)
+{
+    receiving_thread_parameter* parameter = (receiving_thread_parameter*)lpParam;
+
+    WSADATA wsa_data;
+    WSAStartup(MAKEWORD(2, 2), &wsa_data);
+
+    SOCKET receiving_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+    sockaddr_in sockaddr_local;
+    memset(&sockaddr_local, 0x0, sizeof(sockaddr_in));
+    sockaddr_local.sin_addr.S_un.S_addr = inet_addr("192.168.10.29");
+    sockaddr_local.sin_family = AF_INET;
+    sockaddr_local.sin_port = parameter->port;
+
+    bind(receiving_sock, (sockaddr*)&sockaddr_local, sizeof(sockaddr_in));
+
+    BYTE* buffer = (BYTE*)malloc(USHRT_MAX);
+
+    int bytes_received;
+
+    while(parameter->loop)
+    {
+        bytes_received = recv(receiving_sock, (char*)buffer, USHRT_MAX, 0);
+        if(0 < bytes_received)
+        {
+            for(size_t i = 0; i < 8; i++)
+            {
+                printf("%02X", buffer[i]);
+            }
+            printf("\n");
+        }
+    }
+
+    free(buffer);
+
+    WSACleanup();
+    return 0;
+}
+
 int main(int argc, char* argv[])
 {
     int result = GBT28181_client_initial();
@@ -102,10 +151,14 @@ int main(int argc, char* argv[])
 
     result = GBT28181_set_query_catalog_callback(query_device_status_callback);
 
+    result = GBT28181_set_max_number_of_live_video(64);
+
     result = GBT28181_client_go_online();
 
     system("pause");
 
+#if _DEBUG_FOR_HANDLE
+#else
     printf("\n\ncall query device info\n\n");
 
     result = GBT28181_query_device_info("34020000001320000141");
@@ -121,6 +174,32 @@ int main(int argc, char* argv[])
     printf("\n\ncall query catalog\n\n");
 
     result = GBT28181_query_catalog("34020000001320000141");
+
+    system("pause");
+#endif
+
+    uint32_t handle;
+    receiving_thread_parameter thread_parameter;
+    thread_parameter.port = 6000;
+    thread_parameter.loop = true;
+
+#if _DEBUG_FOR_HANDLE
+    for(size_t i = 0; i < 100; i++)
+    {
+#endif
+        result = GBT28181_get_idle_live_video_handle(&handle);
+        printf("result: %d,handle: %u\n", result, handle);
+#if _DEBUG_FOR_HANDLE
+    }
+#endif
+
+    system("pause");
+
+    result = GBT28181_set_RTP_port(handle, thread_parameter.port);
+
+    result = GBT28181_get_live_video(handle, "34020000001320000141");
+
+    CreateThread(NULL, 0, receiving_thread, &thread_parameter, 0, NULL);
 
     system("pause");
 
