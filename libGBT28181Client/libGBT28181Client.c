@@ -44,7 +44,7 @@ if(!(bool_online))                      \
 
 client_configurations global_client_configurations;
 
-int chech_handle(uint32_t handle)
+int check_handle(uint32_t handle)
 {
     if(handle < 0 || global_client_configurations.max_live_video_number < handle)
     {
@@ -901,7 +901,7 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
     CHECK_NULL_PARAMETER(target_sip_user_name);
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_MUST_ON_LINE(global_client_configurations.online);
-    int result = chech_handle(handle);
+    int result = check_handle(handle);
     if(OSIP_SUCCESS != result)
     {
         return result;
@@ -1021,7 +1021,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_port(uint32_t handle, uint16_t port)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_MUST_ON_LINE(global_client_configurations.online);
-    int result = chech_handle(handle);
+    int result = check_handle(handle);
     if(OSIP_SUCCESS != result)
     {
         return result;
@@ -1036,7 +1036,7 @@ LIBGBT28181CLIENT_API int GBT28181_close_real_time_stream(uint32_t handle)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_MUST_ON_LINE(global_client_configurations.online);
-    int result = chech_handle(handle);
+    int result = check_handle(handle);
     if(OSIP_SUCCESS != result)
     {
         return result;
