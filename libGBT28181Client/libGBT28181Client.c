@@ -52,6 +52,10 @@ client_configurations global_client_configurations;
 
 int check_handle(uint32_t handle)
 {
+    if(0 == global_client_configurations.max_live_video_number)
+    {
+        return OSIP_API_NOT_INITIALIZED;
+    }
     if(handle < 0 || global_client_configurations.max_live_video_number < handle)
     {
         return GBT28181_INVALID_HANDLE;
@@ -1035,6 +1039,22 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_port(uint32_t handle, uint16_t port)
     CHECK_NOT_STREAMING(global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming);
 
     global_client_configurations.live_video_context_pointer_array[handle]->port_RTP = port;
+
+    return OSIP_SUCCESS;
+}
+
+LIBGBT28181CLIENT_API int GBT28181_set_RTP_protocol(uint32_t handle, int protocol)
+{
+    CHECK_INITIALED(global_client_configurations.initialed);
+    CHECK_MUST_ON_LINE(global_client_configurations.online);
+    int result = check_handle(handle);
+    if(OSIP_SUCCESS != result)
+    {
+        return result;
+    }
+    CHECK_NOT_STREAMING(global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming);
+
+    global_client_configurations.live_video_context_pointer_array[handle]->protocol_RTP = protocol;
 
     return OSIP_SUCCESS;
 }
