@@ -397,11 +397,11 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
     global_client_configurations.online = true;
 
     global_client_configurations.live_video_context_pointer_array =
-        osip_malloc(sizeof(live_video_context*) * global_client_configurations.max_live_video_number);
+        osip_malloc(sizeof(real_time_stream_context*) * global_client_configurations.max_live_video_number);
     memset(
         global_client_configurations.live_video_context_pointer_array,
         0x0,
-        sizeof(live_video_context*) * global_client_configurations.max_live_video_number);
+        sizeof(real_time_stream_context*) * global_client_configurations.max_live_video_number);
 
     return GBT28181_SUCCESS;
 }
@@ -765,9 +765,9 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
     {
         if(NULL != global_client_configurations.live_video_context_pointer_array[i])
         {
-            if(global_client_configurations.live_video_context_pointer_array[i]->live_video_streaming)
+            if(global_client_configurations.live_video_context_pointer_array[i]->real_time_streaming)
             {
-                GBT28181_close_live_video(i);
+                GBT28181_close_real_time_stream(i);
             }
         }
     }
@@ -858,7 +858,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_max_number_of_live_video(uint32_t max_num
     return OSIP_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_get_idle_live_video_handle(uint32_t* handle)
+LIBGBT28181CLIENT_API int GBT28181_get_idle_real_time_stream_handle(uint32_t* handle)
 {
     CHECK_NULL_PARAMETER(handle);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -869,14 +869,14 @@ LIBGBT28181CLIENT_API int GBT28181_get_idle_live_video_handle(uint32_t* handle)
     {
         if(NULL == global_client_configurations.live_video_context_pointer_array[i])
         {
-            global_client_configurations.live_video_context_pointer_array[i] = osip_malloc(sizeof(live_video_context));
+            global_client_configurations.live_video_context_pointer_array[i] = osip_malloc(sizeof(real_time_stream_context));
             if(NULL == global_client_configurations.live_video_context_pointer_array[i])
             {
                 return OSIP_NOMEM;
             }
             global_client_configurations.live_video_context_pointer_array[i]->call_id = 0;
             global_client_configurations.live_video_context_pointer_array[i]->dialog_id = 0;
-            global_client_configurations.live_video_context_pointer_array[i]->live_video_streaming = false;
+            global_client_configurations.live_video_context_pointer_array[i]->real_time_streaming = false;
             global_client_configurations.live_video_context_pointer_array[i]->port_RTP = 0;
             global_client_configurations.live_video_context_pointer_array[i]->port_SIP = 0;
             global_client_configurations.live_video_context_pointer_array[i]->target_IP = NULL;
@@ -896,7 +896,7 @@ LIBGBT28181CLIENT_API int GBT28181_get_idle_live_video_handle(uint32_t* handle)
     }
 }
 
-LIBGBT28181CLIENT_API int GBT28181_get_live_video(uint32_t handle, char* target_sip_user_name, char* target_IP, uint16_t port)
+LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* target_sip_user_name, char* target_IP, uint16_t port)
 {
     CHECK_NULL_PARAMETER(target_sip_user_name);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -1012,7 +1012,7 @@ LIBGBT28181CLIENT_API int GBT28181_get_live_video(uint32_t handle, char* target_
     osip_free(route);
     osip_free(SDP_payload);
 
-    global_client_configurations.live_video_context_pointer_array[handle]->live_video_streaming = true;
+    global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming = true;
 
     return OSIP_SUCCESS;
 }
@@ -1032,7 +1032,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_port(uint32_t handle, uint16_t port)
     return OSIP_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_close_live_video(uint32_t handle)
+LIBGBT28181CLIENT_API int GBT28181_close_real_time_stream(uint32_t handle)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_MUST_ON_LINE(global_client_configurations.online);
@@ -1055,7 +1055,7 @@ LIBGBT28181CLIENT_API int GBT28181_close_live_video(uint32_t handle)
 
     eXosip_unlock(global_client_configurations.exosip_context);
 
-    global_client_configurations.live_video_context_pointer_array[handle]->live_video_streaming = false;
+    global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming = false;
     osip_free(global_client_configurations.live_video_context_pointer_array[handle]->target_IP);
     osip_free(global_client_configurations.live_video_context_pointer_array[handle]->target_sip_user_name);
     osip_free(global_client_configurations.live_video_context_pointer_array[handle]);

@@ -209,7 +209,7 @@ int main(int argc, char* argv[])
     for(size_t i = 0; i < 100; i++)
     {
 #endif
-        result = GBT28181_get_idle_live_video_handle(&handle);
+        result = GBT28181_get_idle_real_time_stream_handle(&handle);
         printf("result: %d,handle: %u\n", result, handle);
 #if _DEBUG_FOR_HANDLE
     }
@@ -219,13 +219,13 @@ int main(int argc, char* argv[])
 
     result = GBT28181_set_RTP_port(handle, thread_parameter.port);
 
-    result = GBT28181_get_live_video(handle, "34020000001320000141", "192.168.10.141", 5060);
+    result = GBT28181_get_real_time_stream(handle, "34020000001320000141", "192.168.10.141", 5060);
 
     HANDLE hThread = CreateThread(NULL, 0, receiving_thread, &thread_parameter, 0, NULL);
 
     system("pause");
 
-    result = GBT28181_close_live_video(handle);
+    result = GBT28181_close_real_time_stream(handle);
 
     result = GBT28181_free_client();
 

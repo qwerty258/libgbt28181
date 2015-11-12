@@ -11,16 +11,16 @@
 #define snprintf _snprintf
 #endif // _MSC_VER
 
-typedef struct _live_video_context
+typedef struct _real_time_stream_context
 {
-    bool live_video_streaming;
+    bool real_time_streaming;
     uint16_t port_RTP;
     int call_id;
     char* target_sip_user_name;
     char* target_IP;
     uint16_t port_SIP;
     int dialog_id;
-}live_video_context;
+}real_time_stream_context;
 
 typedef struct _client_configurations
 {
@@ -49,7 +49,7 @@ typedef struct _client_configurations
     function_query_device_status_callback give_out_query_device_status_result;
     function_query_catalog_callback give_out_query_catalog_result;
     uint32_t max_live_video_number;
-    live_video_context** live_video_context_pointer_array;
+    real_time_stream_context** live_video_context_pointer_array;
 }client_configurations;
 
 typedef enum _MANSCDP_xml_type
