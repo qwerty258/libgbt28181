@@ -20,6 +20,7 @@ typedef struct _real_time_stream_context
     char* target_IP;
     uint16_t port_SIP;
     int dialog_id;
+    int protocol_RTP;
 }real_time_stream_context;
 
 typedef struct _client_configurations
