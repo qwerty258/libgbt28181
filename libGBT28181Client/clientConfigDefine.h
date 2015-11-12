@@ -11,6 +11,17 @@
 #define snprintf _snprintf
 #endif // _MSC_VER
 
+typedef struct _live_video_context
+{
+    bool live_video_streaming;
+    uint16_t port_RTP;
+    int call_id;
+    char* target_sip_user_name;
+    char* target_IP;
+    uint16_t port_SIP;
+    int dialog_id;
+}live_video_context;
+
 typedef struct _client_configurations
 {
     bool online;
@@ -37,6 +48,8 @@ typedef struct _client_configurations
     function_query_device_info_callback give_out_query_device_info_result;
     function_query_device_status_callback give_out_query_device_status_result;
     function_query_catalog_callback give_out_query_catalog_result;
+    uint32_t max_live_video_number;
+    live_video_context** live_video_context_pointer_array;
 }client_configurations;
 
 typedef enum _MANSCDP_xml_type
@@ -75,12 +88,6 @@ typedef struct _MANSCDP_xml
     MANSCDP_device* p_MANSCDP_device;
     client_configurations* p_client_configurations; // do not free in free_MANSCDP_xml_pointer
 }MANSCDP_xml;
-
-typedef struct _live_video_context
-{
-    uint16_t port;
-    int call_id;
-}live_video_context;
 
 #endif // !_CLIENT_CONFIG_DEFINE_H_
 
