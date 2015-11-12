@@ -75,6 +75,7 @@ void query_device_status_callback(char* deviceID, uint64_t sum_num, MANSCDP_devi
 typedef struct _receiving_thread_parameter
 {
     uint16_t port;
+    int protocol;
     BOOL loop;
 }receiving_thread_parameter;
 
@@ -85,7 +86,9 @@ DWORD WINAPI receiving_thread(LPVOID lpParam)
     WSADATA wsa_data;
     WSAStartup(MAKEWORD(2, 2), &wsa_data);
 
-    SOCKET receiving_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    SOCKET receiving_sock;
+
+    receiving_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
     sockaddr_in sockaddr_local;
     memset(&sockaddr_local, 0x0, sizeof(sockaddr_in));
@@ -203,6 +206,12 @@ int main(int argc, char* argv[])
     uint32_t handle;
     receiving_thread_parameter thread_parameter;
     thread_parameter.port = 6000;
+    // must be UDP in test project,
+    // we can't know RTP port of IPC if using TCP,
+    // its in the SDP in the lib.
+    // Receiving real time video data will be moved into the SDK in the future,
+    // may be in the dependent RTP library.
+    thread_parameter.protocol = GBT28181_IPPROTO_UDP;
     thread_parameter.loop = true;
 
 #if _DEBUG_FOR_HANDLE
@@ -218,6 +227,8 @@ int main(int argc, char* argv[])
     system("pause");
 
     result = GBT28181_set_RTP_port(handle, thread_parameter.port);
+
+    result = GBT28181_set_RTP_protocol(handle, thread_parameter.protocol);
 
     result = GBT28181_get_real_time_stream(handle, "34020000001320000141", "192.168.10.141", 5060);
 
