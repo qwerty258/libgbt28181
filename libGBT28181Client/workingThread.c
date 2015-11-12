@@ -217,6 +217,26 @@ void* event_working_thread(void* arg)
                 printf("SIP %d, received\n", osip_message_get_status_code(event->response));
 #endif // _DEBUG
                 break;
+            case EXOSIP_CALL_ANSWERED:
+                result = osip_message_get_status_code(event->response);
+                if(200 == result)
+                {
+                    result = eXosip_lock(thread_parameter->exosip_context);
+                    result = eXosip_call_build_ack(thread_parameter->exosip_context, event->did, &sip_message_answer);
+                    result = eXosip_call_send_ack(thread_parameter->exosip_context, event->did, sip_message_answer);
+                    result = eXosip_unlock(thread_parameter->exosip_context);
+                    for(uint32_t i = 0; i < thread_parameter->max_live_video_number; i++)
+                    {
+                        if(event->cid == thread_parameter->live_video_context_pointer_array[i]->call_id)
+                        {
+                            thread_parameter->live_video_context_pointer_array[i]->dialog_id = event->did;
+                            break;
+                        }
+                    }
+                }
+                osip_message_get_body(event->response, 0, &message_body);
+                printf("\n\n%s\n\n", message_body->body);
+                break;
             default:
 #ifdef _DEBUG
                 printf("recieved unknown eXosip event (type, did, cid) = (%d, %d, %d)\n", event->type, event->did, event->cid);
