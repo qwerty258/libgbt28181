@@ -922,6 +922,8 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
     char* to = osip_malloc(512);
     char* route = osip_malloc(512);
     char* SDP_payload = osip_malloc(1500);
+    char RTP_protocol[50];
+    memset(RTP_protocol, 0x0, 50);
 
     snprintf(
         from,
@@ -975,14 +977,27 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
         return result;
     }
 
+    switch(global_client_configurations.live_video_context_pointer_array[handle]->protocol_RTP)
+    {
+        case GBT28181_IPPROTO_TCP:
+            snprintf(RTP_protocol, 50, "RTP/AVP/TCP");
+            break;
+        case GBT28181_IPPROTO_UDP:
+            snprintf(RTP_protocol, 50, "RTP/AVP");
+            break;
+        default:
+            break;
+    }
+
     snprintf(
         SDP_payload,
         1500,
-        "v=0\r\no=%s 0 0 IN IP4 %s\r\ns=Play\r\nc=IN IP4 %s\r\nt=0 0\r\nm=video %u RTP/AVP 96 98 97\r\na=recvonly\r\na=rtpmap:96 PS/90000\r\na=rtpmap:98 H264/90000\r\na=rtpmap:97 MPEG4/90000\r\n",
+        "v=0\r\no=%s 0 0 IN IP4 %s\r\ns=Play\r\nc=IN IP4 %s\r\nt=0 0\r\nm=video %u %s 96 98 97\r\na=recvonly\r\na=rtpmap:96 PS/90000\r\na=rtpmap:98 H264/90000\r\na=rtpmap:97 MPEG4/90000\r\n",
         global_client_configurations.client_user_name,
         global_client_configurations.client_IP,
         global_client_configurations.client_IP,
-        global_client_configurations.live_video_context_pointer_array[handle]->port_RTP);
+        global_client_configurations.live_video_context_pointer_array[handle]->port_RTP,
+        RTP_protocol);
 
     result = osip_message_set_body(invite_SIP_message, SDP_payload, strnlen(SDP_payload, 1500));
     if(OSIP_SUCCESS != result)
