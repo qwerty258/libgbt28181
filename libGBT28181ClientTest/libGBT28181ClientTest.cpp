@@ -5,6 +5,11 @@
 
 #define _DEBUG_FOR_HANDLE 0
 
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif // _MSC_VER
+
+
 void query_deviceInfo_callback(char* device_ID, char* device_type, char* manufacturer, char* model, char* firmware, uint64_t max_camera, uint64_t max_alarm)
 {
     printf("device_ID   : %s\n", device_ID);
@@ -86,13 +91,20 @@ DWORD WINAPI receiving_thread(LPVOID lpParam)
     memset(&sockaddr_local, 0x0, sizeof(sockaddr_in));
     sockaddr_local.sin_addr.S_un.S_addr = inet_addr("192.168.10.29");
     sockaddr_local.sin_family = AF_INET;
-    sockaddr_local.sin_port = parameter->port;
+    sockaddr_local.sin_port = htons(parameter->port);
 
     bind(receiving_sock, (sockaddr*)&sockaddr_local, sizeof(sockaddr_in));
+
+    DWORD timeout = 1000;
+
+    setsockopt(receiving_sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(DWORD));
 
     BYTE* buffer = (BYTE*)malloc(USHRT_MAX);
 
     int bytes_received;
+
+    DWORD count = 0;
+    char file_path[256];
 
     while(parameter->loop)
     {
@@ -104,8 +116,18 @@ DWORD WINAPI receiving_thread(LPVOID lpParam)
                 printf("%02X", buffer[i]);
             }
             printf("\n");
+            if(count < 10)
+            {
+                snprintf(file_path, 256, "D:\\gbt28181_stream_%u", count);
+                FILE* pFile = fopen(file_path, "wb");
+                fwrite(buffer, bytes_received, 1, pFile);
+                fclose(pFile);
+                count++;
+            }
         }
     }
+
+    closesocket(receiving_sock);
 
     free(buffer);
 
@@ -197,13 +219,20 @@ int main(int argc, char* argv[])
 
     result = GBT28181_set_RTP_port(handle, thread_parameter.port);
 
-    result = GBT28181_get_live_video(handle, "34020000001320000141");
+    result = GBT28181_get_live_video(handle, "34020000001320000141", "192.168.10.141", 5060);
 
-    CreateThread(NULL, 0, receiving_thread, &thread_parameter, 0, NULL);
+    HANDLE hThread = CreateThread(NULL, 0, receiving_thread, &thread_parameter, 0, NULL);
 
     system("pause");
 
+    result = GBT28181_close_live_video(handle);
+
     result = GBT28181_free_client();
+
+    thread_parameter.loop = false;
+
+    WaitForSingleObject(hThread, INFINITE);
+
     return 0;
 }
 
