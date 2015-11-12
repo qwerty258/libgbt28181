@@ -54,7 +54,7 @@ int check_handle(uint32_t handle)
 {
     if(handle < 0 || global_client_configurations.max_live_video_number < handle)
     {
-        return OSIP_BADPARAMETER;
+        return GBT28181_INVALID_HANDLE;
     }
     if(NULL == global_client_configurations.live_video_context_pointer_array[handle])
     {
