@@ -42,6 +42,12 @@ if(!(bool_online))                      \
     return GBT28181_MUST_ONLINE;        \
 }
 
+#define CHECK_NOT_STREAMING(bool_streaming) \
+if(bool_streaming)                          \
+{                                           \
+    return GBT28181_ALREADY_STREAMING;      \
+}
+
 client_configurations global_client_configurations;
 
 int check_handle(uint32_t handle)
@@ -1026,6 +1032,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_port(uint32_t handle, uint16_t port)
     {
         return result;
     }
+    CHECK_NOT_STREAMING(global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming);
 
     global_client_configurations.live_video_context_pointer_array[handle]->port_RTP = port;
 

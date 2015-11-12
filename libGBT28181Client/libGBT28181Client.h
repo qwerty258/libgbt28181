@@ -46,6 +46,7 @@ C_EXPORT_BEGIN
 #define GBT28181_MUST_ONLINE                        -10006
 #define GBT28181_HANDLE_DEPLETED                    -10007
 #define GBT28181_INVALID_HANDLE                     -10008
+#define GBT28181_ALREADY_STREAMING                  -10009
 
 LIBGBT28181CLIENT_API int GBT28181_client_initial(void);
 
