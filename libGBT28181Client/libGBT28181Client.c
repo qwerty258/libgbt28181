@@ -43,16 +43,14 @@ if(!(bool_online))                      \
 }
 
 client_configurations global_client_configurations;
-uint32_t max_live_video_number;
-live_video_context** live_video_context_pointer_array;
 
 int chech_handle(uint32_t handle)
 {
-    if(handle < 0 || max_live_video_number < handle)
+    if(handle < 0 || global_client_configurations.max_live_video_number < handle)
     {
         return OSIP_BADPARAMETER;
     }
-    if(NULL == live_video_context_pointer_array[handle])
+    if(NULL == global_client_configurations.live_video_context_pointer_array[handle])
     {
         return GBT28181_INVALID_HANDLE;
     }
@@ -85,6 +83,10 @@ LIBGBT28181CLIENT_API int GBT28181_client_initial(void)
     global_client_configurations.thread_loop = false;
     global_client_configurations.MANSCDP_SN = 1;
     global_client_configurations.give_out_query_device_info_result = NULL;
+    global_client_configurations.give_out_query_device_status_result = NULL;
+    global_client_configurations.give_out_query_catalog_result = NULL;
+    global_client_configurations.max_live_video_number = 0;
+    global_client_configurations.live_video_context_pointer_array = NULL;
 
     CHECK_NULL_AND_RETURN(global_client_configurations.exosip_context);
 }
@@ -394,8 +396,12 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
 
     global_client_configurations.online = true;
 
-    live_video_context_pointer_array = osip_malloc(sizeof(live_video_context*) * max_live_video_number);
-    memset(live_video_context_pointer_array, 0x0, sizeof(live_video_context*) * max_live_video_number);
+    global_client_configurations.live_video_context_pointer_array =
+        osip_malloc(sizeof(live_video_context*) * global_client_configurations.max_live_video_number);
+    memset(
+        global_client_configurations.live_video_context_pointer_array,
+        0x0,
+        sizeof(live_video_context*) * global_client_configurations.max_live_video_number);
 
     return GBT28181_SUCCESS;
 }
@@ -755,16 +761,18 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
 
-    for(uint32_t i = 0; i < max_live_video_number; i++)
+    for(uint32_t i = 0; i < global_client_configurations.max_live_video_number; i++)
     {
-        if(NULL != live_video_context_pointer_array[i])
+        if(NULL != global_client_configurations.live_video_context_pointer_array[i])
         {
-            //to do: Terminate all Call
-            osip_free(live_video_context_pointer_array[i]);
+            if(global_client_configurations.live_video_context_pointer_array[i]->live_video_streaming)
+            {
+                GBT28181_close_live_video(i);
+            }
         }
     }
 
-    osip_free(live_video_context_pointer_array);
+    osip_free(global_client_configurations.live_video_context_pointer_array);
 
     int result = 0;
     osip_message_t* registration_message = NULL;
@@ -845,7 +853,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_max_number_of_live_video(uint32_t max_num
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_ONLINE_NO_SET(global_client_configurations.online);
 
-    max_live_video_number = max_number;
+    global_client_configurations.max_live_video_number = max_number;
 
     return OSIP_SUCCESS;
 }
@@ -857,18 +865,28 @@ LIBGBT28181CLIENT_API int GBT28181_get_idle_live_video_handle(uint32_t* handle)
     CHECK_MUST_ON_LINE(global_client_configurations.online);
 
     uint32_t i;
-    for(i = 0; i < max_live_video_number; i++)
+    for(i = 0; i < global_client_configurations.max_live_video_number; i++)
     {
-        if(NULL == live_video_context_pointer_array[i])
+        if(NULL == global_client_configurations.live_video_context_pointer_array[i])
         {
-            live_video_context_pointer_array[i] = osip_malloc(sizeof(live_video_context));
-            memset(live_video_context_pointer_array[i], 0x0, sizeof(live_video_context));
+            global_client_configurations.live_video_context_pointer_array[i] = osip_malloc(sizeof(live_video_context));
+            if(NULL == global_client_configurations.live_video_context_pointer_array[i])
+            {
+                return OSIP_NOMEM;
+            }
+            global_client_configurations.live_video_context_pointer_array[i]->call_id = 0;
+            global_client_configurations.live_video_context_pointer_array[i]->dialog_id = 0;
+            global_client_configurations.live_video_context_pointer_array[i]->live_video_streaming = false;
+            global_client_configurations.live_video_context_pointer_array[i]->port_RTP = 0;
+            global_client_configurations.live_video_context_pointer_array[i]->port_SIP = 0;
+            global_client_configurations.live_video_context_pointer_array[i]->target_IP = NULL;
+            global_client_configurations.live_video_context_pointer_array[i]->target_sip_user_name = NULL;
             *handle = i;
             break;
         }
     }
 
-    if(i == max_live_video_number)
+    if(i == global_client_configurations.max_live_video_number)
     {
         return GBT28181_HANDLE_DEPLETED;
     }
@@ -878,7 +896,7 @@ LIBGBT28181CLIENT_API int GBT28181_get_idle_live_video_handle(uint32_t* handle)
     }
 }
 
-LIBGBT28181CLIENT_API int GBT28181_get_live_video(uint32_t handle, char* target_sip_user_name)
+LIBGBT28181CLIENT_API int GBT28181_get_live_video(uint32_t handle, char* target_sip_user_name, char* target_IP, uint16_t port)
 {
     CHECK_NULL_PARAMETER(target_sip_user_name);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -893,7 +911,6 @@ LIBGBT28181CLIENT_API int GBT28181_get_live_video(uint32_t handle, char* target_
     char* from = osip_malloc(512);
     char* to = osip_malloc(512);
     char* route = osip_malloc(512);
-    char* contact = osip_malloc(512);
     char* SDP_payload = osip_malloc(1500);
 
     snprintf(
@@ -908,22 +925,29 @@ LIBGBT28181CLIENT_API int GBT28181_get_live_video(uint32_t handle, char* target_
         512,
         "<sip:%s@%s>",
         target_sip_user_name,
-        //global_client_configurations.server_domain);
-        "192.168.10.141");
-    snprintf(
-        contact,
-        512,
-        "<sip:%s@%s:%d>",
-        global_client_configurations.client_user_name,
-        global_client_configurations.client_IP,
-        global_client_configurations.client_port);
-    snprintf(
-        route,
-        512,
-        "<sip:%s@%s:%d>",
-        global_client_configurations.server_ID,
-        global_client_configurations.server_IP,
-        global_client_configurations.server_port);
+        global_client_configurations.server_domain);
+    if(NULL != target_IP)
+    {
+        snprintf(
+            route,
+            512,
+            "<sip:%s@%s:%u>",
+            target_sip_user_name,
+            target_IP,
+            port);
+        global_client_configurations.live_video_context_pointer_array[handle]->target_sip_user_name = osip_strdup(target_sip_user_name);
+        global_client_configurations.live_video_context_pointer_array[handle]->target_IP = osip_strdup(target_IP);
+        global_client_configurations.live_video_context_pointer_array[handle]->port_SIP = port;
+    }
+    else
+    {
+        snprintf(
+            route,
+            512,
+            "<sip:%s@%s>",
+            target_sip_user_name,
+            global_client_configurations.server_domain);
+    }
 
     result = eXosip_call_build_initial_invite(
         global_client_configurations.exosip_context,
@@ -937,7 +961,6 @@ LIBGBT28181CLIENT_API int GBT28181_get_live_video(uint32_t handle, char* target_
         osip_free(from);
         osip_free(to);
         osip_free(route);
-        osip_free(contact);
         osip_free(SDP_payload);
         return result;
     }
@@ -949,9 +972,7 @@ LIBGBT28181CLIENT_API int GBT28181_get_live_video(uint32_t handle, char* target_
         global_client_configurations.client_user_name,
         global_client_configurations.client_IP,
         global_client_configurations.client_IP,
-        live_video_context_pointer_array[handle]->port);
-
-    osip_message_set_contact(invite_SIP_message, contact);
+        global_client_configurations.live_video_context_pointer_array[handle]->port_RTP);
 
     result = osip_message_set_body(invite_SIP_message, SDP_payload, strnlen(SDP_payload, 1500));
     if(OSIP_SUCCESS != result)
@@ -959,7 +980,6 @@ LIBGBT28181CLIENT_API int GBT28181_get_live_video(uint32_t handle, char* target_
         osip_free(from);
         osip_free(to);
         osip_free(route);
-        osip_free(contact);
         osip_free(SDP_payload);
         return result;
     }
@@ -970,29 +990,29 @@ LIBGBT28181CLIENT_API int GBT28181_get_live_video(uint32_t handle, char* target_
         osip_free(from);
         osip_free(to);
         osip_free(route);
-        osip_free(contact);
         osip_free(SDP_payload);
         return result;
     }
 
     eXosip_lock(global_client_configurations.exosip_context);
-    live_video_context_pointer_array[handle]->call_id = eXosip_call_send_initial_invite(
+    global_client_configurations.live_video_context_pointer_array[handle]->call_id = eXosip_call_send_initial_invite(
         global_client_configurations.exosip_context,
         invite_SIP_message);
-    if(live_video_context_pointer_array[handle]->call_id > 0)
+    if(global_client_configurations.live_video_context_pointer_array[handle]->call_id > 0)
     {
         eXosip_call_set_reference(
             global_client_configurations.exosip_context,
-            live_video_context_pointer_array[handle]->call_id,
-            live_video_context_pointer_array[handle]);
+            global_client_configurations.live_video_context_pointer_array[handle]->call_id,
+            global_client_configurations.live_video_context_pointer_array[handle]);
     }
     eXosip_unlock(global_client_configurations.exosip_context);
 
     osip_free(from);
     osip_free(to);
     osip_free(route);
-    osip_free(contact);
     osip_free(SDP_payload);
+
+    global_client_configurations.live_video_context_pointer_array[handle]->live_video_streaming = true;
 
     return OSIP_SUCCESS;
 }
@@ -1007,7 +1027,40 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_port(uint32_t handle, uint16_t port)
         return result;
     }
 
-    live_video_context_pointer_array[handle]->port = port;
+    global_client_configurations.live_video_context_pointer_array[handle]->port_RTP = port;
+
+    return OSIP_SUCCESS;
+}
+
+LIBGBT28181CLIENT_API int GBT28181_close_live_video(uint32_t handle)
+{
+    CHECK_INITIALED(global_client_configurations.initialed);
+    CHECK_MUST_ON_LINE(global_client_configurations.online);
+    int result = chech_handle(handle);
+    if(OSIP_SUCCESS != result)
+    {
+        return result;
+    }
+
+    result = eXosip_lock(global_client_configurations.exosip_context);
+    if(OSIP_SUCCESS != result)
+    {
+        return result;
+    }
+
+    result = eXosip_call_terminate(
+        global_client_configurations.exosip_context,
+        global_client_configurations.live_video_context_pointer_array[handle]->call_id,
+        global_client_configurations.live_video_context_pointer_array[handle]->dialog_id);
+
+    eXosip_unlock(global_client_configurations.exosip_context);
+
+    global_client_configurations.live_video_context_pointer_array[handle]->live_video_streaming = false;
+    osip_free(global_client_configurations.live_video_context_pointer_array[handle]->target_IP);
+    osip_free(global_client_configurations.live_video_context_pointer_array[handle]->target_sip_user_name);
+    osip_free(global_client_configurations.live_video_context_pointer_array[handle]);
+
+    global_client_configurations.live_video_context_pointer_array[handle] = NULL;
 
     return OSIP_SUCCESS;
 }
