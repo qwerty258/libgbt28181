@@ -100,6 +100,7 @@ LIBGBT28181CLIENT_API int GBT28181_client_initial(void)
 
     ortp_init();
     ortp_scheduler_init();
+    ortp_set_log_level_mask(ORTP_DEBUG | ORTP_MESSAGE | ORTP_WARNING | ORTP_ERROR);
 
     CHECK_NULL_AND_RETURN(global_client_configurations.exosip_context);
 }
@@ -896,6 +897,7 @@ LIBGBT28181CLIENT_API int GBT28181_get_idle_real_time_stream_handle(uint32_t* ha
             global_client_configurations.live_video_context_pointer_array[i]->port_SIP = 0;
             global_client_configurations.live_video_context_pointer_array[i]->target_IP = NULL;
             global_client_configurations.live_video_context_pointer_array[i]->target_sip_user_name = NULL;
+            global_client_configurations.live_video_context_pointer_array[i]->local_IP = osip_strdup(global_client_configurations.client_IP);
             *handle = i;
             break;
         }
@@ -1105,6 +1107,7 @@ LIBGBT28181CLIENT_API int GBT28181_close_real_time_stream(uint32_t handle)
     global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming = false;
     osip_free(global_client_configurations.live_video_context_pointer_array[handle]->target_IP);
     osip_free(global_client_configurations.live_video_context_pointer_array[handle]->target_sip_user_name);
+    osip_free(global_client_configurations.live_video_context_pointer_array[handle]->local_IP);
     osip_free(global_client_configurations.live_video_context_pointer_array[handle]);
 
     global_client_configurations.live_video_context_pointer_array[handle] = NULL;
