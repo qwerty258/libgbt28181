@@ -225,7 +225,8 @@ void* event_working_thread(void* arg)
                     result = eXosip_call_build_ack(thread_parameter->exosip_context, event->did, &sip_message_answer);
                     result = eXosip_call_send_ack(thread_parameter->exosip_context, event->did, sip_message_answer);
                     result = eXosip_unlock(thread_parameter->exosip_context);
-                    for(uint32_t i = 0; i < thread_parameter->max_live_video_number; i++)
+                    uint32_t i;
+                    for(i = 0; i < thread_parameter->max_live_video_number; i++)
                     {
                         if(event->cid == thread_parameter->live_video_context_pointer_array[i]->call_id)
                         {
@@ -233,8 +234,21 @@ void* event_working_thread(void* arg)
                             break;
                         }
                     }
+
+                    osip_message_get_body(event->response, 0, &message_body);
+                    if(NULL != strstr(message_body->body, "H264"))
+                    {
+                        thread_parameter->live_video_context_pointer_array[i]->payload_type = payload_type_h264;
+                    }
+
+                    if(i < thread_parameter->max_live_video_number)
+                    {
+                        if(NULL == osip_thread_create(20000, RTP_data_receiving_working_thread, thread_parameter->live_video_context_pointer_array[i]))
+                        {
+                            // to do: handle error
+                        }
+                    }
                 }
-                osip_message_get_body(event->response, 0, &message_body);
                 printf("\n\n%s\n\n", message_body->body);
                 break;
             default:
@@ -499,5 +513,38 @@ void* MANSCDP_xml_message_working_thread(void* arg)
 
 void* RTP_data_receiving_working_thread(void* arg)
 {
+    real_time_stream_context* p_real_time_stream_context = arg;
+    uint32_t user_ts = 0;
+    mblk_t* p_mblk_t = NULL;
+    unsigned char *payload;
+    int payload_size;
 
+    p_real_time_stream_context->session = rtp_session_new(RTP_SESSION_RECVONLY);
+
+    rtp_session_set_scheduling_mode(p_real_time_stream_context->session, true);
+    rtp_session_set_blocking_mode(p_real_time_stream_context->session, true);
+    rtp_session_set_local_addr(p_real_time_stream_context->session, p_real_time_stream_context->local_IP, p_real_time_stream_context->port_RTP, -1);
+    rtp_session_set_connected_mode(p_real_time_stream_context->session, true);
+    rtp_session_enable_adaptive_jitter_compensation(p_real_time_stream_context->session, true);
+    rtp_session_set_jitter_compensation(p_real_time_stream_context->session, 40);
+    rtp_session_set_payload_type(p_real_time_stream_context->session, p_real_time_stream_context->payload_type.type);
+
+    while(p_real_time_stream_context->real_time_streaming)
+    {
+        user_ts++;
+        p_mblk_t = rtp_session_recvm_with_ts(p_real_time_stream_context->session, user_ts);
+        if(NULL != p_mblk_t)
+        {
+            payload_size = rtp_get_payload(p_mblk_t, &payload);
+            printf("size: %d, ", payload_size);
+            for(size_t i = 0; i < 8; i++)
+            {
+                printf("%02X", payload[i]);
+            }
+            printf("\n");
+        }
+    }
+
+    rtp_session_destroy(p_real_time_stream_context->session);
+    return NULL;
 }
