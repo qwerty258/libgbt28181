@@ -72,72 +72,6 @@ void query_device_status_callback(char* deviceID, uint64_t sum_num, MANSCDP_devi
     }
 }
 
-typedef struct _receiving_thread_parameter
-{
-    uint16_t port;
-    int protocol;
-    BOOL loop;
-}receiving_thread_parameter;
-
-DWORD WINAPI receiving_thread(LPVOID lpParam)
-{
-    receiving_thread_parameter* parameter = (receiving_thread_parameter*)lpParam;
-
-    WSADATA wsa_data;
-    WSAStartup(MAKEWORD(2, 2), &wsa_data);
-
-    SOCKET receiving_sock;
-
-    receiving_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-
-    sockaddr_in sockaddr_local;
-    memset(&sockaddr_local, 0x0, sizeof(sockaddr_in));
-    sockaddr_local.sin_addr.S_un.S_addr = inet_addr("192.168.10.29");
-    sockaddr_local.sin_family = AF_INET;
-    sockaddr_local.sin_port = htons(parameter->port);
-
-    bind(receiving_sock, (sockaddr*)&sockaddr_local, sizeof(sockaddr_in));
-
-    DWORD timeout = 1000;
-
-    setsockopt(receiving_sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(DWORD));
-
-    BYTE* buffer = (BYTE*)malloc(USHRT_MAX);
-
-    int bytes_received;
-
-    DWORD count = 0;
-    char file_path[256];
-
-    while(parameter->loop)
-    {
-        bytes_received = recv(receiving_sock, (char*)buffer, USHRT_MAX, 0);
-        if(0 < bytes_received)
-        {
-            for(size_t i = 0; i < 8; i++)
-            {
-                printf("%02X", buffer[i]);
-            }
-            printf("\n");
-            if(count < 10)
-            {
-                snprintf(file_path, 256, "D:\\gbt28181_stream_%u", count);
-                FILE* pFile = fopen(file_path, "wb");
-                fwrite(buffer, bytes_received, 1, pFile);
-                fclose(pFile);
-                count++;
-            }
-        }
-    }
-
-    closesocket(receiving_sock);
-
-    free(buffer);
-
-    WSACleanup();
-    return 0;
-}
-
 int main(int argc, char* argv[])
 {
     int result = GBT28181_client_initial();
@@ -204,15 +138,6 @@ int main(int argc, char* argv[])
 #endif
 
     uint32_t handle;
-    receiving_thread_parameter thread_parameter;
-    thread_parameter.port = 6000;
-    // must be UDP in test project,
-    // we can't know RTP port of IPC if using TCP,
-    // its in the SDP in the lib.
-    // Receiving real time video data will be moved into the SDK in the future,
-    // may be in the dependent RTP library.
-    thread_parameter.protocol = GBT28181_IPPROTO_UDP;
-    thread_parameter.loop = true;
 
 #if _DEBUG_FOR_HANDLE
     for(size_t i = 0; i < 100; i++)
@@ -226,13 +151,12 @@ int main(int argc, char* argv[])
 
     system("pause");
 
-    result = GBT28181_set_RTP_port(handle, thread_parameter.port);
+    result = GBT28181_set_RTP_port(handle, 6000);
 
-    result = GBT28181_set_RTP_protocol(handle, thread_parameter.protocol);
+    result = GBT28181_set_RTP_protocol(handle, GBT28181_IPPROTO_UDP);
 
     result = GBT28181_get_real_time_stream(handle, "34020000001320000141", "192.168.10.141", 5060);
 
-    HANDLE hThread = CreateThread(NULL, 0, receiving_thread, &thread_parameter, 0, NULL);
 
     system("pause");
 
@@ -240,9 +164,7 @@ int main(int argc, char* argv[])
 
     result = GBT28181_free_client();
 
-    thread_parameter.loop = false;
-
-    WaitForSingleObject(hThread, INFINITE);
+    system("pause");
 
     return 0;
 }
