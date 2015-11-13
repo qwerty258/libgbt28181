@@ -496,3 +496,8 @@ void* MANSCDP_xml_message_working_thread(void* arg)
 #endif // _DEBUG
     return NULL;
 }
+
+void* RTP_data_receiving_working_thread(void* arg)
+{
+
+}
