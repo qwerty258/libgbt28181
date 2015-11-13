@@ -98,6 +98,9 @@ LIBGBT28181CLIENT_API int GBT28181_client_initial(void)
     global_client_configurations.max_live_video_number = 0;
     global_client_configurations.live_video_context_pointer_array = NULL;
 
+    ortp_init();
+    ortp_scheduler_init();
+
     CHECK_NULL_AND_RETURN(global_client_configurations.exosip_context);
 }
 
@@ -783,6 +786,8 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
     }
 
     osip_free(global_client_configurations.live_video_context_pointer_array);
+
+    ortp_exit();
 
     int result = 0;
     osip_message_t* registration_message = NULL;
