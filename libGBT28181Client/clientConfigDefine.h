@@ -6,6 +6,7 @@
 #include <osip2\osip_mt.h>
 #include <eXosip2\eXosip.h>
 #include <ortp\ortp.h>
+#include <ortp\payloadtype.h>
 #include <Windows.h>
 
 #ifdef _MSC_VER
@@ -19,10 +20,12 @@ typedef struct _real_time_stream_context
     int call_id;
     char* target_sip_user_name;
     char* target_IP;
+    char* local_IP;
     uint16_t port_SIP;
     int dialog_id;
     int protocol_RTP;
     RtpSession* session;
+    PayloadType payload_type;
 }real_time_stream_context;
 
 typedef struct _client_configurations
