@@ -98,10 +98,6 @@ LIBGBT28181CLIENT_API int GBT28181_client_initial(void)
     global_client_configurations.max_live_video_number = 0;
     global_client_configurations.live_video_context_pointer_array = NULL;
 
-    ortp_init();
-    ortp_scheduler_init();
-    ortp_set_log_level_mask(ORTP_DEBUG | ORTP_MESSAGE | ORTP_WARNING | ORTP_ERROR);
-
     CHECK_NULL_AND_RETURN(global_client_configurations.exosip_context);
 }
 
@@ -788,7 +784,7 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
 
     osip_free(global_client_configurations.live_video_context_pointer_array);
 
-    ortp_exit();
+    uninitial_RTP_library();
 
     int result = 0;
     osip_message_t* registration_message = NULL;
@@ -870,6 +866,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_max_number_of_live_video(uint32_t max_num
     CHECK_ONLINE_NO_SET(global_client_configurations.online);
 
     global_client_configurations.max_live_video_number = max_number;
+    initial_RTP_library(max_number);
 
     return OSIP_SUCCESS;
 }
@@ -898,6 +895,7 @@ LIBGBT28181CLIENT_API int GBT28181_get_idle_real_time_stream_handle(uint32_t* ha
             global_client_configurations.live_video_context_pointer_array[i]->target_IP = NULL;
             global_client_configurations.live_video_context_pointer_array[i]->target_sip_user_name = NULL;
             global_client_configurations.live_video_context_pointer_array[i]->local_IP = osip_strdup(global_client_configurations.client_IP);
+            get_new_RTP_session(&global_client_configurations.live_video_context_pointer_array[i]->session_handle);
             *handle = i;
             break;
         }
@@ -1045,6 +1043,28 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
 
     global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming = true;
 
+    result = set_RTP_session_IP_version(
+        global_client_configurations.live_video_context_pointer_array[handle]->session_handle,
+        global_client_configurations.address_family);
+    if(LIBRTP_OK != result)
+    {
+        // to do
+    }
+
+    result = set_RTP_session_local_IPv4(
+        global_client_configurations.live_video_context_pointer_array[handle]->session_handle,
+        global_client_configurations.client_IP);
+    if(LIBRTP_OK != result)
+    {
+        // to do
+    }
+
+    result = RTP_session_start(global_client_configurations.live_video_context_pointer_array[handle]->session_handle);
+    if(LIBRTP_OK != result)
+    {
+        // to do
+    }
+
     return OSIP_SUCCESS;
 }
 
@@ -1059,7 +1079,13 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_port(uint32_t handle, uint16_t port)
     }
     CHECK_NOT_STREAMING(global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming);
 
-    global_client_configurations.live_video_context_pointer_array[handle]->port_RTP = port;
+    result = set_RTP_session_local_port(
+        global_client_configurations.live_video_context_pointer_array[handle]->session_handle,
+        port);
+    if(LIBRTP_OK != result)
+    {
+        // to do
+    }
 
     return OSIP_SUCCESS;
 }
@@ -1075,7 +1101,13 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_protocol(uint32_t handle, int protoco
     }
     CHECK_NOT_STREAMING(global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming);
 
-    global_client_configurations.live_video_context_pointer_array[handle]->protocol_RTP = protocol;
+    result = set_RTP_session_IP_protocol(
+        global_client_configurations.live_video_context_pointer_array[handle]->session_handle,
+        protocol);
+    if(LIBRTP_OK != result)
+    {
+        // to do
+    }
 
     return OSIP_SUCCESS;
 }
@@ -1104,6 +1136,13 @@ LIBGBT28181CLIENT_API int GBT28181_close_real_time_stream(uint32_t handle)
     eXosip_unlock(global_client_configurations.exosip_context);
 
     global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming = false;
+
+    result = close_RTP_session(global_client_configurations.live_video_context_pointer_array[handle]->session_handle);
+    if(LIBRTP_OK != result)
+    {
+        // to do
+    }
+
     osip_free(global_client_configurations.live_video_context_pointer_array[handle]->target_IP);
     osip_free(global_client_configurations.live_video_context_pointer_array[handle]->target_sip_user_name);
     osip_free(global_client_configurations.live_video_context_pointer_array[handle]->local_IP);

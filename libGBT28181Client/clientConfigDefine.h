@@ -5,8 +5,7 @@
 #include <stdbool.h>
 #include <osip2\osip_mt.h>
 #include <eXosip2\eXosip.h>
-#include <ortp\ortp.h>
-#include <ortp\payloadtype.h>
+#include <libRTP.h>
 #include <Windows.h>
 
 #ifdef _MSC_VER
@@ -24,8 +23,7 @@ typedef struct _real_time_stream_context
     uint16_t port_SIP;
     int dialog_id;
     int protocol_RTP;
-    RtpSession* session;
-    PayloadType payload_type;
+    RTP_session_handle session_handle;
 }real_time_stream_context;
 
 typedef struct _client_configurations
