@@ -219,6 +219,8 @@ void* event_working_thread(void* arg)
                 break;
             case EXOSIP_CALL_ANSWERED:
                 result = osip_message_get_status_code(event->response);
+                osip_message_get_body(event->response, 0, &message_body);
+                printf("\n\n%s\n\n", message_body->body);
                 if(200 == result)
                 {
                     result = eXosip_lock(thread_parameter->exosip_context);
@@ -234,22 +236,11 @@ void* event_working_thread(void* arg)
                             break;
                         }
                     }
-
-                    osip_message_get_body(event->response, 0, &message_body);
-                    if(NULL != strstr(message_body->body, "H264"))
+                    if(NULL == osip_thread_create(20000, RTP_data_receiving_working_thread, thread_parameter->live_video_context_pointer_array[i]))
                     {
-                        thread_parameter->live_video_context_pointer_array[i]->payload_type = payload_type_h264;
-                    }
-
-                    if(i < thread_parameter->max_live_video_number)
-                    {
-                        if(NULL == osip_thread_create(20000, RTP_data_receiving_working_thread, thread_parameter->live_video_context_pointer_array[i]))
-                        {
-                            // to do: handle error
-                        }
+                        // to do: handle error
                     }
                 }
-                printf("\n\n%s\n\n", message_body->body);
                 break;
             default:
 #ifdef _DEBUG
@@ -527,7 +518,7 @@ void* RTP_data_receiving_working_thread(void* arg)
     rtp_session_set_connected_mode(p_real_time_stream_context->session, true);
     rtp_session_enable_adaptive_jitter_compensation(p_real_time_stream_context->session, true);
     rtp_session_set_jitter_compensation(p_real_time_stream_context->session, 40);
-    rtp_session_set_payload_type(p_real_time_stream_context->session, p_real_time_stream_context->payload_type.type);
+    rtp_session_set_payload_type(p_real_time_stream_context->session, PAYLOAD_VIDEO);
 
     while(p_real_time_stream_context->real_time_streaming)
     {
