@@ -1079,6 +1079,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_port(uint32_t handle, uint16_t port)
     }
     CHECK_NOT_STREAMING(global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming);
 
+    global_client_configurations.live_video_context_pointer_array[handle]->port_RTP = port;
     result = set_RTP_session_local_port(
         global_client_configurations.live_video_context_pointer_array[handle]->session_handle,
         port);
@@ -1101,6 +1102,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_protocol(uint32_t handle, int protoco
     }
     CHECK_NOT_STREAMING(global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming);
 
+    global_client_configurations.live_video_context_pointer_array[handle]->protocol_RTP = protocol;
     result = set_RTP_session_IP_protocol(
         global_client_configurations.live_video_context_pointer_array[handle]->session_handle,
         protocol);
