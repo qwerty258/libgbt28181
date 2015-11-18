@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libGBT28181ClientTest", "li
 		{75CF1FD0-E83A-45D4-B9DD-235E233DC82A} = {75CF1FD0-E83A-45D4-B9DD-235E233DC82A}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libGBT28181GUIClientTest", "libGBT28181GUIClientTest\libGBT28181GUIClientTest.vcxproj", "{40CF249E-2DCA-463C-ADE1-6E0D6344FE04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -34,6 +36,14 @@ Global
 		{0A969FC3-8C1F-4688-8439-671C51B784F4}.Release|Win32.Build.0 = Release|Win32
 		{0A969FC3-8C1F-4688-8439-671C51B784F4}.Release|x64.ActiveCfg = Release|x64
 		{0A969FC3-8C1F-4688-8439-671C51B784F4}.Release|x64.Build.0 = Release|x64
+		{40CF249E-2DCA-463C-ADE1-6E0D6344FE04}.Debug|Win32.ActiveCfg = Debug|Win32
+		{40CF249E-2DCA-463C-ADE1-6E0D6344FE04}.Debug|Win32.Build.0 = Debug|Win32
+		{40CF249E-2DCA-463C-ADE1-6E0D6344FE04}.Debug|x64.ActiveCfg = Debug|x64
+		{40CF249E-2DCA-463C-ADE1-6E0D6344FE04}.Debug|x64.Build.0 = Debug|x64
+		{40CF249E-2DCA-463C-ADE1-6E0D6344FE04}.Release|Win32.ActiveCfg = Release|Win32
+		{40CF249E-2DCA-463C-ADE1-6E0D6344FE04}.Release|Win32.Build.0 = Release|Win32
+		{40CF249E-2DCA-463C-ADE1-6E0D6344FE04}.Release|x64.ActiveCfg = Release|x64
+		{40CF249E-2DCA-463C-ADE1-6E0D6344FE04}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
