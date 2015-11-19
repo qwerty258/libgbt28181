@@ -47,6 +47,8 @@ private:
     CString m_target_SIP_user_name;
     CString m_target_IP;
     DWORD m_target_port;
+    int m_min_pos;
+    int m_max_pos;
 public:
     CString m_info_output;
 
@@ -54,4 +56,8 @@ public:
     char* CstringToChar(CString& cstring);
     int SetFunctionWithCharParameter(int(*p_function)(char*), CString& cstringToSet);
     afx_msg void OnClickedButtonGoOnline();
+    afx_msg void OnClickedButtonQueryDeviceStatus();
+    afx_msg void OnClickedButtonQueryDeviceInfo();
+    afx_msg void OnClickedButtonQueryCatalog();
+    afx_msg void OnClickedButtonUpdateInfo();
 };
