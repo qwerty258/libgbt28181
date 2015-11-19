@@ -512,7 +512,7 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name)
     eXosip_lock(global_client_configurations.exosip_context);
     result = eXosip_message_send_request(global_client_configurations.exosip_context, query_query_device_message);
     eXosip_unlock(global_client_configurations.exosip_context);
-    if(OSIP_SUCCESS != result)
+    if(0 > result)
     {
         osip_free(from);
         osip_free(to);
@@ -629,7 +629,7 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_nam
     eXosip_lock(global_client_configurations.exosip_context);
     result = eXosip_message_send_request(global_client_configurations.exosip_context, query_device_status_message);
     eXosip_unlock(global_client_configurations.exosip_context);
-    if(OSIP_SUCCESS != result)
+    if(0 > result)
     {
         osip_free(from);
         osip_free(to);
@@ -746,7 +746,7 @@ LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name)
     eXosip_lock(global_client_configurations.exosip_context);
     result = eXosip_message_send_request(global_client_configurations.exosip_context, query_catalog_message);
     eXosip_unlock(global_client_configurations.exosip_context);
-    if(OSIP_SUCCESS != result)
+    if(0 > result)
     {
         osip_free(from);
         osip_free(to);
@@ -842,9 +842,10 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
             osip_free(proxy);
             return result;
         }
-        osip_usleep(1000000);
 
         global_client_configurations.thread_loop = false;
+
+        osip_usleep(500000);
 
         eXosip_quit(global_client_configurations.exosip_context);
     }
