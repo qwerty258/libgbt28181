@@ -813,36 +813,38 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
         global_client_configurations.server_IP,
         global_client_configurations.server_port);
 
-    result = eXosip_register_build_initial_register(
-        global_client_configurations.exosip_context,
-        from,
-        proxy,
-        NULL,
-        0,
-        &registration_message);
-    if(result < 1)
+    if(global_client_configurations.online)
     {
-        osip_free(from);
-        osip_free(proxy);
-        return GBT28181_UNDEFINED_ERROR;
+        result = eXosip_register_build_initial_register(
+            global_client_configurations.exosip_context,
+            from,
+            proxy,
+            NULL,
+            0,
+            &registration_message);
+        if(result < 1)
+        {
+            osip_free(from);
+            osip_free(proxy);
+            return GBT28181_UNDEFINED_ERROR;
+        }
+
+        result = eXosip_register_send_register(
+            global_client_configurations.exosip_context,
+            result,
+            registration_message);
+        if(GBT28181_SUCCESS != result)
+        {
+            osip_free(from);
+            osip_free(proxy);
+            return result;
+        }
+        osip_usleep(1000000);
+
+        global_client_configurations.thread_loop = false;
+
+        eXosip_quit(global_client_configurations.exosip_context);
     }
-
-    result = eXosip_register_send_register(
-        global_client_configurations.exosip_context,
-        result,
-        registration_message);
-    if(GBT28181_SUCCESS != result)
-    {
-        osip_free(from);
-        osip_free(proxy);
-        return result;
-    }
-
-    global_client_configurations.thread_loop = false;
-
-    osip_usleep(1000000);
-
-    eXosip_quit(global_client_configurations.exosip_context);
 
     DeleteCriticalSection(&global_client_configurations.critical_section);
 
