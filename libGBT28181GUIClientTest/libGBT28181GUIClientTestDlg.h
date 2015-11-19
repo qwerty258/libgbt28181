@@ -11,6 +11,7 @@ class ClibGBT28181GUIClientTestDlg : public CDialogEx
     // Construction
 public:
     ClibGBT28181GUIClientTestDlg(CWnd* pParent = NULL);	// standard constructor
+    virtual BOOL DestroyWindow();
 
     // Dialog Data
     enum
@@ -31,4 +32,21 @@ protected:
     afx_msg void OnPaint();
     afx_msg HCURSOR OnQueryDragIcon();
     DECLARE_MESSAGE_MAP()
+private:
+    CString m_local_client_SIP_user_name;
+    CString m_local_client_SIP_user_ID;
+    CString m_local_client_SIP_password;
+    CString m_local_client_IP;
+    DWORD m_local_client_port;
+    CString m_SIP_server_ID;
+    CString m_SIP_server_domain;
+    CString m_SIP_server_IP;
+    DWORD m_SIP_server_port;
+    DWORD m_register_expiration_interval;
+    DWORD m_heartbeat_interval;
+    DWORD m_maximun_time_out_interval;
+    CString m_target_SIP_user_name;
+    CString m_target_IP;
+    DWORD m_target_port;
+    CString m_info_output;
 };
