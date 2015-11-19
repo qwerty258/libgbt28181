@@ -11,7 +11,6 @@ class ClibGBT28181GUIClientTestDlg : public CDialogEx
     // Construction
 public:
     ClibGBT28181GUIClientTestDlg(CWnd* pParent = NULL);	// standard constructor
-    virtual BOOL DestroyWindow();
 
     // Dialog Data
     enum
@@ -44,9 +43,15 @@ private:
     DWORD m_SIP_server_port;
     DWORD m_register_expiration_interval;
     DWORD m_heartbeat_interval;
-    DWORD m_maximun_time_out_interval;
+    DWORD m_maximun_time_out_number;
     CString m_target_SIP_user_name;
     CString m_target_IP;
     DWORD m_target_port;
+public:
     CString m_info_output;
+
+    virtual BOOL DestroyWindow();
+    char* CstringToChar(CString& cstring);
+    int SetFunctionWithCharParameter(int(*p_function)(char*), CString& cstringToSet);
+    afx_msg void OnClickedButtonGoOnline();
 };

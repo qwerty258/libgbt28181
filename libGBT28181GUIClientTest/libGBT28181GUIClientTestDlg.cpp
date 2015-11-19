@@ -31,7 +31,7 @@ ClibGBT28181GUIClientTestDlg::ClibGBT28181GUIClientTestDlg(CWnd* pParent /*=NULL
     m_SIP_server_port(0),
     m_register_expiration_interval(0),
     m_heartbeat_interval(0),
-    m_maximun_time_out_interval(0),
+    m_maximun_time_out_number(0),
     m_target_SIP_user_name(_T("")),
     m_target_IP(_T("")),
     m_target_port(0),
@@ -54,7 +54,7 @@ void ClibGBT28181GUIClientTestDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_SERVER_PORT, m_SIP_server_port);
     DDX_Text(pDX, IDC_EDIT_REGISTER_EXPIRATION_INTERVAL, m_register_expiration_interval);
     DDX_Text(pDX, IDC_EDIT_HEARTBEAT_INTERVAL, m_heartbeat_interval);
-    DDX_Text(pDX, IDC_EDIT_MAXIMUN_TIME_OUT_INTERVAL, m_maximun_time_out_interval);
+    DDX_Text(pDX, IDC_EDIT_MAXIMUN_TIME_OUT_INTERVAL, m_maximun_time_out_number);
     DDX_Text(pDX, IDC_EDIT_TARGET_SIP_USER_NAME, m_target_SIP_user_name);
     DDX_Text(pDX, IDC_EDIT_TARGET_IP, m_target_IP);
     DDX_Text(pDX, IDC_EDIT_TARGET_PORT, m_target_port);
@@ -64,6 +64,7 @@ void ClibGBT28181GUIClientTestDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(ClibGBT28181GUIClientTestDlg, CDialogEx)
     ON_WM_PAINT()
     ON_WM_QUERYDRAGICON()
+    ON_BN_CLICKED(IDC_BUTTON_GO_ONLINE, &ClibGBT28181GUIClientTestDlg::OnClickedButtonGoOnline)
 END_MESSAGE_MAP()
 
 
@@ -90,13 +91,13 @@ BOOL ClibGBT28181GUIClientTestDlg::OnInitDialog()
     m_SIP_server_port = 5060;
     m_register_expiration_interval = 3600;
     m_heartbeat_interval = 60;
-    m_maximun_time_out_interval = 3;
-    m_info_output = _T("All kinds of info out put area.\r\n");
+    m_maximun_time_out_number = 3;
+    m_info_output = _T("All kinds of info out put area.\r\n\r\n");
     UpdateData(FALSE);
 
     int32_t result = GBT28181_client_initial();
     TCHAR message[256];
-    _sntprintf(message, 256, _T("GBT28181_client_initial return: %d\r\n"), result);
+    _sntprintf(message, 256, _T("GBT28181_client_initial return: %d\r\n\r\n"), result);
     m_info_output += message;
     UpdateData(FALSE);
 
@@ -152,4 +153,105 @@ BOOL ClibGBT28181GUIClientTestDlg::DestroyWindow()
         AfxMessageBox(message);
     }
     return CDialogEx::DestroyWindow();
+}
+
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonGoOnline()
+{
+    // TODO: Add your control notification handler code here
+    TCHAR message[256];
+    int result = 0;
+
+    UpdateData(TRUE);
+
+    result = SetFunctionWithCharParameter(GBT28181_set_client_name, m_local_client_SIP_user_name);
+    _sntprintf(message, 256, _T("GBT28181_set_client_name return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = SetFunctionWithCharParameter(GBT28181_set_client_ID, m_local_client_SIP_user_ID);
+    _sntprintf(message, 256, _T("GBT28181_set_client_ID return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = SetFunctionWithCharParameter(GBT28181_set_client_password, m_local_client_SIP_password);
+    _sntprintf(message, 256, _T("GBT28181_set_client_password return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = SetFunctionWithCharParameter(GBT28181_set_client_IP, m_local_client_IP);
+    _sntprintf(message, 256, _T("GBT28181_set_client_IP return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = GBT28181_set_client_port(m_local_client_port);
+    _sntprintf(message, 256, _T("GBT28181_set_client_port return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = SetFunctionWithCharParameter(GBT28181_set_SIP_server_ID, m_SIP_server_ID);
+    _sntprintf(message, 256, _T("GBT28181_set_SIP_server_ID return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = SetFunctionWithCharParameter(GBT28181_set_SIP_server_domain, m_SIP_server_domain);
+    _sntprintf(message, 256, _T("GBT28181_set_SIP_server_domain return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = SetFunctionWithCharParameter(GBT28181_set_SIP_server_IP, m_SIP_server_IP);
+    _sntprintf(message, 256, _T("GBT28181_set_SIP_server_IP return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = GBT28181_set_SIP_server_port(m_SIP_server_port);
+    _sntprintf(message, 256, _T("GBT28181_set_SIP_server_port return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = GBT28181_set_expiration_interval(m_register_expiration_interval);
+    _sntprintf(message, 256, _T("GBT28181_set_expiration_interval return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = GBT28181_set_heartbeat_interval(m_heartbeat_interval);
+    _sntprintf(message, 256, _T("GBT28181_set_heartbeat_interval return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = GBT28181_set_max_time_out_number(m_maximun_time_out_number);
+    _sntprintf(message, 256, _T("GBT28181_set_max_time_out_number return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = GBT28181_set_address_family(GBT28181_AF_INET);
+    _sntprintf(message, 256, _T("GBT28181_set_address_family return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = GBT28181_set_IP_protocol(GBT28181_IPPROTO_UDP);
+    _sntprintf(message, 256, _T("GBT28181_set_IP_protocol return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = GBT28181_set_max_number_of_live_video(64);
+    _sntprintf(message, 256, _T("GBT28181_set_max_number_of_live_video return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    //result = GBT28181_client_go_online();
+    //_sntprintf(message, 256, _T("GBT28181_client_go_online return: %d\r\n\r\n"), result);
+    //m_info_output += message;
+
+    UpdateData(FALSE);
+}
+
+
+char* ClibGBT28181GUIClientTestDlg::CstringToChar(CString& cstring)
+{
+    char* szString = new char[256];
+    int result = WideCharToMultiByte(CP_UTF8, 0, cstring, cstring.GetLength(), szString, 256, NULL, NULL);
+    if(result > 0)
+    {
+        szString[result] = '\0';
+        return szString;
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+
+int ClibGBT28181GUIClientTestDlg::SetFunctionWithCharParameter(int(*p_function)(char*), CString& cstringToSet)
+{
+    char* szStringTemp = CstringToChar(cstringToSet);
+    int result = p_function(szStringTemp);
+    delete[] szStringTemp;
+    return result;
 }
