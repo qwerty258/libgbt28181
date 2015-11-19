@@ -771,13 +771,16 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
 
-    for(uint32_t i = 0; i < global_client_configurations.max_live_video_number; i++)
+    if(NULL != global_client_configurations.live_video_context_pointer_array)
     {
-        if(NULL != global_client_configurations.live_video_context_pointer_array[i])
+        for(uint32_t i = 0; i < global_client_configurations.max_live_video_number; i++)
         {
-            if(global_client_configurations.live_video_context_pointer_array[i]->real_time_streaming)
+            if(NULL != global_client_configurations.live_video_context_pointer_array[i])
             {
-                GBT28181_close_real_time_stream(i);
+                if(global_client_configurations.live_video_context_pointer_array[i]->real_time_streaming)
+                {
+                    GBT28181_close_real_time_stream(i);
+                }
             }
         }
     }
