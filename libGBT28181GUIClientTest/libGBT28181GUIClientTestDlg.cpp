@@ -13,6 +13,103 @@
 #define new DEBUG_NEW
 #endif
 
+ClibGBT28181GUIClientTestDlg* p_global_ClibGBT28181GUIClientTestDlg;
+
+void query_deviceInfo_callback(char* device_ID, char* device_type, char* manufacturer, char* model, char* firmware, uint64_t max_camera, uint64_t max_alarm)
+{
+    CString& temp = p_global_ClibGBT28181GUIClientTestDlg->m_info_output;
+    TCHAR szTemp[256];
+    _sntprintf(szTemp, 256, _T("device_ID   : %s\r\n"), device_ID);
+    temp += szTemp;
+    _sntprintf(szTemp, 256, _T("device_type : %s\r\n"), device_type);
+    temp += szTemp;
+    _sntprintf(szTemp, 256, _T("manufacturer: %s\r\n"), manufacturer);
+    temp += szTemp;
+    _sntprintf(szTemp, 256, _T("model       : %s\r\n"), model);
+    temp += szTemp;
+    _sntprintf(szTemp, 256, _T("firmware    : %s\r\n"), firmware);
+    temp += szTemp;
+    _sntprintf(szTemp, 256, _T("max_camera  : %u\r\n"), max_camera);
+    temp += szTemp;
+    _sntprintf(szTemp, 256, _T("max_alarm   : %u\r\n\r\n"), max_alarm);
+    temp += szTemp;
+    p_global_ClibGBT28181GUIClientTestDlg->UpdateData(FALSE);
+}
+
+void query_device_status_callback(char* deviceID, MANSCDP_on_off_line online, MANSCDP_result_type status)
+{
+    CString& temp = p_global_ClibGBT28181GUIClientTestDlg->m_info_output;
+    TCHAR szTemp[256];
+    _sntprintf(szTemp, 256, _T("device_ID: %s\r\n"), deviceID);
+    temp += szTemp;
+
+    switch(online)
+    {
+        case MANSCDP_ONLINE:
+            temp += _T("online   : ONLINE\r\n");
+            break;
+        case MANSCDP_OFFLINE:
+            temp += _T("online   : OFFLINE\r\n");
+            break;
+        case MANSCDP_UNKNOWN_ON_OFF_LINE:
+            temp += _T("online   : UNKNOWN\r\n");
+            break;
+    }
+    switch(status)
+    {
+        case MANSCDP_OK:
+            temp += _T("status   : OK\r\n\r\n");
+            break;
+        case MANSCDP_ERROR:
+            temp += _T("status   : ERROR\r\n\r\n");
+            break;
+        case MANSCDP_UNKNOWN_RESULT_TYPE:
+            temp += _T("status   : UNKNOWN\r\n\r\n");
+            break;
+    }
+    p_global_ClibGBT28181GUIClientTestDlg->UpdateData(FALSE);
+}
+
+void query_device_catalog_callback(char* deviceID, uint64_t sum_num, MANSCDP_device* p_MANSCDP_device_array)
+{
+    CString& temp = p_global_ClibGBT28181GUIClientTestDlg->m_info_output;
+    TCHAR szTemp[256];
+    _sntprintf(szTemp, 256, _T("device_ID: %s\r\n"), deviceID);
+    temp += szTemp;
+    _sntprintf(szTemp, 256, _T("count    : %u\r\n"), sum_num);
+    temp += szTemp;
+    for(uint64_t i = 0; i < sum_num; i++)
+    {
+        _sntprintf(szTemp, 256, _T("device number: %u\r\n"), i + 1);
+        temp += szTemp;
+        _sntprintf(szTemp, 256, _T("DeviceID    : %s\r\n"), p_MANSCDP_device_array->DeviceID);
+        temp += szTemp;
+        _sntprintf(szTemp, 256, _T("Name        : %s\r\n"), p_MANSCDP_device_array->Name);
+        temp += szTemp;
+        _sntprintf(szTemp, 256, _T("Manufacturer: %s\r\n"), p_MANSCDP_device_array->Manufacturer);
+        temp += szTemp;
+        _sntprintf(szTemp, 256, _T("Model       : %s\r\n"), p_MANSCDP_device_array->Model);
+        temp += szTemp;
+        _sntprintf(szTemp, 256, _T("Owner       : %s\r\n"), p_MANSCDP_device_array->Owner);
+        temp += szTemp;
+        _sntprintf(szTemp, 256, _T("CivilCode   : %s\r\n"), p_MANSCDP_device_array->CivilCode);
+        temp += szTemp;
+        _sntprintf(szTemp, 256, _T("Address     : %s\r\n"), p_MANSCDP_device_array->Address);
+        temp += szTemp;
+        _sntprintf(szTemp, 256, _T("Parental    : %s\r\n"), p_MANSCDP_device_array->Parental);
+        temp += szTemp;
+        _sntprintf(szTemp, 256, _T("SafetyWay   : %s\r\n"), p_MANSCDP_device_array->SafetyWay);
+        temp += szTemp;
+        _sntprintf(szTemp, 256, _T("RegisterWay : %s\r\n"), p_MANSCDP_device_array->RegisterWay);
+        temp += szTemp;
+        _sntprintf(szTemp, 256, _T("Secrecy     : %s\r\n"), p_MANSCDP_device_array->Secrecy);
+        temp += szTemp;
+        _sntprintf(szTemp, 256, _T("Status      : %s\r\n"), p_MANSCDP_device_array->Status);
+        temp += szTemp;
+    }
+    temp += _T("\r\n");
+    p_global_ClibGBT28181GUIClientTestDlg->UpdateData(FALSE);
+}
 
 // ClibGBT28181GUIClientTestDlg dialog
 
@@ -80,6 +177,7 @@ BOOL ClibGBT28181GUIClientTestDlg::OnInitDialog()
     SetIcon(m_hIcon, FALSE);		// Set small icon
 
     // TODO: Add extra initialization here
+    p_global_ClibGBT28181GUIClientTestDlg = this;
     m_local_client_SIP_user_name = _T("34020000001320000029");
     m_local_client_SIP_user_ID = _T("34020000001320000029");
     m_local_client_SIP_password = _T("123456");
@@ -92,6 +190,9 @@ BOOL ClibGBT28181GUIClientTestDlg::OnInitDialog()
     m_register_expiration_interval = 3600;
     m_heartbeat_interval = 60;
     m_maximun_time_out_number = 3;
+    m_target_SIP_user_name = _T("34020000001320000141");
+    m_target_IP = _T("192.168.10.141");
+    m_target_port = 5060;
     m_info_output = _T("All kinds of info out put area.\r\n\r\n");
     UpdateData(FALSE);
 
@@ -162,7 +263,7 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonGoOnline()
     TCHAR message[256];
     int result = 0;
 
-    UpdateData(TRUE);
+    UpdateData();
 
     result = SetFunctionWithCharParameter(GBT28181_set_client_name, m_local_client_SIP_user_name);
     _sntprintf(message, 256, _T("GBT28181_set_client_name return: %d\r\n\r\n"), result);
@@ -224,9 +325,21 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonGoOnline()
     _sntprintf(message, 256, _T("GBT28181_set_max_number_of_live_video return: %d\r\n\r\n"), result);
     m_info_output += message;
 
-    //result = GBT28181_client_go_online();
-    //_sntprintf(message, 256, _T("GBT28181_client_go_online return: %d\r\n\r\n"), result);
-    //m_info_output += message;
+    result = GBT28181_set_query_device_info_callback(query_deviceInfo_callback);
+    _sntprintf(message, 256, _T("GBT28181_set_query_device_info_callback return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = GBT28181_set_query_device_status_callback(query_device_status_callback);
+    _sntprintf(message, 256, _T("GBT28181_set_query_device_status_callback return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = GBT28181_set_query_catalog_callback(query_device_catalog_callback);
+    _sntprintf(message, 256, _T("GBT28181_set_query_catalog_callback return: %d\r\n\r\n"), result);
+    m_info_output += message;
+
+    result = GBT28181_client_go_online();
+    _sntprintf(message, 256, _T("GBT28181_client_go_online return: %d\r\n\r\n"), result);
+    m_info_output += message;
 
     UpdateData(FALSE);
 }
