@@ -38,7 +38,7 @@ END_MESSAGE_MAP()
 BOOL ClibGBT28181GUIClientTestDlg::OnInitDialog()
 {
     CDialogEx::OnInitDialog();
-
+    SetWindowLong(this->m_hWnd, GWL_STYLE, GetWindowLong(this->m_hWnd, GWL_STYLE) | WS_MINIMIZEBOX | WS_SYSMENU);
     // Set the icon for this dialog.  The framework does this automatically
     //  when the application's main window is not a dialog
     SetIcon(m_hIcon, TRUE);			// Set big icon
