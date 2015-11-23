@@ -94,11 +94,11 @@ LIBGBT28181CLIENT_API int GBT28181_set_max_number_of_live_video(uint32_t max_num
 
 LIBGBT28181CLIENT_API int GBT28181_client_go_online(void);
 
-LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name);
+LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name, char* target_IP, uint16_t port);
 
-LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_name);
+LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_name, char* target_IP, uint16_t port);
 
-LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name);
+LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name, char* target_IP, uint16_t port);
 
 LIBGBT28181CLIENT_API int GBT28181_get_idle_real_time_stream_handle(uint32_t* handle);
 

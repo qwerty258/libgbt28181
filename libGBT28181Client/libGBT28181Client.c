@@ -427,7 +427,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_query_device_info_callback(function_query
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name)
+LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name, char* target_IP, uint16_t port)
 {
     CHECK_NULL_PARAMETER(target_sip_user_name);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -463,13 +463,26 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name)
         "sip:%s@%s",
         target_sip_user_name,
         global_client_configurations.server_domain);
-    snprintf(
-        proxy,
-        512,
-        "sip:%s@%s:%d",
-        global_client_configurations.server_ID,
-        global_client_configurations.server_IP,
-        global_client_configurations.server_port);
+
+    if(NULL != target_IP)
+    {
+        snprintf(
+            proxy,
+            512,
+            "<sip:%s@%s:%u>",
+            target_sip_user_name,
+            target_IP,
+            port);
+    }
+    else
+    {
+        snprintf(
+            proxy,
+            512,
+            "<sip:%s@%s>",
+            target_sip_user_name,
+            global_client_configurations.server_domain);
+    }
 
     result = eXosip_message_build_request(
         global_client_configurations.exosip_context,
@@ -544,7 +557,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_query_device_status_callback(function_que
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_name)
+LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_name, char* target_IP, uint16_t port)
 {
     CHECK_NULL_PARAMETER(target_sip_user_name);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -580,13 +593,26 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_nam
         "sip:%s@%s",
         target_sip_user_name,
         global_client_configurations.server_domain);
-    snprintf(
-        proxy,
-        512,
-        "sip:%s@%s:%d",
-        global_client_configurations.server_ID,
-        global_client_configurations.server_IP,
-        global_client_configurations.server_port);
+
+    if(NULL != target_IP)
+    {
+        snprintf(
+            proxy,
+            512,
+            "<sip:%s@%s:%u>",
+            target_sip_user_name,
+            target_IP,
+            port);
+    }
+    else
+    {
+        snprintf(
+            proxy,
+            512,
+            "<sip:%s@%s>",
+            target_sip_user_name,
+            global_client_configurations.server_domain);
+    }
 
     result = eXosip_message_build_request(
         global_client_configurations.exosip_context,
@@ -661,7 +687,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_query_catalog_callback(function_query_cat
     return OSIP_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name)
+LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name, char* target_IP, uint16_t port)
 {
     CHECK_NULL_PARAMETER(target_sip_user_name);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -697,13 +723,26 @@ LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name)
         "sip:%s@%s",
         target_sip_user_name,
         global_client_configurations.server_domain);
-    snprintf(
-        proxy,
-        512,
-        "sip:%s@%s:%d",
-        global_client_configurations.server_ID,
-        global_client_configurations.server_IP,
-        global_client_configurations.server_port);
+
+    if(NULL != target_IP)
+    {
+        snprintf(
+            proxy,
+            512,
+            "<sip:%s@%s:%u>",
+            target_sip_user_name,
+            target_IP,
+            port);
+    }
+    else
+    {
+        snprintf(
+            proxy,
+            512,
+            "<sip:%s@%s>",
+            target_sip_user_name,
+            global_client_configurations.server_domain);
+    }
 
     result = eXosip_message_build_request(
         global_client_configurations.exosip_context,
