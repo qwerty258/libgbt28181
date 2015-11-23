@@ -479,9 +479,10 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name,
         snprintf(
             proxy,
             512,
-            "<sip:%s@%s>",
-            target_sip_user_name,
-            global_client_configurations.server_domain);
+            "<sip:%s@%s:%d>",
+            global_client_configurations.server_ID,
+            global_client_configurations.server_IP,
+            global_client_configurations.server_port);
     }
 
     result = eXosip_message_build_request(
@@ -609,9 +610,10 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_nam
         snprintf(
             proxy,
             512,
-            "<sip:%s@%s>",
-            target_sip_user_name,
-            global_client_configurations.server_domain);
+            "<sip:%s@%s:%d>",
+            global_client_configurations.server_ID,
+            global_client_configurations.server_IP,
+            global_client_configurations.server_port);
     }
 
     result = eXosip_message_build_request(
@@ -739,9 +741,10 @@ LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name, cha
         snprintf(
             proxy,
             512,
-            "<sip:%s@%s>",
-            target_sip_user_name,
-            global_client_configurations.server_domain);
+            "<sip:%s@%s:%d>",
+            global_client_configurations.server_ID,
+            global_client_configurations.server_IP,
+            global_client_configurations.server_port);
     }
 
     result = eXosip_message_build_request(
