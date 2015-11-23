@@ -8,6 +8,7 @@
 #include "afxdialogex.h"
 
 #include <libGBT28181Client.h>
+#include <PlayH264DLL.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -17,7 +18,7 @@ ClibGBT28181GUIClientTestDlg* p_global_ClibGBT28181GUIClientTestDlg;
 
 // ClibGBT28181GUIClientTestDlg dialog
 
-
+int global_instance;
 
 ClibGBT28181GUIClientTestDlg::ClibGBT28181GUIClientTestDlg(CWnd* pParent /*=NULL*/)
     :CDialogEx(ClibGBT28181GUIClientTestDlg::IDD, pParent),
@@ -70,6 +71,8 @@ BEGIN_MESSAGE_MAP(ClibGBT28181GUIClientTestDlg, CDialogEx)
     ON_BN_CLICKED(IDC_BUTTON_QUERY_DEVICE_INFO, &ClibGBT28181GUIClientTestDlg::OnClickedButtonQueryDeviceInfo)
     ON_BN_CLICKED(IDC_BUTTON_QUERY_CATALOG, &ClibGBT28181GUIClientTestDlg::OnClickedButtonQueryCatalog)
     ON_BN_CLICKED(IDC_BUTTON_UPDATE_INFO, &ClibGBT28181GUIClientTestDlg::OnClickedButtonUpdateInfo)
+ON_BN_CLICKED(IDC_BUTTON_GET_LIVE_VIDEO, &ClibGBT28181GUIClientTestDlg::OnClickedButtonGetLiveVideo)
+ON_BN_CLICKED(IDC_BUTTON_CLOSE_VIDEO, &ClibGBT28181GUIClientTestDlg::OnClickedButtonCloseVideo)
 END_MESSAGE_MAP()
 
 void query_deviceInfo_callback(char* device_ID, char* device_type, char* manufacturer, char* model, char* firmware, uint64_t max_camera, uint64_t max_alarm)
@@ -180,6 +183,8 @@ BOOL ClibGBT28181GUIClientTestDlg::OnInitDialog()
     m_info_output += message;
     UpdateData(FALSE);
 
+    initial_decode_DLL(64);
+
     return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -231,6 +236,8 @@ BOOL ClibGBT28181GUIClientTestDlg::DestroyWindow()
         message.Format(_T("GBT28181_free_client error: %d"), result);
         AfxMessageBox(message);
     }
+
+    free_decode_DLL();
     return CDialogEx::DestroyWindow();
 }
 
@@ -410,4 +417,48 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonUpdateInfo()
 {
     // TODO: Add your control notification handler code here
     UpdateData(FALSE);
+}
+
+int payload_callback(uint32_t session_handle, uint8_t* payload, uint32_t payload_size, uint16_t sequence_number, uint32_t timestamp)
+{
+    return decode(global_instance, payload, payload_size, sequence_number, timestamp);
+}
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonGetLiveVideo()
+{
+    // TODO: Add your control notification handler code here
+    myparamInput param;
+    param.fps = 25;
+    param.height = 720;
+    param.width = 1280;
+    param.isDecode = true;
+    param.playHandle = GetDlgItem(IDC_PICTURE_AREA)->m_hWnd;
+
+    m_play_instance = get_idle_decode_instance();
+    initial_decode_parameter(m_play_instance, &param, 1);
+    set_decode_hardware_acceleration(m_play_instance, true);
+    playing_windows_RECT_changed_of_decode_DLL(m_play_instance);
+    global_instance = m_play_instance;
+
+    GBT28181_get_idle_real_time_stream_handle((uint32_t*)&m_live_time_stream_handle);
+
+    GBT28181_set_RTP_port(m_live_time_stream_handle, 6002);
+
+    GBT28181_set_RTP_protocol(m_live_time_stream_handle, GBT28181_IPPROTO_UDP);
+
+    GBT28181_set_RTP_payload_give_out_callback(m_live_time_stream_handle, payload_callback);
+
+    char* target_sip_user_name = CstringToChar(m_target_SIP_user_name);
+    char* target_IP = CstringToChar(m_target_IP);
+    GBT28181_get_real_time_stream(m_live_time_stream_handle, target_sip_user_name, target_IP, m_target_port);
+    delete[] target_sip_user_name;
+    delete[] target_IP;
+}
+
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonCloseVideo()
+{
+    // TODO: Add your control notification handler code here
+    free_decode_instance(global_instance);
+    GBT28181_close_real_time_stream(m_live_time_stream_handle);
 }

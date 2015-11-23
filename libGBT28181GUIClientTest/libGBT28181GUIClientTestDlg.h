@@ -49,6 +49,8 @@ private:
     DWORD m_target_port;
     int m_min_pos;
     int m_max_pos;
+    int m_play_instance;
+    DWORD m_live_time_stream_handle;
 public:
     CString m_info_output;
 
@@ -60,4 +62,6 @@ public:
     afx_msg void OnClickedButtonQueryDeviceInfo();
     afx_msg void OnClickedButtonQueryCatalog();
     afx_msg void OnClickedButtonUpdateInfo();
+    afx_msg void OnClickedButtonGetLiveVideo();
+    afx_msg void OnClickedButtonCloseVideo();
 };
