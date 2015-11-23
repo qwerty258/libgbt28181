@@ -106,6 +106,8 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_port(uint32_t handle, uint16_t port);
 
 LIBGBT28181CLIENT_API int GBT28181_set_RTP_protocol(uint32_t handle, int protocol);
 
+LIBGBT28181CLIENT_API int GBT28181_set_RTP_payload_give_out_callback(uint32_t handle, void* cb);
+
 LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* target_sip_user_name, char* target_IP, uint16_t port);
 
 LIBGBT28181CLIENT_API int GBT28181_close_real_time_stream(uint32_t handle);

@@ -1002,7 +1002,8 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
     snprintf(
         SDP_payload,
         1500,
-        "v=0\r\no=%s 0 0 IN IP4 %s\r\ns=Play\r\nc=IN IP4 %s\r\nt=0 0\r\nm=video %u %s 98 97\r\na=recvonly\r\na=rtpmap:98 H264/90000\r\na=rtpmap:97 MPEG4/90000\r\n",
+        //"v=0\r\no=%s 0 0 IN IP4 %s\r\ns=Play\r\nc=IN IP4 %s\r\nt=0 0\r\nm=video %u %s 96 98 97\r\na=recvonly\r\na=rtpmap:96 PS/90000\r\na=rtpmap:98 H264/90000\r\na=rtpmap:97 MPEG4/90000\r\n",
+        "v=0\r\no=%s 0 0 IN IP4 %s\r\ns=Play\r\nc=IN IP4 %s\r\nt=0 0\r\nm=video %u %s 96\r\na=recvonly\r\na=rtpmap:96 PS/90000\r\n",
         global_client_configurations.client_user_name,
         global_client_configurations.client_IP,
         global_client_configurations.client_IP,
@@ -1064,6 +1065,10 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
     {
         // to do
     }
+
+    result = set_RTP_session_payload_type(
+        global_client_configurations.live_video_context_pointer_array[handle]->session_handle,
+        payload_type_PS);
 
     result = RTP_session_start(global_client_configurations.live_video_context_pointer_array[handle]->session_handle);
     if(LIBRTP_OK != result)
@@ -1158,5 +1163,22 @@ LIBGBT28181CLIENT_API int GBT28181_close_real_time_stream(uint32_t handle)
 
     global_client_configurations.live_video_context_pointer_array[handle] = NULL;
 
+    return OSIP_SUCCESS;
+}
+
+LIBGBT28181CLIENT_API int GBT28181_set_RTP_payload_give_out_callback(uint32_t handle, void* cb)
+{
+    CHECK_NULL_PARAMETER(cb);
+    CHECK_INITIALED(global_client_configurations.initialed);
+    CHECK_MUST_ON_LINE(global_client_configurations.online);
+    int result = check_handle(handle);
+    if(OSIP_SUCCESS != result)
+    {
+        return result;
+    }
+    CHECK_NOT_STREAMING(global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming);
+    set_RTP_session_payload_give_out_callback(
+        global_client_configurations.live_video_context_pointer_array[handle]->session_handle,
+        cb);
     return OSIP_SUCCESS;
 }
