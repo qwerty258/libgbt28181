@@ -55,7 +55,6 @@ public:
     CString m_info_output;
 
     virtual BOOL DestroyWindow();
-    char* CstringToChar(CString& cstring);
     int SetFunctionWithCharParameter(int(*p_function)(char*), CString& cstringToSet);
     afx_msg void OnClickedButtonGoOnline();
     afx_msg void OnClickedButtonQueryDeviceStatus();

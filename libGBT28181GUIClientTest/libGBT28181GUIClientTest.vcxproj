@@ -189,6 +189,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CStringToChar.h" />
     <ClInclude Include="libGBT28181GUIClientTest.h" />
     <ClInclude Include="libGBT28181GUIClientTestDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -196,6 +197,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CStringToChar.cpp" />
     <ClCompile Include="libGBT28181GUIClientTest.cpp" />
     <ClCompile Include="libGBT28181GUIClientTestDlg.cpp" />
     <ClCompile Include="stdafx.cpp">

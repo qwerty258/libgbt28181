@@ -6,6 +6,7 @@
 #include "libGBT28181GUIClientTest.h"
 #include "libGBT28181GUIClientTestDlg.h"
 #include "afxdialogex.h"
+#include "CStringToChar.h"
 
 #include <libGBT28181Client.h>
 #include <PlayH264DLL.h>
@@ -346,27 +347,9 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonGoOnline()
 }
 
 
-char* ClibGBT28181GUIClientTestDlg::CstringToChar(CString& cstring)
-{
-    char* szString = new char[256];
-    int result = WideCharToMultiByte(CP_UTF8, 0, cstring, cstring.GetLength(), szString, 256, NULL, NULL);
-    if(result > 0)
-    {
-        szString[result] = '\0';
-        return szString;
-    }
-    else
-    {
-        return NULL;
-    }
-}
-
-
 int ClibGBT28181GUIClientTestDlg::SetFunctionWithCharParameter(int(*p_function)(char*), CString& cstringToSet)
 {
-    char* szStringTemp = CstringToChar(cstringToSet);
-    int result = p_function(szStringTemp);
-    delete[] szStringTemp;
+    int result = p_function(CCStringToChar(cstringToSet).GetCStyleString());
     return result;
 }
 
@@ -377,7 +360,10 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonQueryDeviceStatus()
     CString message;
     int result = 0;
 
-    result = SetFunctionWithCharParameter(GBT28181_query_device_status, m_target_SIP_user_name);
+    result = GBT28181_query_device_status(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        NULL,
+        m_target_port);
     message.Format(_T("GBT28181_query_device_status return: %d\r\n\r\n"), result);
     m_info_output += message;
 
@@ -391,7 +377,10 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonQueryDeviceInfo()
     CString message;
     int result = 0;
 
-    result = SetFunctionWithCharParameter(GBT28181_query_device_info, m_target_SIP_user_name);
+    result = GBT28181_query_device_info(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        NULL,
+        m_target_port);
     message.Format(_T("GBT28181_query_device_info return: %d\r\n\r\n"), result);
     m_info_output += message;
 
@@ -405,7 +394,10 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonQueryCatalog()
     CString message;
     int result = 0;
 
-    result = SetFunctionWithCharParameter(GBT28181_query_catalog, m_target_SIP_user_name);
+    result = GBT28181_query_catalog(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        NULL,
+        m_target_port);
     message.Format(_T("GBT28181_query_catalog return: %d\r\n\r\n"), result);
     m_info_output += message;
 
@@ -448,11 +440,11 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonGetLiveVideo()
 
     GBT28181_set_RTP_payload_give_out_callback(m_live_time_stream_handle, payload_callback);
 
-    char* target_sip_user_name = CstringToChar(m_target_SIP_user_name);
-    char* target_IP = CstringToChar(m_target_IP);
-    GBT28181_get_real_time_stream(m_live_time_stream_handle, target_sip_user_name, target_IP, m_target_port);
-    delete[] target_sip_user_name;
-    delete[] target_IP;
+    GBT28181_get_real_time_stream(
+        m_live_time_stream_handle,
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port);
 }
 
 
