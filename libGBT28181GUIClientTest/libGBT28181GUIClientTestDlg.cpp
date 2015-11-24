@@ -15,6 +15,8 @@
 #define new DEBUG_NEW
 #endif
 
+#define PTZ_SLEEP 1000
+
 ClibGBT28181GUIClientTestDlg* p_global_ClibGBT28181GUIClientTestDlg;
 
 // ClibGBT28181GUIClientTestDlg dialog
@@ -38,7 +40,10 @@ ClibGBT28181GUIClientTestDlg::ClibGBT28181GUIClientTestDlg(CWnd* pParent /*=NULL
     m_target_SIP_user_name(_T("")),
     m_target_IP(_T("")),
     m_target_port(0),
-    m_info_output(_T(""))
+    m_info_output(_T("")),
+    m_tilt_speed(0),
+    m_pan_speed(0),
+    m_zoom_speed(0)
 {
     m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -62,6 +67,12 @@ void ClibGBT28181GUIClientTestDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Text(pDX, IDC_EDIT_TARGET_IP, m_target_IP);
     DDX_Text(pDX, IDC_EDIT_TARGET_PORT, m_target_port);
     DDX_Text(pDX, IDC_EDIT_INFO_OUTPUT, m_info_output);
+    DDX_Text(pDX, IDC_EDIT_TILT_SPEED, m_tilt_speed);
+    DDV_MinMaxByte(pDX, m_tilt_speed, 0, 255);
+    DDX_Text(pDX, IDC_EDIT_PAN_SPEED, m_pan_speed);
+    DDV_MinMaxByte(pDX, m_pan_speed, 0, 255);
+    DDX_Text(pDX, IDC_EDIT_ZOOM_SPEED, m_zoom_speed);
+    DDV_MinMaxByte(pDX, m_zoom_speed, 0, 16);
 }
 
 BEGIN_MESSAGE_MAP(ClibGBT28181GUIClientTestDlg, CDialogEx)
@@ -72,8 +83,18 @@ BEGIN_MESSAGE_MAP(ClibGBT28181GUIClientTestDlg, CDialogEx)
     ON_BN_CLICKED(IDC_BUTTON_QUERY_DEVICE_INFO, &ClibGBT28181GUIClientTestDlg::OnClickedButtonQueryDeviceInfo)
     ON_BN_CLICKED(IDC_BUTTON_QUERY_CATALOG, &ClibGBT28181GUIClientTestDlg::OnClickedButtonQueryCatalog)
     ON_BN_CLICKED(IDC_BUTTON_UPDATE_INFO, &ClibGBT28181GUIClientTestDlg::OnClickedButtonUpdateInfo)
-ON_BN_CLICKED(IDC_BUTTON_GET_LIVE_VIDEO, &ClibGBT28181GUIClientTestDlg::OnClickedButtonGetLiveVideo)
-ON_BN_CLICKED(IDC_BUTTON_CLOSE_VIDEO, &ClibGBT28181GUIClientTestDlg::OnClickedButtonCloseVideo)
+    ON_BN_CLICKED(IDC_BUTTON_GET_LIVE_VIDEO, &ClibGBT28181GUIClientTestDlg::OnClickedButtonGetLiveVideo)
+    ON_BN_CLICKED(IDC_BUTTON_CLOSE_VIDEO, &ClibGBT28181GUIClientTestDlg::OnClickedButtonCloseVideo)
+    ON_BN_CLICKED(IDC_BUTTON_DOWN, &ClibGBT28181GUIClientTestDlg::OnClickedButtonDown)
+    ON_BN_CLICKED(IDC_BUTTON_LEFT, &ClibGBT28181GUIClientTestDlg::OnClickedButtonLeft)
+    ON_BN_CLICKED(IDC_BUTTON_LEFT_DOWN, &ClibGBT28181GUIClientTestDlg::OnClickedButtonLeftDown)
+    ON_BN_CLICKED(IDC_BUTTON_LEFT_UP, &ClibGBT28181GUIClientTestDlg::OnClickedButtonLeftUp)
+    ON_BN_CLICKED(IDC_BUTTON_RIGHT, &ClibGBT28181GUIClientTestDlg::OnClickedButtonRight)
+    ON_BN_CLICKED(IDC_BUTTON_RIGHT_DOWN, &ClibGBT28181GUIClientTestDlg::OnClickedButtonRightDown)
+    ON_BN_CLICKED(IDC_BUTTON_RIGHT_UP, &ClibGBT28181GUIClientTestDlg::OnClickedButtonRightUp)
+    ON_BN_CLICKED(IDC_BUTTON_UP, &ClibGBT28181GUIClientTestDlg::OnClickedButtonUp)
+    ON_BN_CLICKED(IDC_BUTTON_ZOOM_IN, &ClibGBT28181GUIClientTestDlg::OnClickedButtonZoomIn)
+    ON_BN_CLICKED(IDC_BUTTON_ZOOM_OUT, &ClibGBT28181GUIClientTestDlg::OnClickedButtonZoomOut)
 END_MESSAGE_MAP()
 
 void query_deviceInfo_callback(char* device_ID, char* device_type, char* manufacturer, char* model, char* firmware, uint64_t max_camera, uint64_t max_alarm)
@@ -172,8 +193,8 @@ BOOL ClibGBT28181GUIClientTestDlg::OnInitDialog()
     m_register_expiration_interval = 3600;
     m_heartbeat_interval = 60;
     m_maximun_time_out_number = 3;
-    m_target_SIP_user_name = _T("34020000001320000141");
-    m_target_IP = _T("192.168.10.141");
+    m_target_SIP_user_name = _T("34020000001320000144");
+    m_target_IP = _T("192.168.10.144");
     m_target_port = 5060;
     m_info_output = _T("All kinds of info out put area.\r\n\r\n");
     UpdateData(FALSE);
@@ -453,4 +474,334 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonCloseVideo()
     // TODO: Add your control notification handler code here
     free_decode_instance(global_instance);
     GBT28181_close_real_time_stream(m_live_time_stream_handle);
+}
+
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonDown()
+{
+    // TODO: Add your control notification handler code here
+    UpdateData();
+    PTZ_control_data control_data;
+    control_data.down = 1;
+    control_data.left = 0;
+    control_data.relative_pan_speed = m_pan_speed;
+    control_data.relative_tilt_speed = m_tilt_speed;
+    control_data.relative_zoom_speed = m_zoom_speed;
+    control_data.right = 0;
+    control_data.up = 0;
+    control_data.zoom_in = 0;
+    control_data.zoom_out = 0;
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+
+    memset(&control_data, 0x0, sizeof(PTZ_control_data));
+
+    Sleep(PTZ_SLEEP);
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+}
+
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonLeft()
+{
+    // TODO: Add your control notification handler code here
+    UpdateData();
+    PTZ_control_data control_data;
+    control_data.down = 0;
+    control_data.left = 1;
+    control_data.relative_pan_speed = m_pan_speed;
+    control_data.relative_tilt_speed = m_tilt_speed;
+    control_data.relative_zoom_speed = m_zoom_speed;
+    control_data.right = 0;
+    control_data.up = 0;
+    control_data.zoom_in = 0;
+    control_data.zoom_out = 0;
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+
+    memset(&control_data, 0x0, sizeof(PTZ_control_data));
+
+    Sleep(PTZ_SLEEP);
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+}
+
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonLeftDown()
+{
+    // TODO: Add your control notification handler code here
+    UpdateData();
+    PTZ_control_data control_data;
+    control_data.down = 1;
+    control_data.left = 1;
+    control_data.relative_pan_speed = m_pan_speed;
+    control_data.relative_tilt_speed = m_tilt_speed;
+    control_data.relative_zoom_speed = m_zoom_speed;
+    control_data.right = 0;
+    control_data.up = 0;
+    control_data.zoom_in = 0;
+    control_data.zoom_out = 0;
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+
+    memset(&control_data, 0x0, sizeof(PTZ_control_data));
+
+    Sleep(PTZ_SLEEP);
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+}
+
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonLeftUp()
+{
+    // TODO: Add your control notification handler code here
+    UpdateData();
+    PTZ_control_data control_data;
+    control_data.down = 0;
+    control_data.left = 1;
+    control_data.relative_pan_speed = m_pan_speed;
+    control_data.relative_tilt_speed = m_tilt_speed;
+    control_data.relative_zoom_speed = m_zoom_speed;
+    control_data.right = 0;
+    control_data.up = 1;
+    control_data.zoom_in = 0;
+    control_data.zoom_out = 0;
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+
+    memset(&control_data, 0x0, sizeof(PTZ_control_data));
+
+    Sleep(PTZ_SLEEP);
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+}
+
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonRight()
+{
+    // TODO: Add your control notification handler code here
+    UpdateData();
+    PTZ_control_data control_data;
+    control_data.down = 0;
+    control_data.left = 0;
+    control_data.relative_pan_speed = m_pan_speed;
+    control_data.relative_tilt_speed = m_tilt_speed;
+    control_data.relative_zoom_speed = m_zoom_speed;
+    control_data.right = 1;
+    control_data.up = 0;
+    control_data.zoom_in = 0;
+    control_data.zoom_out = 0;
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+
+    memset(&control_data, 0x0, sizeof(PTZ_control_data));
+
+    Sleep(PTZ_SLEEP);
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+}
+
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonRightDown()
+{
+    // TODO: Add your control notification handler code here
+    UpdateData();
+    PTZ_control_data control_data;
+    control_data.down = 1;
+    control_data.left = 0;
+    control_data.relative_pan_speed = m_pan_speed;
+    control_data.relative_tilt_speed = m_tilt_speed;
+    control_data.relative_zoom_speed = m_zoom_speed;
+    control_data.right = 1;
+    control_data.up = 0;
+    control_data.zoom_in = 0;
+    control_data.zoom_out = 0;
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+
+    memset(&control_data, 0x0, sizeof(PTZ_control_data));
+
+    Sleep(PTZ_SLEEP);
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+}
+
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonRightUp()
+{
+    // TODO: Add your control notification handler code here
+    UpdateData();
+    PTZ_control_data control_data;
+    control_data.down = 0;
+    control_data.left = 0;
+    control_data.relative_pan_speed = m_pan_speed;
+    control_data.relative_tilt_speed = m_tilt_speed;
+    control_data.relative_zoom_speed = m_zoom_speed;
+    control_data.right = 1;
+    control_data.up = 1;
+    control_data.zoom_in = 0;
+    control_data.zoom_out = 0;
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+
+    memset(&control_data, 0x0, sizeof(PTZ_control_data));
+
+    Sleep(PTZ_SLEEP);
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+}
+
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonUp()
+{
+    // TODO: Add your control notification handler code here
+    UpdateData();
+    PTZ_control_data control_data;
+    control_data.down = 0;
+    control_data.left = 0;
+    control_data.relative_pan_speed = m_pan_speed;
+    control_data.relative_tilt_speed = m_tilt_speed;
+    control_data.relative_zoom_speed = m_zoom_speed;
+    control_data.right = 0;
+    control_data.up = 1;
+    control_data.zoom_in = 0;
+    control_data.zoom_out = 0;
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+
+    memset(&control_data, 0x0, sizeof(PTZ_control_data));
+
+    Sleep(PTZ_SLEEP);
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+}
+
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonZoomIn()
+{
+    // TODO: Add your control notification handler code here
+    UpdateData();
+    PTZ_control_data control_data;
+    control_data.down = 0;
+    control_data.left = 0;
+    control_data.relative_pan_speed = m_pan_speed;
+    control_data.relative_tilt_speed = m_tilt_speed;
+    control_data.relative_zoom_speed = m_zoom_speed;
+    control_data.right = 0;
+    control_data.up = 0;
+    control_data.zoom_in = 1;
+    control_data.zoom_out = 0;
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+
+    memset(&control_data, 0x0, sizeof(PTZ_control_data));
+
+    Sleep(PTZ_SLEEP);
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+}
+
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonZoomOut()
+{
+    // TODO: Add your control notification handler code here
+    UpdateData();
+    PTZ_control_data control_data;
+    control_data.down = 0;
+    control_data.left = 0;
+    control_data.relative_pan_speed = m_pan_speed;
+    control_data.relative_tilt_speed = m_tilt_speed;
+    control_data.relative_zoom_speed = m_zoom_speed;
+    control_data.right = 0;
+    control_data.up = 0;
+    control_data.zoom_in = 0;
+    control_data.zoom_out = 1;
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
+
+    memset(&control_data, 0x0, sizeof(PTZ_control_data));
+
+    Sleep(PTZ_SLEEP);
+
+    GBT28181_PTZ_control(
+        CCStringToChar(m_target_SIP_user_name).GetCStyleString(),
+        CCStringToChar(m_target_IP).GetCStyleString(),
+        m_target_port,
+        &control_data);
 }

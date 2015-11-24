@@ -51,6 +51,9 @@ private:
     int m_max_pos;
     int m_play_instance;
     DWORD m_live_time_stream_handle;
+    BYTE m_tilt_speed;
+    BYTE m_pan_speed;
+    BYTE m_zoom_speed;
 public:
     CString m_info_output;
 
@@ -63,4 +66,14 @@ public:
     afx_msg void OnClickedButtonUpdateInfo();
     afx_msg void OnClickedButtonGetLiveVideo();
     afx_msg void OnClickedButtonCloseVideo();
+    afx_msg void OnClickedButtonDown();
+    afx_msg void OnClickedButtonLeft();
+    afx_msg void OnClickedButtonLeftDown();
+    afx_msg void OnClickedButtonLeftUp();
+    afx_msg void OnClickedButtonRight();
+    afx_msg void OnClickedButtonRightDown();
+    afx_msg void OnClickedButtonRightUp();
+    afx_msg void OnClickedButtonUp();
+    afx_msg void OnClickedButtonZoomIn();
+    afx_msg void OnClickedButtonZoomOut();
 };
