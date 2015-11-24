@@ -223,10 +223,6 @@ void* event_working_thread(void* arg)
                 printf("\n\n%s\n\n", message_body->body);
                 if(200 == result)
                 {
-                    result = eXosip_lock(thread_parameter->exosip_context);
-                    result = eXosip_call_build_ack(thread_parameter->exosip_context, event->did, &sip_message_answer);
-                    result = eXosip_call_send_ack(thread_parameter->exosip_context, event->did, sip_message_answer);
-                    result = eXosip_unlock(thread_parameter->exosip_context);
                     uint32_t i;
                     for(i = 0; i < thread_parameter->max_live_video_number; i++)
                     {
@@ -236,6 +232,30 @@ void* event_working_thread(void* arg)
                             break;
                         }
                     }
+
+                    if(NULL != strstr(message_body->body, "H264"))
+                    {
+                        result = set_RTP_session_payload_type(
+                            thread_parameter->live_video_context_pointer_array[i]->session_handle,
+                            payload_type_H264);
+                    }
+                    if(NULL != strstr(message_body->body, "PS"))
+                    {
+                        result = set_RTP_session_payload_type(
+                            thread_parameter->live_video_context_pointer_array[i]->session_handle,
+                            payload_type_PS);
+                    }
+
+                    result = RTP_session_start(thread_parameter->live_video_context_pointer_array[i]->session_handle);
+                    if(LIBRTP_OK != result)
+                    {
+                        // to do
+                    }
+
+                    result = eXosip_lock(thread_parameter->exosip_context);
+                    result = eXosip_call_build_ack(thread_parameter->exosip_context, event->did, &sip_message_answer);
+                    result = eXosip_call_send_ack(thread_parameter->exosip_context, event->did, sip_message_answer);
+                    result = eXosip_unlock(thread_parameter->exosip_context);
                 }
                 break;
             default:

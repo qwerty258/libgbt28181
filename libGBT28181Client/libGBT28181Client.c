@@ -1108,16 +1108,6 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
         // to do
     }
 
-    result = set_RTP_session_payload_type(
-        global_client_configurations.live_video_context_pointer_array[handle]->session_handle,
-        payload_type_PS);
-
-    result = RTP_session_start(global_client_configurations.live_video_context_pointer_array[handle]->session_handle);
-    if(LIBRTP_OK != result)
-    {
-        // to do
-    }
-
     return OSIP_SUCCESS;
 }
 
