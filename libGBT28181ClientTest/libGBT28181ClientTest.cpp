@@ -120,19 +120,19 @@ int main(int argc, char* argv[])
 #else
     printf("\n\ncall query device info\n\n");
 
-    result = GBT28181_query_device_info("34020000001320000150");
+    result = GBT28181_query_device_info("34020000001320000141", NULL, 0);
 
     system("pause");
 
     printf("\n\ncall query device status\n\n");
 
-    result = GBT28181_query_device_status("34020000001320000150");
+    result = GBT28181_query_device_status("34020000001320000141", NULL, 0);
 
     system("pause");
 
     printf("\n\ncall query catalog\n\n");
 
-    result = GBT28181_query_catalog("34020000001320000150");
+    result = GBT28181_query_catalog("34020000001320000141", NULL, 0);
 
     system("pause");
 #endif
@@ -155,7 +155,7 @@ int main(int argc, char* argv[])
 
     result = GBT28181_set_RTP_protocol(handle, GBT28181_IPPROTO_UDP);
 
-    result = GBT28181_get_real_time_stream(handle, "34020000001320000150", "192.168.10.150", 5060);
+    result = GBT28181_get_real_time_stream(handle, "34020000001320000141", "192.168.10.141", 5060);
 
 
     system("pause");
