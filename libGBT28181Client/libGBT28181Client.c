@@ -1224,3 +1224,169 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_payload_give_out_callback(uint32_t ha
         cb);
     return OSIP_SUCCESS;
 }
+
+LIBGBT28181CLIENT_API int GBT28181_PTZ_control(char* target_sip_user_name, char* target_IP, uint16_t port, PTZ_control_data* p_PTZ_control_data)
+{
+    CHECK_NULL_PARAMETER(target_sip_user_name);
+    CHECK_NULL_PARAMETER(p_PTZ_control_data);
+    CHECK_INITIALED(global_client_configurations.initialed);
+    CHECK_MUST_ON_LINE(global_client_configurations.online);
+
+    if((1 == p_PTZ_control_data->up && 1 == p_PTZ_control_data->down) ||
+       (1 == p_PTZ_control_data->left && 1 == p_PTZ_control_data->right) ||
+       (1 == p_PTZ_control_data->zoom_in && 1 == p_PTZ_control_data->zoom_out))
+    {
+        return GBT28181_WRONG_PTZ_CMD;
+    }
+
+    int result = OSIP_SUCCESS;
+    osip_message_t* query_catalog_message = NULL;
+    char* from = osip_malloc(512);
+    char* to = osip_malloc(512);
+    char* proxy = osip_malloc(512);
+    char* message_body = osip_malloc(1500);
+    uint8_t cmd[8];
+    char text_cmd[20];
+    memset(&text_cmd, 0x0, 17);
+    memset(&cmd, 0x0, sizeof(uint8_t) * 8);
+
+    cmd[0] = 0xA5;
+    cmd[1] = ((cmd[0] >> 4) + (cmd[0] & 0x0F)) % 16;
+    cmd[2] = 0x00;
+    if(1 == p_PTZ_control_data->up)
+    {
+        cmd[3] += 0x08;
+    }
+    if(1 == p_PTZ_control_data->down)
+    {
+        cmd[3] += 0x04;
+    }
+    if(1 == p_PTZ_control_data->left)
+    {
+        cmd[3] += 0x02;
+    }
+    if(1 == p_PTZ_control_data->right)
+    {
+        cmd[3] += 0x01;
+    }
+    if(1 == p_PTZ_control_data->zoom_in)
+    {
+        cmd[3] += 0x10;
+    }
+    if(1 == p_PTZ_control_data->zoom_out)
+    {
+        cmd[3] += 0x20;
+    }
+    cmd[4] = p_PTZ_control_data->relative_pan_speed;
+    cmd[5] = p_PTZ_control_data->relative_tilt_speed;
+    cmd[6] = p_PTZ_control_data->relative_zoom_speed << 4;
+    cmd[7] = (cmd[0] + cmd[1] + cmd[2] + cmd[3] + cmd[4] + cmd[5] + cmd[6]) % 256;
+
+    snprintf(text_cmd, 17, "%02X%02X%02X%02X%02X%02X%02X%02X", cmd[0], cmd[1], cmd[2], cmd[3], cmd[4], cmd[5], cmd[6], cmd[7]);
+    text_cmd[17] = 0;
+
+    if(NULL == from || NULL == to || NULL == proxy || NULL == message_body)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return GBT28181_NOMEM;
+    }
+
+    snprintf(
+        from,
+        512,
+        "sip:%s@%s:%d",
+        global_client_configurations.client_user_name,
+        global_client_configurations.client_IP,
+        global_client_configurations.client_port);
+    snprintf(
+        to,
+        512,
+        "sip:%s@%s",
+        target_sip_user_name,
+        global_client_configurations.server_domain);
+
+    if(NULL != target_IP)
+    {
+        snprintf(
+            proxy,
+            512,
+            "<sip:%s@%s:%u>",
+            target_sip_user_name,
+            target_IP,
+            port);
+    }
+    else
+    {
+        snprintf(
+            proxy,
+            512,
+            "<sip:%s@%s:%u>",
+            global_client_configurations.server_ID,
+            global_client_configurations.server_IP,
+            global_client_configurations.server_port);
+    }
+
+    result = eXosip_message_build_request(
+        global_client_configurations.exosip_context,
+        &query_catalog_message,
+        "MESSAGE",
+        to,
+        from,
+        proxy);
+    if(OSIP_SUCCESS != result)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return result;
+    }
+
+    result = osip_message_set_content_type(query_catalog_message, "application/MANSCDP+xml");
+    if(OSIP_SUCCESS != result)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return result;
+    }
+
+    snprintf(message_body, 1500, "<?xml version=\"1.0\"?><Control><CmdType>DeviceControl</CmdType><SN>%u</SN><DeviceID>%s</DeviceID><PTZCmd>%s</PTZCmd></Control>", global_client_configurations.MANSCDP_SN, target_sip_user_name, text_cmd);
+
+    result = osip_message_set_body(query_catalog_message, message_body, strnlen(message_body, 1500));
+    if(OSIP_SUCCESS != result)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return result;
+    }
+
+    eXosip_lock(global_client_configurations.exosip_context);
+    result = eXosip_message_send_request(global_client_configurations.exosip_context, query_catalog_message);
+    eXosip_unlock(global_client_configurations.exosip_context);
+    if(0 > result)
+    {
+        osip_free(from);
+        osip_free(to);
+        osip_free(proxy);
+        osip_free(message_body);
+        return result;
+    }
+
+    EnterCriticalSection(&global_client_configurations.critical_section);
+    global_client_configurations.MANSCDP_SN++;
+    LeaveCriticalSection(&global_client_configurations.critical_section);
+
+    osip_free(from);
+    osip_free(to);
+    osip_free(proxy);
+    osip_free(message_body);
+
+    return OSIP_SUCCESS;
+}

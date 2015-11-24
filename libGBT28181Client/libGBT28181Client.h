@@ -47,6 +47,20 @@ C_EXPORT_BEGIN
 #define GBT28181_HANDLE_DEPLETED                    -10007
 #define GBT28181_INVALID_HANDLE                     -10008
 #define GBT28181_ALREADY_STREAMING                  -10009
+#define GBT28181_WRONG_PTZ_CMD                      -10010
+
+typedef struct _PTZ_control_data
+{
+    uint8_t left;
+    uint8_t right;
+    uint8_t up;
+    uint8_t down;
+    uint8_t zoom_in;
+    uint8_t zoom_out;
+    uint8_t relative_pan_speed;
+    uint8_t relative_tilt_speed;
+    uint8_t relative_zoom_speed;
+}PTZ_control_data;
 
 LIBGBT28181CLIENT_API int GBT28181_client_initial(void);
 
@@ -99,6 +113,8 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name,
 LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_name, char* target_IP, uint16_t port);
 
 LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name, char* target_IP, uint16_t port);
+
+LIBGBT28181CLIENT_API int GBT28181_PTZ_control(char* target_sip_user_name, char* target_IP, uint16_t port, PTZ_control_data* p_PTZ_control_data);
 
 LIBGBT28181CLIENT_API int GBT28181_get_idle_real_time_stream_handle(uint32_t* handle);
 
