@@ -116,7 +116,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)libGBT28181Client;D:\GitHub\RTSPFFmpeg\RTSPFFmpegSDK\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>PlayH264DLL.lib;libGBT28181Client.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration)\;D:\GitHub\RTSPFFmpeg\RTSPFFmpegSDK\x64\lib</AdditionalLibraryDirectories>
