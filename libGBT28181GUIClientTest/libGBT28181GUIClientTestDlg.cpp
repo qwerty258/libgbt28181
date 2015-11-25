@@ -262,6 +262,9 @@ BOOL ClibGBT28181GUIClientTestDlg::DestroyWindow()
     free_decode_DLL();
 
     FreeConsole();
+
+    Sleep(1000);
+
     return CDialogEx::DestroyWindow();
 }
 
