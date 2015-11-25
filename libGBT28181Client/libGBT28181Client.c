@@ -1044,9 +1044,9 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
     snprintf(
         SDP_payload,
         1500,
-        //"v=0\r\no=%s 0 0 IN IP4 %s\r\ns=Play\r\nc=IN IP4 %s\r\nt=0 0\r\nm=video %u %s 96 98 97\r\na=recvonly\r\na=rtpmap:96 PS/90000\r\na=rtpmap:98 H264/90000\r\na=rtpmap:97 MPEG4/90000\r\n",
+        "v=0\r\no=%s 0 0 IN IP4 %s\r\ns=Play\r\nc=IN IP4 %s\r\nt=0 0\r\nm=video %u %s 96 98 97\r\na=recvonly\r\na=rtpmap:96 PS/90000\r\na=rtpmap:98 H264/90000\r\na=rtpmap:97 MPEG4/90000\r\n",
         //"v=0\r\no=%s 0 0 IN IP4 %s\r\ns=Play\r\nc=IN IP4 %s\r\nt=0 0\r\nm=video %u %s 96\r\na=recvonly\r\na=rtpmap:96 PS/90000\r\n",
-        "v=0\r\no=%s 0 0 IN IP4 %s\r\ns=Play\r\nc=IN IP4 %s\r\nt=0 0\r\nm=video %u %s 98 97\r\na=recvonly\r\na=rtpmap:98 H264/90000\r\na=rtpmap:97 MPEG4/90000\r\n",
+        //"v=0\r\no=%s 0 0 IN IP4 %s\r\ns=Play\r\nc=IN IP4 %s\r\nt=0 0\r\nm=video %u %s 98 97\r\na=recvonly\r\na=rtpmap:98 H264/90000\r\na=rtpmap:97 MPEG4/90000\r\n",
         global_client_configurations.client_user_name,
         global_client_configurations.client_IP,
         global_client_configurations.client_IP,

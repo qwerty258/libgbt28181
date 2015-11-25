@@ -170,6 +170,10 @@ void query_device_catalog_callback(char* deviceID, uint64_t sum_num, MANSCDP_dev
 
 // ClibGBT28181GUIClientTestDlg message handlers
 
+#define PROGRAM_STREAM 1
+FILE* p_global_file_PS_data;
+FILE* p_global_file_PS_data_size;
+
 BOOL ClibGBT28181GUIClientTestDlg::OnInitDialog()
 {
     CDialogEx::OnInitDialog();
@@ -206,6 +210,9 @@ BOOL ClibGBT28181GUIClientTestDlg::OnInitDialog()
     UpdateData(FALSE);
 
     initial_decode_DLL(64);
+
+    p_global_file_PS_data = fopen("D:\\PSdata", "ab");
+    p_global_file_PS_data_size = fopen("D:\\PSdataSize", "ab");
 
     return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -260,6 +267,9 @@ BOOL ClibGBT28181GUIClientTestDlg::DestroyWindow()
     }
 
     free_decode_DLL();
+
+    fclose(p_global_file_PS_data);
+    fclose(p_global_file_PS_data_size);
 
     FreeConsole();
 
@@ -439,7 +449,16 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonUpdateInfo()
 
 int payload_callback(uint32_t session_handle, uint8_t* payload, uint32_t payload_size, uint16_t sequence_number, uint32_t timestamp)
 {
-    return decode(global_instance, payload, payload_size, sequence_number, timestamp);
+    if(PROGRAM_STREAM)
+    {
+        fwrite(payload, payload_size, 1, p_global_file_PS_data);
+        fwrite(&payload_size, 4, 1, p_global_file_PS_data_size);
+        return 0;
+    }
+    else
+    {
+        return decode(global_instance, payload, payload_size, sequence_number, timestamp);
+    }
 }
 
 void ClibGBT28181GUIClientTestDlg::OnClickedButtonGetLiveVideo()
