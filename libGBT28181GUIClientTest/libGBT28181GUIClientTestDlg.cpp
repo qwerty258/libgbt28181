@@ -170,7 +170,7 @@ void query_device_catalog_callback(char* deviceID, uint64_t sum_num, MANSCDP_dev
 
 // ClibGBT28181GUIClientTestDlg message handlers
 
-#define PROGRAM_STREAM 1
+#define PROGRAM_STREAM 0
 FILE* p_global_file_PS_data;
 FILE* p_global_file_PS_data_size;
 
@@ -297,9 +297,6 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonGoOnline()
     GetDlgItem(IDC_EDIT_REGISTER_EXPIRATION_INTERVAL)->EnableWindow(FALSE);
     GetDlgItem(IDC_EDIT_HEARTBEAT_INTERVAL)->EnableWindow(FALSE);
     GetDlgItem(IDC_EDIT_MAXIMUN_TIME_OUT_INTERVAL)->EnableWindow(FALSE);
-    GetDlgItem(IDC_EDIT_TARGET_SIP_USER_NAME)->EnableWindow(FALSE);
-    GetDlgItem(IDC_EDIT_TARGET_IP)->EnableWindow(FALSE);
-    GetDlgItem(IDC_EDIT_TARGET_PORT)->EnableWindow(FALSE);
 
     UpdateData();
 
