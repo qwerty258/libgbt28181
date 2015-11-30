@@ -46,6 +46,7 @@ BOOL ClibGBT28181GUIClientTestApp::InitInstance()
     InitCtrls.dwICC = ICC_WIN95_CLASSES;
     InitCommonControlsEx(&InitCtrls);
     AllocConsole();
+    FreeConsole();
     CWinApp::InitInstance();
 
 
