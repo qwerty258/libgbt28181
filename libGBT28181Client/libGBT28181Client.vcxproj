@@ -146,8 +146,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(OSIPSDK)\lib\64bit;$(EXOSIPSDK)\lib\64bit;$(LIBXML2SDK)\lib\64bit;$(LIBICONVSDK)\lib\64bit;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libiconv.lib;libxml2.lib;eXosip.lib;osip2.lib;osipparser2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OSIPSDK)\lib\64bit;$(EXOSIPSDK)\lib\64bit;$(LIBXML2SDK)\lib\64bit;$(LIBICONVSDK)\lib\64bit;$(SolutionDir)$(Platform)\$(Configuration)\;$(LIBXML2SDK)\lib\64bit;$(LIBICONVSDK)\lib\64bit;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libRTP.lib;libiconv.lib;libxml2.lib;eXosip.lib;osip2.lib;osipparser2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
