@@ -200,6 +200,9 @@ BOOL ClibGBT28181GUIClientTestDlg::OnInitDialog()
     m_target_SIP_user_name = _T("34020000001320000144");
     m_target_IP = _T("192.168.10.144");
     m_target_port = 5060;
+    m_pan_speed = 100;
+    m_tilt_speed = 100;
+    m_zoom_speed = 5;
     m_info_output = _T("All kinds of info out put area.\r\n\r\n");
     UpdateData(FALSE);
 
@@ -270,8 +273,6 @@ BOOL ClibGBT28181GUIClientTestDlg::DestroyWindow()
 
     fclose(p_global_file_PS_data);
     fclose(p_global_file_PS_data_size);
-
-    FreeConsole();
 
     Sleep(1000);
 
@@ -461,6 +462,7 @@ int payload_callback(uint32_t session_handle, uint8_t* payload, uint32_t payload
 void ClibGBT28181GUIClientTestDlg::OnClickedButtonGetLiveVideo()
 {
     // TODO: Add your control notification handler code here
+    UpdateData();
     myparamInput param;
     param.fps = 25;
     param.height = 720;
@@ -495,6 +497,7 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonCloseVideo()
     // TODO: Add your control notification handler code here
     free_decode_instance(global_instance);
     GBT28181_close_real_time_stream(m_live_time_stream_handle);
+    RedrawWindow();
 }
 
 
