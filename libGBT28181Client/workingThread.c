@@ -75,136 +75,139 @@ void* event_working_thread(void* arg)
                 }
 
                 content_type = osip_message_get_content_type(event->request);
-#ifdef _DEBUG
-                printf("%s\n", event->request->sip_method);
-                printf("%s/%s\n", content_type->type, content_type->subtype);
-#endif // _DEBUG
-                if(0 == strncmp(content_type->type, "application", strlen("application")) &&
-                   0 == strncmp(content_type->subtype, "MANSCDP+xml", strlen("MANSCDP+xml")))
+                if(NULL != content_type)
                 {
-                    result = osip_message_get_body(event->request, 0, &message_body);
-
-                    if(OSIP_SUCCESS == result)
+#ifdef _DEBUG
+                    printf("%s\n", event->request->sip_method);
+                    printf("%s/%s\n", content_type->type, content_type->subtype);
+#endif // _DEBUG
+                    if(0 == strncmp(content_type->type, "application", strlen("application")) &&
+                       0 == strncmp(content_type->subtype, "MANSCDP+xml", strlen("MANSCDP+xml")))
                     {
-                        size_t wchar_length = 2 * (message_body->length + 100);
-                        wchar_t* xml_in_wide_char = osip_malloc(wchar_length + 100);
-                        MultiByteToWideChar(936, MB_PRECOMPOSED, message_body->body, message_body->length, xml_in_wide_char, message_body->length);
+                        result = osip_message_get_body(event->request, 0, &message_body);
 
-                        size_t UTF8_length = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, xml_in_wide_char, wchar_length, NULL, 0, NULL, NULL);
-                        char* xml_in_UTF_8 = osip_malloc(UTF8_length + 100);
-                        WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, xml_in_wide_char, wchar_length, xml_in_UTF_8, UTF8_length, NULL, NULL);
-                        osip_free(xml_in_wide_char);
-
-                        LIBXML_TEST_VERSION
-
-                        xml_document_pointer = xmlReadMemory(xml_in_UTF_8, UTF8_length, "no_name.xml", NULL, 0);
-                        osip_free(xml_in_UTF_8);
-                        if(NULL == xml_document_pointer)
+                        if(OSIP_SUCCESS == result)
                         {
-                            break;
-                        }
-                        xml_current_node = xml_document_pointer;
+                            //size_t wchar_length = 2 * (message_body->length + 100);
+                            //wchar_t* xml_in_wide_char = osip_malloc(wchar_length + 100);
+                            //MultiByteToWideChar(936, MB_PRECOMPOSED, message_body->body, message_body->length, xml_in_wide_char, message_body->length);
 
-                        if(NULL != xml_current_node->children)
-                        {
-                            xml_current_node = (xmlDocPtr)xml_current_node->children;
-                            MANSCDP_xml* p_MANSCDP_xml = osip_malloc(sizeof(MANSCDP_xml));
-                            xmlDocPtr xmlDocPtr_temp = NULL;
-                            p_MANSCDP_xml->xml_type = get_xml_type(xml_current_node->name);
-                            p_MANSCDP_xml->p_client_configurations = thread_parameter;
-                            if(MANSCDP_xml_Unknown != p_MANSCDP_xml->xml_type)
+                            //size_t UTF8_length = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, xml_in_wide_char, wchar_length, NULL, 0, NULL, NULL);
+                            //char* xml_in_UTF_8 = osip_malloc(UTF8_length + 100);
+                            //WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, xml_in_wide_char, wchar_length, xml_in_UTF_8, UTF8_length, NULL, NULL);
+                            //osip_free(xml_in_wide_char);
+
+                            LIBXML_TEST_VERSION
+
+                                xml_document_pointer = xmlReadMemory(message_body->body, message_body->length, "no_name.xml", NULL, 0);
+                            //osip_free(xml_in_UTF_8);
+                            if(NULL == xml_document_pointer)
                             {
-                                xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "CmdType");
-                                if(NULL != xmlDocPtr_temp)
+                                break;
+                            }
+                            xml_current_node = xml_document_pointer;
+
+                            if(NULL != xml_current_node->children)
+                            {
+                                xml_current_node = (xmlDocPtr)xml_current_node->children;
+                                MANSCDP_xml* p_MANSCDP_xml = osip_malloc(sizeof(MANSCDP_xml));
+                                xmlDocPtr xmlDocPtr_temp = NULL;
+                                p_MANSCDP_xml->xml_type = get_xml_type(xml_current_node->name);
+                                p_MANSCDP_xml->p_client_configurations = thread_parameter;
+                                if(MANSCDP_xml_Unknown != p_MANSCDP_xml->xml_type)
                                 {
-                                    p_MANSCDP_xml->command_type = get_MANSCDP_command_type(xmlDocPtr_temp->children->content);
-                                }
-                                xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "SN");
-                                if(NULL != xmlDocPtr_temp)
-                                {
-                                    p_MANSCDP_xml->MANSCDP_SN = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
-                                }
-                                xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "DeviceID");
-                                if(NULL != xmlDocPtr_temp)
-                                {
-                                    p_MANSCDP_xml->DeviceID = osip_strdup(xmlDocPtr_temp->children->content);
-                                }
-                                xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "Result");
-                                if(NULL != xmlDocPtr_temp)
-                                {
-                                    p_MANSCDP_xml->Result = osip_strdup(xmlDocPtr_temp->children->content);
-                                }
-                                xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "DeviceType");
-                                if(NULL != xmlDocPtr_temp)
-                                {
-                                    p_MANSCDP_xml->DeviceType = osip_strdup(xmlDocPtr_temp->children->content);
-                                }
-                                xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "Manufacturer");
-                                if(NULL != xmlDocPtr_temp)
-                                {
-                                    p_MANSCDP_xml->Manufacturer = osip_strdup(xmlDocPtr_temp->children->content);
-                                }
-                                xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "Model");
-                                if(NULL != xmlDocPtr_temp)
-                                {
-                                    p_MANSCDP_xml->Model = osip_strdup(xmlDocPtr_temp->children->content);
-                                }
-                                xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "Firmware");
-                                if(NULL != xmlDocPtr_temp)
-                                {
-                                    p_MANSCDP_xml->Firmware = osip_strdup(xmlDocPtr_temp->children->content);
-                                }
-                                xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "MaxCamera");
-                                if(NULL != xmlDocPtr_temp)
-                                {
-                                    p_MANSCDP_xml->MaxCamera = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
-                                }
-                                xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "MaxAlarm");
-                                if(NULL != xmlDocPtr_temp)
-                                {
-                                    p_MANSCDP_xml->MaxAlarm = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
-                                }
-                                xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "Online");
-                                if(NULL != xmlDocPtr_temp)
-                                {
-                                    p_MANSCDP_xml->online = get_MANSCDP_online(xmlDocPtr_temp->children->content);
-                                }
-                                xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "Status");
-                                if(NULL != xmlDocPtr_temp)
-                                {
-                                    p_MANSCDP_xml->status = get_MANSCDP_statues(xmlDocPtr_temp->children->content);
-                                }
-                                if(MANSCDP_xml_Response == p_MANSCDP_xml->xml_type && MANSCDP_Catalog == p_MANSCDP_xml->command_type)
-                                {
-                                    xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "SumNum");
-                                    p_MANSCDP_xml->catalog_sum_num = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
-                                    if(0 < p_MANSCDP_xml->catalog_sum_num)
+                                    xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "CmdType");
+                                    if(NULL != xmlDocPtr_temp)
                                     {
-                                        p_MANSCDP_xml->p_MANSCDP_device = osip_malloc(sizeof(MANSCDP_device) * p_MANSCDP_xml->catalog_sum_num);
-                                        xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "DeviceList");
-                                        parse_MANSCDP_xml_device_list(xmlDocPtr_temp, p_MANSCDP_xml->catalog_sum_num, p_MANSCDP_xml->p_MANSCDP_device);
+                                        p_MANSCDP_xml->command_type = get_MANSCDP_command_type(xmlDocPtr_temp->children->content);
+                                    }
+                                    xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "SN");
+                                    if(NULL != xmlDocPtr_temp)
+                                    {
+                                        p_MANSCDP_xml->MANSCDP_SN = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
+                                    }
+                                    xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "DeviceID");
+                                    if(NULL != xmlDocPtr_temp)
+                                    {
+                                        p_MANSCDP_xml->DeviceID = osip_strdup(xmlDocPtr_temp->children->content);
+                                    }
+                                    xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "Result");
+                                    if(NULL != xmlDocPtr_temp)
+                                    {
+                                        p_MANSCDP_xml->Result = osip_strdup(xmlDocPtr_temp->children->content);
+                                    }
+                                    xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "DeviceType");
+                                    if(NULL != xmlDocPtr_temp)
+                                    {
+                                        p_MANSCDP_xml->DeviceType = osip_strdup(xmlDocPtr_temp->children->content);
+                                    }
+                                    xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "Manufacturer");
+                                    if(NULL != xmlDocPtr_temp)
+                                    {
+                                        p_MANSCDP_xml->Manufacturer = osip_strdup(xmlDocPtr_temp->children->content);
+                                    }
+                                    xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "Model");
+                                    if(NULL != xmlDocPtr_temp)
+                                    {
+                                        p_MANSCDP_xml->Model = osip_strdup(xmlDocPtr_temp->children->content);
+                                    }
+                                    xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "Firmware");
+                                    if(NULL != xmlDocPtr_temp)
+                                    {
+                                        p_MANSCDP_xml->Firmware = osip_strdup(xmlDocPtr_temp->children->content);
+                                    }
+                                    xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "MaxCamera");
+                                    if(NULL != xmlDocPtr_temp)
+                                    {
+                                        p_MANSCDP_xml->MaxCamera = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
+                                    }
+                                    xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "MaxAlarm");
+                                    if(NULL != xmlDocPtr_temp)
+                                    {
+                                        p_MANSCDP_xml->MaxAlarm = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
+                                    }
+                                    xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "Online");
+                                    if(NULL != xmlDocPtr_temp)
+                                    {
+                                        p_MANSCDP_xml->online = get_MANSCDP_online(xmlDocPtr_temp->children->content);
+                                    }
+                                    xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "Status");
+                                    if(NULL != xmlDocPtr_temp)
+                                    {
+                                        p_MANSCDP_xml->status = get_MANSCDP_statues(xmlDocPtr_temp->children->content);
+                                    }
+                                    if(MANSCDP_xml_Response == p_MANSCDP_xml->xml_type && MANSCDP_Catalog == p_MANSCDP_xml->command_type)
+                                    {
+                                        xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "SumNum");
+                                        p_MANSCDP_xml->catalog_sum_num = strtoull(xmlDocPtr_temp->children->content, NULL, 10);
+                                        if(0 < p_MANSCDP_xml->catalog_sum_num)
+                                        {
+                                            p_MANSCDP_xml->p_MANSCDP_device = osip_malloc(sizeof(MANSCDP_device) * p_MANSCDP_xml->catalog_sum_num);
+                                            xmlDocPtr_temp = find_element((xmlDocPtr)xml_current_node->children, "DeviceList");
+                                            parse_MANSCDP_xml_device_list(xmlDocPtr_temp, p_MANSCDP_xml->catalog_sum_num, p_MANSCDP_xml->p_MANSCDP_device);
+                                        }
+                                    }
+
+                                    if(NULL == osip_thread_create(20000, MANSCDP_xml_message_working_thread, p_MANSCDP_xml))
+                                    {
+                                        free_MANSCDP_xml_pointer(&p_MANSCDP_xml);
                                     }
                                 }
-
-                                if(NULL == osip_thread_create(20000, MANSCDP_xml_message_working_thread, p_MANSCDP_xml))
+                                else
                                 {
                                     free_MANSCDP_xml_pointer(&p_MANSCDP_xml);
                                 }
                             }
-                            else
-                            {
-                                free_MANSCDP_xml_pointer(&p_MANSCDP_xml);
-                            }
+
+                            xmlFreeDoc(xml_document_pointer);
+
+                            xmlCleanupParser();
                         }
-
-                        xmlFreeDoc(xml_document_pointer);
-
-                        xmlCleanupParser();
                     }
-                }
-                else
-                {
-                    // to do: response content not acceptable
+                    else
+                    {
+                        // to do: response content not acceptable
+                    }
                 }
                 break;
             case EXOSIP_MESSAGE_ANSWERED:
@@ -239,11 +242,16 @@ void* event_working_thread(void* arg)
                             thread_parameter->live_video_context_pointer_array[i]->session_handle,
                             payload_type_H264);
                     }
-                    if(NULL != strstr(message_body->body, "PS"))
+                    else if(NULL != strstr(message_body->body, "PS"))
                     {
                         result = set_RTP_session_payload_type(
                             thread_parameter->live_video_context_pointer_array[i]->session_handle,
                             payload_type_PS);
+                    }
+                    else
+                    {
+                        MessageBoxA(NULL, "No media in SDP, please close this RTP session", "Warning", MB_OK);
+                        break;
                     }
 
                     result = RTP_session_start(thread_parameter->live_video_context_pointer_array[i]->session_handle);
