@@ -471,7 +471,7 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonGetLiveVideo()
     param.playHandle = GetDlgItem(IDC_PICTURE_AREA)->m_hWnd;
 
     m_play_instance = get_idle_decode_instance();
-    initial_decode_parameter(m_play_instance, &param, 1);
+    initial_decode_parameter(m_play_instance, &param, 3);
     set_decode_hardware_acceleration(m_play_instance, true);
     playing_windows_RECT_changed_of_decode_DLL(m_play_instance);
     global_instance = m_play_instance;
