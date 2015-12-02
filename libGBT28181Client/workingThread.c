@@ -30,6 +30,15 @@ void* register_working_thread(void* arg)
     return NULL;
 }
 
+void string_to_lower_case(char* string)
+{
+    size_t len = strlen(string);
+    for(size_t i = 0; i < len; i++)
+    {
+        string[i] = tolower(string[i]);
+    }
+}
+
 void* event_working_thread(void* arg)
 {
     client_configurations* thread_parameter = (client_configurations*)arg;
@@ -40,6 +49,8 @@ void* event_working_thread(void* arg)
     int result = OSIP_SUCCESS;
     xmlDocPtr xml_document_pointer = NULL;
     xmlDocPtr xml_current_node = NULL;
+    char* content_type_type = NULL;
+    char* content_type_subtype = NULL;
 
     while(thread_parameter->thread_loop)
     {
@@ -81,8 +92,14 @@ void* event_working_thread(void* arg)
                     printf("%s\n", event->request->sip_method);
                     printf("%s/%s\n", content_type->type, content_type->subtype);
 #endif // _DEBUG
-                    if(0 == strncmp(content_type->type, "application", strlen("application")) &&
-                       0 == strncmp(content_type->subtype, "MANSCDP+xml", strlen("MANSCDP+xml")))
+                    content_type_type = strdup(content_type->type);
+                    content_type_subtype = strdup(content_type->subtype);
+
+                    string_to_lower_case(content_type_type);
+                    string_to_lower_case(content_type_subtype);
+
+                    if(0 == strncmp(content_type_type, "application", strlen("application")) &&
+                       0 == strncmp(content_type_subtype, "manscdp+xml", strlen("MANSCDP+xml")))
                     {
                         result = osip_message_get_body(event->request, 0, &message_body);
 
@@ -208,6 +225,8 @@ void* event_working_thread(void* arg)
                     {
                         // to do: response content not acceptable
                     }
+                    free(content_type_type);
+                    free(content_type_subtype);
                 }
                 break;
             case EXOSIP_MESSAGE_ANSWERED:
