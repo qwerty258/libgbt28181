@@ -495,8 +495,8 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonGetLiveVideo()
 void ClibGBT28181GUIClientTestDlg::OnClickedButtonCloseVideo()
 {
     // TODO: Add your control notification handler code here
-    free_decode_instance(global_instance);
     GBT28181_close_real_time_stream(m_live_time_stream_handle);
+    free_decode_instance(global_instance);
     RedrawWindow();
 }
 
