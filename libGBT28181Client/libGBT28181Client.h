@@ -62,6 +62,8 @@ typedef struct _PTZ_control_data
     uint8_t relative_zoom_speed;
 }PTZ_control_data;
 
+LIBGBT28181CLIENT_API char* never_use_this;
+
 LIBGBT28181CLIENT_API int GBT28181_client_initial(void);
 
 LIBGBT28181CLIENT_API int GBT28181_set_client_name(char* SIP_user_name);
