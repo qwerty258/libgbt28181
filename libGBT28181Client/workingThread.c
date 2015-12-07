@@ -255,17 +255,17 @@ void* event_working_thread(void* arg)
                         }
                     }
 
-                    if(NULL != strstr(message_body->body, "H264"))
-                    {
-                        result = set_RTP_session_payload_type(
-                            thread_parameter->live_video_context_pointer_array[i]->session_handle,
-                            payload_type_H264);
-                    }
-                    else if(NULL != strstr(message_body->body, "PS"))
+                    if(NULL != strstr(message_body->body, "PS"))
                     {
                         result = set_RTP_session_payload_type(
                             thread_parameter->live_video_context_pointer_array[i]->session_handle,
                             payload_type_PS);
+                    }
+                    else if(NULL != strstr(message_body->body, "H264"))
+                    {
+                        result = set_RTP_session_payload_type(
+                            thread_parameter->live_video_context_pointer_array[i]->session_handle,
+                            payload_type_H264);
                     }
                     else
                     {
