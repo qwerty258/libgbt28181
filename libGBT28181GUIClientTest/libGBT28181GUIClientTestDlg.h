@@ -76,4 +76,5 @@ public:
     afx_msg void OnClickedButtonUp();
     afx_msg void OnClickedButtonZoomIn();
     afx_msg void OnClickedButtonZoomOut();
+    afx_msg void OnClickedButtonGoOffline();
 };

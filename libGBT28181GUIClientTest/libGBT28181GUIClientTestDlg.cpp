@@ -94,6 +94,7 @@ BEGIN_MESSAGE_MAP(ClibGBT28181GUIClientTestDlg, CDialogEx)
     ON_BN_CLICKED(IDC_BUTTON_UP, &ClibGBT28181GUIClientTestDlg::OnClickedButtonUp)
     ON_BN_CLICKED(IDC_BUTTON_ZOOM_IN, &ClibGBT28181GUIClientTestDlg::OnClickedButtonZoomIn)
     ON_BN_CLICKED(IDC_BUTTON_ZOOM_OUT, &ClibGBT28181GUIClientTestDlg::OnClickedButtonZoomOut)
+    ON_BN_CLICKED(IDC_BUTTON_GO_OFFLINE, &ClibGBT28181GUIClientTestDlg::OnClickedButtonGoOffline)
 END_MESSAGE_MAP()
 
 void query_deviceInfo_callback(char* device_ID, char* device_type, char* manufacturer, char* model, char* firmware, uint64_t max_camera, uint64_t max_alarm)
@@ -252,15 +253,7 @@ HCURSOR ClibGBT28181GUIClientTestDlg::OnQueryDragIcon()
 BOOL ClibGBT28181GUIClientTestDlg::DestroyWindow()
 {
     // TODO: Add your specialized code here and/or call the base class
-    uint32_t result = GBT28181_free_client();
-    CString message;
-    if(GBT28181_SUCCESS != result)
-    {
-        message.Format(_T("GBT28181_free_client error: %d"), result);
-        AfxMessageBox(message);
-    }
-
-    Sleep(1000);
+    OnClickedButtonGoOffline();
 
     return CDialogEx::DestroyWindow();
 }
@@ -788,4 +781,19 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonZoomOut()
         CCStringToChar(m_target_IP).GetCStyleString(),
         m_target_port,
         &control_data);
+}
+
+
+void ClibGBT28181GUIClientTestDlg::OnClickedButtonGoOffline()
+{
+    // TODO: Add your control notification handler code here
+    uint32_t result = GBT28181_free_client();
+    CString message;
+    if(GBT28181_SUCCESS != result)
+    {
+        message.Format(_T("GBT28181_free_client error: %d"), result);
+        AfxMessageBox(message);
+    }
+
+    Sleep(1000);
 }
