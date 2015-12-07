@@ -50,6 +50,8 @@ if(bool_streaming)                          \
 
 client_configurations global_client_configurations;
 
+char* never_use_this_string = "This so called national standard (GB/T 28181) of China is a joke. It has big security problem that with some basic SIP and programming knowledge, some one can take control of IPC's PTZ and even implement DDoS attack to IPC. This standard wants to protect people form the bad guys but how do you protect people that you can't protect yourself! IMO nerver use this standard.";
+
 int check_handle(uint32_t handle)
 {
     if(0 == global_client_configurations.max_live_video_number)
