@@ -1,6 +1,7 @@
 #include "libGBT28181Client.h"
 #include "clientConfigDefine.h"
 #include "workingThread.h"
+#include "PlayH264DLL.h"
 
 #define CHECK_NULL_AND_RETURN(pointer)  \
 if(NULL == (pointer))                   \
@@ -832,6 +833,7 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
     osip_free(global_client_configurations.live_video_context_pointer_array);
 
     uninitial_RTP_library();
+    free_decode_DLL();
 
     int result = 0;
     osip_message_t* registration_message = NULL;
@@ -917,6 +919,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_max_number_of_live_video(uint32_t max_num
 
     global_client_configurations.max_live_video_number = max_number;
     initial_RTP_library(max_number);
+    initial_decode_DLL(max_number);
 
     return OSIP_SUCCESS;
 }
@@ -944,6 +947,7 @@ LIBGBT28181CLIENT_API int GBT28181_get_idle_real_time_stream_handle(uint32_t* ha
             global_client_configurations.live_video_context_pointer_array[i]->port_SIP = 0;
             global_client_configurations.live_video_context_pointer_array[i]->target_IP = NULL;
             global_client_configurations.live_video_context_pointer_array[i]->target_sip_user_name = NULL;
+            global_client_configurations.live_video_context_pointer_array[i]->instance = get_idle_decode_instance();
             global_client_configurations.live_video_context_pointer_array[i]->local_IP = osip_strdup(global_client_configurations.client_IP);
             get_new_RTP_session(&global_client_configurations.live_video_context_pointer_array[i]->session_handle);
             *handle = i;
@@ -1191,6 +1195,8 @@ LIBGBT28181CLIENT_API int GBT28181_close_real_time_stream(uint32_t handle)
         // to do
     }
 
+    result = free_decode_instance(global_client_configurations.live_video_context_pointer_array[handle]->instance);
+
     osip_free(global_client_configurations.live_video_context_pointer_array[handle]->target_IP);
     osip_free(global_client_configurations.live_video_context_pointer_array[handle]->target_sip_user_name);
     osip_free(global_client_configurations.live_video_context_pointer_array[handle]->local_IP);
@@ -1201,9 +1207,16 @@ LIBGBT28181CLIENT_API int GBT28181_close_real_time_stream(uint32_t handle)
     return OSIP_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_RTP_payload_give_out_callback(uint32_t handle, void* cb)
+int give_out_payload(RTP_session_handle session_handle, uint8_t* payload, size_t payload_size, uint16_t sequence_number, uint32_t timestamp, void* user_data)
 {
-    CHECK_NULL_PARAMETER(cb);
+    real_time_stream_context* p_real_time_stream_context = user_data;
+    decode(p_real_time_stream_context->instance, payload, payload_size, sequence_number, timestamp);
+    return 0;
+}
+
+LIBGBT28181CLIENT_API int GBT28181_set_playing_hwnd(uint32_t handle, void* hWnd)
+{
+    CHECK_NULL_PARAMETER(hWnd);
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_MUST_ON_LINE(global_client_configurations.online);
     int result = check_handle(handle);
@@ -1212,9 +1225,14 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_payload_give_out_callback(uint32_t ha
         return result;
     }
     CHECK_NOT_STREAMING(global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming);
+
+    global_client_configurations.live_video_context_pointer_array[handle]->hWnd = hWnd;
+
     set_RTP_session_payload_give_out_callback(
         global_client_configurations.live_video_context_pointer_array[handle]->session_handle,
-        cb);
+        give_out_payload,
+        global_client_configurations.live_video_context_pointer_array[handle]);
+
     return OSIP_SUCCESS;
 }
 

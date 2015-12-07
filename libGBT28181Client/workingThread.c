@@ -1,6 +1,7 @@
 #include "workingThread.h"
 #include "clientConfigDefine.h"
 #include "XMLUtility.h"
+#include "PlayH264DLL.h"
 
 void* register_working_thread(void* arg)
 {
@@ -246,6 +247,7 @@ void* event_working_thread(void* arg)
                 if(200 == result)
                 {
                     uint32_t i;
+                    int type;
                     for(i = 0; i < thread_parameter->max_live_video_number; i++)
                     {
                         if(event->cid == thread_parameter->live_video_context_pointer_array[i]->call_id)
@@ -260,12 +262,14 @@ void* event_working_thread(void* arg)
                         result = set_RTP_session_payload_type(
                             thread_parameter->live_video_context_pointer_array[i]->session_handle,
                             payload_type_PS);
+                        type = 3;
                     }
                     else if(NULL != strstr(message_body->body, "H264"))
                     {
                         result = set_RTP_session_payload_type(
                             thread_parameter->live_video_context_pointer_array[i]->session_handle,
                             payload_type_H264);
+                        type = 1;
                     }
                     else
                     {
@@ -278,6 +282,22 @@ void* event_working_thread(void* arg)
                     {
                         // to do
                     }
+
+                    myparamInput param;
+                    param.fps = 0;
+                    param.height = 0;
+                    param.isDecode = true;
+                    param.playChannle = 0;
+                    param.playHandle = thread_parameter->live_video_context_pointer_array[i]->hWnd;
+                    param.playHeight = 0;
+                    param.playWidth = 0;
+                    param.stopPlay = 0;
+                    param.width = 0;
+
+                    result = initial_decode_parameter(
+                        thread_parameter->live_video_context_pointer_array[i]->instance,
+                        &param,
+                        type);
 
                     result = eXosip_lock(thread_parameter->exosip_context);
                     result = eXosip_call_build_ack(thread_parameter->exosip_context, event->did, &sip_message_answer);

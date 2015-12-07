@@ -24,6 +24,8 @@ typedef struct _real_time_stream_context
     int dialog_id;
     int protocol_RTP;
     RTP_session_handle session_handle;
+    int instance;
+    HWND hWnd;
 }real_time_stream_context;
 
 typedef struct _client_configurations
