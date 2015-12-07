@@ -9,7 +9,6 @@
 #include "CStringToChar.h"
 
 #include <libGBT28181Client.h>
-#include <PlayH264DLL.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -170,9 +169,6 @@ void query_device_catalog_callback(char* deviceID, uint64_t sum_num, MANSCDP_dev
 
 // ClibGBT28181GUIClientTestDlg message handlers
 
-#define PROGRAM_STREAM 0
-FILE* p_global_file_PS_data;
-FILE* p_global_file_PS_data_size;
 
 BOOL ClibGBT28181GUIClientTestDlg::OnInitDialog()
 {
@@ -211,11 +207,6 @@ BOOL ClibGBT28181GUIClientTestDlg::OnInitDialog()
     message.Format(_T("GBT28181_client_initial return: %d\r\n\r\n"), result);
     m_info_output += message;
     UpdateData(FALSE);
-
-    initial_decode_DLL(64);
-
-    p_global_file_PS_data = fopen("D:\\PSdata", "ab");
-    p_global_file_PS_data_size = fopen("D:\\PSdataSize", "ab");
 
     return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -268,11 +259,6 @@ BOOL ClibGBT28181GUIClientTestDlg::DestroyWindow()
         message.Format(_T("GBT28181_free_client error: %d"), result);
         AfxMessageBox(message);
     }
-
-    free_decode_DLL();
-
-    fclose(p_global_file_PS_data);
-    fclose(p_global_file_PS_data_size);
 
     Sleep(1000);
 
@@ -445,36 +431,11 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonUpdateInfo()
     UpdateData(FALSE);
 }
 
-int payload_callback(uint32_t session_handle, uint8_t* payload, uint32_t payload_size, uint16_t sequence_number, uint32_t timestamp)
-{
-    if(PROGRAM_STREAM)
-    {
-        fwrite(payload, payload_size, 1, p_global_file_PS_data);
-        fwrite(&payload_size, 4, 1, p_global_file_PS_data_size);
-        return 0;
-    }
-    else
-    {
-        return decode(global_instance, payload, payload_size, sequence_number, timestamp);
-    }
-}
 
 void ClibGBT28181GUIClientTestDlg::OnClickedButtonGetLiveVideo()
 {
     // TODO: Add your control notification handler code here
     UpdateData();
-    myparamInput param;
-    param.fps = 25;
-    param.height = 720;
-    param.width = 1280;
-    param.isDecode = true;
-    param.playHandle = GetDlgItem(IDC_PICTURE_AREA)->m_hWnd;
-
-    m_play_instance = get_idle_decode_instance();
-    initial_decode_parameter(m_play_instance, &param, 3);
-    set_decode_hardware_acceleration(m_play_instance, true);
-    playing_windows_RECT_changed_of_decode_DLL(m_play_instance);
-    global_instance = m_play_instance;
 
     GBT28181_get_idle_real_time_stream_handle((uint32_t*)&m_live_time_stream_handle);
 
@@ -482,7 +443,7 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonGetLiveVideo()
 
     GBT28181_set_RTP_protocol(m_live_time_stream_handle, GBT28181_IPPROTO_UDP);
 
-    GBT28181_set_RTP_payload_give_out_callback(m_live_time_stream_handle, payload_callback);
+    GBT28181_set_playing_hwnd(m_live_time_stream_handle, GetDlgItem(IDC_PICTURE_AREA)->m_hWnd);
 
     GBT28181_get_real_time_stream(
         m_live_time_stream_handle,
@@ -496,7 +457,6 @@ void ClibGBT28181GUIClientTestDlg::OnClickedButtonCloseVideo()
 {
     // TODO: Add your control notification handler code here
     GBT28181_close_real_time_stream(m_live_time_stream_handle);
-    free_decode_instance(global_instance);
     RedrawWindow();
 }
 
