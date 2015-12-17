@@ -85,13 +85,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBGBT28181CLIENT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(OSIPSDK)\include;$(EXOSIPSDK)\include;$(LIBXML2SDK)\include;$(LIBICONVSDK)\include;$(LIBRTPSDK)\include;$(RTSPFFMPEGSDK)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OSIPSDK)\include;$(EXOSIPSDK)\include;$(LIBXML2SDK)\include;$(LIBICONVSDK)\include;$(LIBRTPSDK)\include;$(RTSPFFMPEGSDK)\include;$(FREESDPSDK)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OSIPSDK)\lib\32bit;$(EXOSIPSDK)\lib\32bit;$(LIBXML2SDK)\lib\32bit;$(LIBICONVSDK)\lib\32bit;$(RTSPFFMPEGSDK)\x86\lib;$(LIBRTPSDK)\lib\32bit;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>PlayH264DLL.lib;libRTP.lib;iconv.lib;xml2.lib;eXosip.lib;osip2.lib;osipparser2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OSIPSDK)\lib\32bit;$(EXOSIPSDK)\lib\32bit;$(LIBXML2SDK)\lib\32bit;$(LIBICONVSDK)\lib\32bit;$(RTSPFFMPEGSDK)\x86\lib;$(LIBRTPSDK)\lib\32bit;$(FREESDPSDK)\lib\32bit;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libFreeSDP.lib;PlayH264DLL.lib;libRTP.lib;iconv.lib;xml2.lib;eXosip.lib;osip2.lib;osipparser2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -101,13 +102,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBGBT28181CLIENT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(OSIPSDK)\include;$(EXOSIPSDK)\include;$(LIBXML2SDK)\include;$(LIBICONVSDK)\include;$(LIBRTPSDK)\include;$(RTSPFFMPEGSDK)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OSIPSDK)\include;$(EXOSIPSDK)\include;$(LIBXML2SDK)\include;$(LIBICONVSDK)\include;$(LIBRTPSDK)\include;$(RTSPFFMPEGSDK)\include;$(FREESDPSDK)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OSIPSDK)\lib\64bit;$(EXOSIPSDK)\lib\64bit;$(LIBXML2SDK)\lib\64bit;$(LIBICONVSDK)\lib\64bit;$(RTSPFFMPEGSDK)\x64\lib;$(LIBRTPSDK)\lib\64bit;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>PlayH264DLL.lib;libRTP.lib;iconv.lib;xml2.lib;eXosip.lib;osip2.lib;osipparser2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OSIPSDK)\lib\64bit;$(EXOSIPSDK)\lib\64bit;$(LIBXML2SDK)\lib\64bit;$(LIBICONVSDK)\lib\64bit;$(RTSPFFMPEGSDK)\x64\lib;$(LIBRTPSDK)\lib\64bit;$(FREESDPSDK)\lib\64bit;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libFreeSDP.lib;PlayH264DLL.lib;libRTP.lib;iconv.lib;xml2.lib;eXosip.lib;osip2.lib;osipparser2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,15 +121,16 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBGBT28181CLIENT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(OSIPSDK)\include;$(EXOSIPSDK)\include;$(LIBXML2SDK)\include;$(LIBICONVSDK)\include;$(LIBRTPSDK)\include;$(RTSPFFMPEGSDK)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OSIPSDK)\include;$(EXOSIPSDK)\include;$(LIBXML2SDK)\include;$(LIBICONVSDK)\include;$(LIBRTPSDK)\include;$(RTSPFFMPEGSDK)\include;$(FREESDPSDK)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(OSIPSDK)\lib\32bit;$(EXOSIPSDK)\lib\32bit;$(LIBXML2SDK)\lib\32bit;$(LIBICONVSDK)\lib\32bit;$(RTSPFFMPEGSDK)\x86\lib;$(LIBRTPSDK)\lib\32bit;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>PlayH264DLL.lib;libRTP.lib;iconv.lib;xml2.lib;eXosip.lib;osip2.lib;osipparser2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OSIPSDK)\lib\32bit;$(EXOSIPSDK)\lib\32bit;$(LIBXML2SDK)\lib\32bit;$(LIBICONVSDK)\lib\32bit;$(RTSPFFMPEGSDK)\x86\lib;$(LIBRTPSDK)\lib\32bit;$(FREESDPSDK)\lib\32bit;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libFreeSDP.lib;PlayH264DLL.lib;libRTP.lib;iconv.lib;xml2.lib;eXosip.lib;osip2.lib;osipparser2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,15 +142,16 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBGBT28181CLIENT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>$(OSIPSDK)\include;$(EXOSIPSDK)\include;$(LIBXML2SDK)\include;$(LIBICONVSDK)\include;$(LIBRTPSDK)\include;$(RTSPFFMPEGSDK)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OSIPSDK)\include;$(EXOSIPSDK)\include;$(LIBXML2SDK)\include;$(LIBICONVSDK)\include;$(LIBRTPSDK)\include;$(RTSPFFMPEGSDK)\include;$(FREESDPSDK)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(OSIPSDK)\lib\64bit;$(EXOSIPSDK)\lib\64bit;$(LIBXML2SDK)\lib\64bit;$(LIBICONVSDK)\lib\64bit;$(RTSPFFMPEGSDK)\x64\lib;$(LIBRTPSDK)\lib\64bit;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>PlayH264DLL.lib;libRTP.lib;iconv.lib;xml2.lib;eXosip.lib;osip2.lib;osipparser2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OSIPSDK)\lib\64bit;$(EXOSIPSDK)\lib\64bit;$(LIBXML2SDK)\lib\64bit;$(LIBICONVSDK)\lib\64bit;$(RTSPFFMPEGSDK)\x64\lib;$(LIBRTPSDK)\lib\64bit;$(FREESDPSDK)\lib\64bit;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libFreeSDP.lib;PlayH264DLL.lib;libRTP.lib;iconv.lib;xml2.lib;eXosip.lib;osip2.lib;osipparser2.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
