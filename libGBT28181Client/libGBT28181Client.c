@@ -2,6 +2,7 @@
 #include "clientConfigDefine.h"
 #include "workingThread.h"
 #include "PlayH264DLL.h"
+#include "freesdp\freesdp.h"
 
 #define CHECK_NULL_AND_RETURN(pointer)  \
 if(NULL == (pointer))                   \
@@ -977,10 +978,14 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
     }
 
     osip_message_t* invite_SIP_message = NULL;
+    fsdp_description_t* p_fsdp_description = NULL;
+    fsdp_media_description_t* p_fsdp_media_description = NULL;
+    fsdp_error_t fsdp_error = 0;
+    char* SDP_payload = NULL;
+
     char* from = osip_malloc(512);
     char* to = osip_malloc(512);
     char* route = osip_malloc(512);
-    char* SDP_payload = osip_malloc(1500);
     char* RTP_protocol = NULL;
 
     snprintf(
@@ -1031,7 +1036,6 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
         osip_free(from);
         osip_free(to);
         osip_free(route);
-        osip_free(SDP_payload);
         return result;
     }
 
@@ -1047,25 +1051,51 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
             break;
     }
 
-    snprintf(
-        SDP_payload,
-        1500,
-        "v=0\r\no=%s 0 0 IN IP4 %s\r\ns=Play\r\nc=IN IP4 %s\r\nt=0 0\r\nm=video %u %s 96 98 97\r\na=recvonly\r\na=rtpmap:96 PS/90000\r\na=rtpmap:98 H264/90000\r\na=rtpmap:97 MPEG4/90000\r\n",
-        //"v=0\r\no=%s 0 0 IN IP4 %s\r\ns=Play\r\nc=IN IP4 %s\r\nt=0 0\r\nm=video %u %s 96\r\na=recvonly\r\na=rtpmap:96 PS/90000\r\n",
-        //"v=0\r\no=%s 0 0 IN IP4 %s\r\ns=Play\r\nc=IN IP4 %s\r\nt=0 0\r\nm=video %u %s 98 97\r\na=recvonly\r\na=rtpmap:98 H264/90000\r\na=rtpmap:97 MPEG4/90000\r\n",
+    fsdp_error = fsdp_make_description(
+        &p_fsdp_description,
+        0,
+        "Play",
+        "0",
+        "0",
         global_client_configurations.client_user_name,
+        FSDP_NETWORK_TYPE_INET,
+        FSDP_ADDRESS_TYPE_IPV4,
         global_client_configurations.client_IP,
-        global_client_configurations.client_IP,
-        global_client_configurations.live_video_context_pointer_array[handle]->port_RTP,
-        RTP_protocol);
+        0,
+        0);
 
-    result = osip_message_set_body(invite_SIP_message, SDP_payload, strnlen(SDP_payload, 1500));
+    fsdp_set_conn_address(
+        p_fsdp_description,
+        FSDP_NETWORK_TYPE_INET,
+        FSDP_ADDRESS_TYPE_IPV4,
+        global_client_configurations.client_IP,
+        0,
+        0);
+
+    fsdp_make_media(
+        &p_fsdp_media_description,
+        FSDP_MEDIA_VIDEO,
+        global_client_configurations.live_video_context_pointer_array[handle]->port_RTP,
+        0,
+        FSDP_TP_RTP_AVP,
+        "96");
+    fsdp_add_media_format(p_fsdp_media_description, "98");
+    fsdp_add_media_format(p_fsdp_media_description, "97");
+    fsdp_add_media_rtpmap(p_fsdp_media_description, "96", "PS", 90000, NULL);
+    fsdp_add_media_rtpmap(p_fsdp_media_description, "98", "H264", 90000, NULL);
+    fsdp_add_media_rtpmap(p_fsdp_media_description, "97", "MPEG4", 90000, NULL);
+
+    fsdp_add_media(p_fsdp_description, p_fsdp_media_description);
+
+    fsdp_error = fsdp_format(p_fsdp_description, &SDP_payload);
+
+    result = osip_message_set_body(invite_SIP_message, SDP_payload, strlen(SDP_payload));
     if(OSIP_SUCCESS != result)
     {
         osip_free(from);
         osip_free(to);
         osip_free(route);
-        osip_free(SDP_payload);
+        fsdp_description_delete(p_fsdp_description);
         return result;
     }
 
@@ -1075,7 +1105,7 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
         osip_free(from);
         osip_free(to);
         osip_free(route);
-        osip_free(SDP_payload);
+        fsdp_description_delete(p_fsdp_description);
         return result;
     }
 
@@ -1095,7 +1125,7 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
     osip_free(from);
     osip_free(to);
     osip_free(route);
-    osip_free(SDP_payload);
+    fsdp_description_delete(p_fsdp_description);
 
     global_client_configurations.live_video_context_pointer_array[handle]->real_time_streaming = true;
 
