@@ -30,6 +30,9 @@
     <ClInclude Include="callbackDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="checkMacros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libGBT28181Client.c">
