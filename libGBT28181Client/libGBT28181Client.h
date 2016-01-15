@@ -6,6 +6,7 @@
 C_EXPORT_BEGIN
 
 #include "callbackDefines.h"
+#include "errorCodeDefines.h"
 
 typedef struct _PTZ_control_data
 {
