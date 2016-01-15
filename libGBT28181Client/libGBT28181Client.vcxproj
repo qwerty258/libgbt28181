@@ -158,6 +158,7 @@
     <ClInclude Include="callbackDefines.h" />
     <ClInclude Include="checkMacros.h" />
     <ClInclude Include="clientConfigDefine.h" />
+    <ClInclude Include="errorCodeDefines.h" />
     <ClInclude Include="exportSymbolsAsCStyle.h" />
     <ClInclude Include="libGBT28181Client.h" />
     <ClInclude Include="workingThread.h" />
