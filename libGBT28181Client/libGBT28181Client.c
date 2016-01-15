@@ -7,7 +7,7 @@
 
 client_configurations global_client_configurations;
 
-LIBGBT28181CLIENT_API char* never_use_this = "This so called national standard (GB/T 28181) of China is a joke. It has big security problem that with some basic SIP and programming knowledge, some one can take control of IPC's PTZ and even implement DDoS attack to IPC. This standard wants to protect people form the bad guys but how do you protect people that you can't protect yourself! IMO nerver use this standard.";
+EXPORT_SYMBOLS_API char* never_use_this = "This so called national standard (GB/T 28181) of China is a joke. It has big security problem that with some basic SIP and programming knowledge, some one can take control of IPC's PTZ and even implement DDoS attack to IPC. This standard wants to protect people form the bad guys but how do you protect people that you can't protect yourself! IMO nerver use this standard.";
 
 int check_handle(uint32_t handle)
 {
@@ -26,7 +26,7 @@ int check_handle(uint32_t handle)
     return OSIP_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_client_initial(void)
+EXPORT_SYMBOLS_API int GBT28181_client_initial(void)
 {
     CHECK_ONLINE_NO_SET(global_client_configurations.online);
 
@@ -60,7 +60,7 @@ LIBGBT28181CLIENT_API int GBT28181_client_initial(void)
     CHECK_NULL_AND_RETURN(global_client_configurations.exosip_context);
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_client_name(char* SIP_user_name)
+EXPORT_SYMBOLS_API int GBT28181_set_client_name(char* SIP_user_name)
 {
     CHECK_NULL_PARAMETER(SIP_user_name);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -71,7 +71,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_client_name(char* SIP_user_name)
     CHECK_NULL_AND_RETURN(global_client_configurations.client_user_name);
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_client_ID(char* SIP_user_ID)
+EXPORT_SYMBOLS_API int GBT28181_set_client_ID(char* SIP_user_ID)
 {
     CHECK_NULL_PARAMETER(SIP_user_ID);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -82,7 +82,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_client_ID(char* SIP_user_ID)
     CHECK_NULL_AND_RETURN(global_client_configurations.client_authentication_ID);
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_client_password(char* SIP_password)
+EXPORT_SYMBOLS_API int GBT28181_set_client_password(char* SIP_password)
 {
     CHECK_NULL_PARAMETER(SIP_password);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -93,7 +93,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_client_password(char* SIP_password)
     CHECK_NULL_AND_RETURN(global_client_configurations.client_password);
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_client_IP(char* client_IP)
+EXPORT_SYMBOLS_API int GBT28181_set_client_IP(char* client_IP)
 {
     CHECK_NULL_PARAMETER(client_IP);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -104,7 +104,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_client_IP(char* client_IP)
     CHECK_NULL_AND_RETURN(global_client_configurations.client_IP);
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_client_port(int local_port)
+EXPORT_SYMBOLS_API int GBT28181_set_client_port(int local_port)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_ONLINE_NO_SET(global_client_configurations.online);
@@ -114,7 +114,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_client_port(int local_port)
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_SIP_server_ID(char* server_ID)
+EXPORT_SYMBOLS_API int GBT28181_set_SIP_server_ID(char* server_ID)
 {
     CHECK_NULL_PARAMETER(server_ID);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -125,7 +125,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_SIP_server_ID(char* server_ID)
     CHECK_NULL_AND_RETURN(global_client_configurations.server_ID);
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_SIP_server_domain(char* server_domain)
+EXPORT_SYMBOLS_API int GBT28181_set_SIP_server_domain(char* server_domain)
 {
     CHECK_NULL_PARAMETER(server_domain);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -136,7 +136,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_SIP_server_domain(char* server_domain)
     CHECK_NULL_AND_RETURN(global_client_configurations.server_domain);
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_SIP_server_IP(char* server_IP)
+EXPORT_SYMBOLS_API int GBT28181_set_SIP_server_IP(char* server_IP)
 {
     CHECK_NULL_PARAMETER(server_IP);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -147,7 +147,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_SIP_server_IP(char* server_IP)
     CHECK_NULL_AND_RETURN(global_client_configurations.server_IP);
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_SIP_server_port(int server_port)
+EXPORT_SYMBOLS_API int GBT28181_set_SIP_server_port(int server_port)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_ONLINE_NO_SET(global_client_configurations.online);
@@ -157,7 +157,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_SIP_server_port(int server_port)
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_expiration_interval(int seconds)
+EXPORT_SYMBOLS_API int GBT28181_set_expiration_interval(int seconds)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_ONLINE_NO_SET(global_client_configurations.online);
@@ -172,7 +172,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_expiration_interval(int seconds)
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_heartbeat_interval(int seconds)
+EXPORT_SYMBOLS_API int GBT28181_set_heartbeat_interval(int seconds)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_ONLINE_NO_SET(global_client_configurations.online);
@@ -187,7 +187,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_heartbeat_interval(int seconds)
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_max_time_out_number(int max_number)
+EXPORT_SYMBOLS_API int GBT28181_set_max_time_out_number(int max_number)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_ONLINE_NO_SET(global_client_configurations.online);
@@ -202,7 +202,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_max_time_out_number(int max_number)
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_address_family(int address_family)
+EXPORT_SYMBOLS_API int GBT28181_set_address_family(int address_family)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_ONLINE_NO_SET(global_client_configurations.online);
@@ -217,7 +217,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_address_family(int address_family)
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_IP_protocol(int protocol)
+EXPORT_SYMBOLS_API int GBT28181_set_IP_protocol(int protocol)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_ONLINE_NO_SET(global_client_configurations.online);
@@ -232,7 +232,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_IP_protocol(int protocol)
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
+EXPORT_SYMBOLS_API int GBT28181_client_go_online(void)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
 
@@ -375,7 +375,7 @@ LIBGBT28181CLIENT_API int GBT28181_client_go_online(void)
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_query_device_info_callback(function_query_device_info_callback cb)
+EXPORT_SYMBOLS_API int GBT28181_set_query_device_info_callback(function_query_device_info_callback cb)
 {
     CHECK_NULL_PARAMETER(cb);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -386,7 +386,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_query_device_info_callback(function_query
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name, char* target_IP, uint16_t port)
+EXPORT_SYMBOLS_API int GBT28181_query_device_info(char* target_sip_user_name, char* target_IP, uint16_t port)
 {
     CHECK_NULL_PARAMETER(target_sip_user_name);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -506,7 +506,7 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_info(char* target_sip_user_name,
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_query_device_status_callback(function_query_device_status_callback cb)
+EXPORT_SYMBOLS_API int GBT28181_set_query_device_status_callback(function_query_device_status_callback cb)
 {
     CHECK_NULL_PARAMETER(cb);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -517,7 +517,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_query_device_status_callback(function_que
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_name, char* target_IP, uint16_t port)
+EXPORT_SYMBOLS_API int GBT28181_query_device_status(char* target_sip_user_name, char* target_IP, uint16_t port)
 {
     CHECK_NULL_PARAMETER(target_sip_user_name);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -637,7 +637,7 @@ LIBGBT28181CLIENT_API int GBT28181_query_device_status(char* target_sip_user_nam
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_query_catalog_callback(function_query_catalog_callback cb)
+EXPORT_SYMBOLS_API int GBT28181_set_query_catalog_callback(function_query_catalog_callback cb)
 {
     CHECK_NULL_PARAMETER(cb);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -648,7 +648,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_query_catalog_callback(function_query_cat
     return OSIP_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name, char* target_IP, uint16_t port)
+EXPORT_SYMBOLS_API int GBT28181_query_catalog(char* target_sip_user_name, char* target_IP, uint16_t port)
 {
     CHECK_NULL_PARAMETER(target_sip_user_name);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -768,7 +768,7 @@ LIBGBT28181CLIENT_API int GBT28181_query_catalog(char* target_sip_user_name, cha
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_free_client(void)
+EXPORT_SYMBOLS_API int GBT28181_free_client(void)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
 
@@ -868,7 +868,7 @@ LIBGBT28181CLIENT_API int GBT28181_free_client(void)
     return GBT28181_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_max_number_of_live_video(uint32_t max_number)
+EXPORT_SYMBOLS_API int GBT28181_set_max_number_of_live_video(uint32_t max_number)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_ONLINE_NO_SET(global_client_configurations.online);
@@ -880,7 +880,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_max_number_of_live_video(uint32_t max_num
     return OSIP_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_get_idle_real_time_stream_handle(uint32_t* handle)
+EXPORT_SYMBOLS_API int GBT28181_get_idle_real_time_stream_handle(uint32_t* handle)
 {
     CHECK_NULL_PARAMETER(handle);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -921,7 +921,7 @@ LIBGBT28181CLIENT_API int GBT28181_get_idle_real_time_stream_handle(uint32_t* ha
     }
 }
 
-LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* target_sip_user_name, char* target_IP, uint16_t port)
+EXPORT_SYMBOLS_API int GBT28181_get_real_time_stream(uint32_t handle, char* target_sip_user_name, char* target_IP, uint16_t port)
 {
     CHECK_NULL_PARAMETER(target_sip_user_name);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -1103,7 +1103,7 @@ LIBGBT28181CLIENT_API int GBT28181_get_real_time_stream(uint32_t handle, char* t
     return OSIP_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_RTP_port(uint32_t handle, uint16_t port)
+EXPORT_SYMBOLS_API int GBT28181_set_RTP_port(uint32_t handle, uint16_t port)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_MUST_ON_LINE(global_client_configurations.online);
@@ -1126,7 +1126,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_port(uint32_t handle, uint16_t port)
     return OSIP_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_RTP_protocol(uint32_t handle, int protocol)
+EXPORT_SYMBOLS_API int GBT28181_set_RTP_protocol(uint32_t handle, int protocol)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_MUST_ON_LINE(global_client_configurations.online);
@@ -1149,7 +1149,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_RTP_protocol(uint32_t handle, int protoco
     return OSIP_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_close_real_time_stream(uint32_t handle)
+EXPORT_SYMBOLS_API int GBT28181_close_real_time_stream(uint32_t handle)
 {
     CHECK_INITIALED(global_client_configurations.initialed);
     CHECK_MUST_ON_LINE(global_client_configurations.online);
@@ -1199,7 +1199,7 @@ int give_out_payload(RTP_session_handle session_handle, uint8_t* payload, size_t
     return 0;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_set_playing_hwnd(uint32_t handle, void* hWnd)
+EXPORT_SYMBOLS_API int GBT28181_set_playing_hwnd(uint32_t handle, void* hWnd)
 {
     CHECK_NULL_PARAMETER(hWnd);
     CHECK_INITIALED(global_client_configurations.initialed);
@@ -1221,7 +1221,7 @@ LIBGBT28181CLIENT_API int GBT28181_set_playing_hwnd(uint32_t handle, void* hWnd)
     return OSIP_SUCCESS;
 }
 
-LIBGBT28181CLIENT_API int GBT28181_PTZ_control(char* target_sip_user_name, char* target_IP, uint16_t port, PTZ_control_data* p_PTZ_control_data)
+EXPORT_SYMBOLS_API int GBT28181_PTZ_control(char* target_sip_user_name, char* target_IP, uint16_t port, PTZ_control_data* p_PTZ_control_data)
 {
     CHECK_NULL_PARAMETER(target_sip_user_name);
     CHECK_NULL_PARAMETER(p_PTZ_control_data);
