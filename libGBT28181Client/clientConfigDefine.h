@@ -2,6 +2,7 @@
 #define _CLIENT_CONFIG_DEFINE_H_
 
 #include "callbackDefines.h"
+#include "DynamicArray.h"
 #include <stdbool.h>
 #include <osip2\osip_mt.h>
 #include <eXosip2\eXosip.h>
@@ -27,6 +28,18 @@ typedef struct _real_time_stream_context
     int instance;
     HWND hWnd;
 }real_time_stream_context;
+
+typedef struct _registered_device
+{
+    char* device_name;
+    char* device_domain;
+    char* device_IP;
+    char* realm;
+    char* nonce;
+    uint16_t device_port;
+    uint64_t expires;
+    time_t register_time;
+}registered_device;
 
 typedef struct _client_configurations
 {
@@ -56,6 +69,7 @@ typedef struct _client_configurations
     function_query_catalog_callback give_out_query_catalog_result;
     uint32_t max_live_video_number;
     real_time_stream_context** live_video_context_pointer_array;
+    dy_array_handle
 }client_configurations;
 
 typedef enum _MANSCDP_xml_type
