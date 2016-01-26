@@ -158,6 +158,7 @@
     <ClInclude Include="callbackDefines.h" />
     <ClInclude Include="checkMacros.h" />
     <ClInclude Include="clientConfigDefine.h" />
+    <ClInclude Include="DynamicArray.h" />
     <ClInclude Include="errorCodeDefines.h" />
     <ClInclude Include="exportSymbolsAsCStyle.h" />
     <ClInclude Include="libGBT28181Client.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="XMLUtility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DynamicArray.c" />
     <ClCompile Include="libGBT28181Client.c" />
     <ClCompile Include="workingThread.c" />
     <ClCompile Include="XMLUtility.c" />
