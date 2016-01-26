@@ -78,6 +78,20 @@ void* event_working_thread(void* arg)
 #endif // _DEBUG
                 break;
             case EXOSIP_MESSAGE_NEW:
+                if(0 == osip_strcasecmp(event->request->sip_method, "REGISTER"))
+                {
+                    if(0 == event->request->authentication_infos.nb_elt)
+                    {
+                        result = eXosip_lock(thread_parameter->exosip_context);
+                        result = eXosip_message_build_answer(thread_parameter->exosip_context, event->tid, 401, &sip_message_answer);
+                        result = eXosip_message_send_answer(thread_parameter->exosip_context, event->tid, 401, sip_message_answer);
+                        result = eXosip_unlock(thread_parameter->exosip_context);
+                    }
+                    else
+                    {
+                        result = 0;
+                    }
+                }
                 if(0 == osip_strcasecmp(event->request->sip_method, "MESSAGE"))
                 {
                     result = eXosip_lock(thread_parameter->exosip_context);
