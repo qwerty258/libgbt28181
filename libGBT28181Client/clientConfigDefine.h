@@ -69,7 +69,7 @@ typedef struct _client_configurations
     function_query_catalog_callback give_out_query_catalog_result;
     uint32_t max_live_video_number;
     real_time_stream_context** live_video_context_pointer_array;
-    dy_array_handle
+    dy_array_handle register_device_info;
 }client_configurations;
 
 typedef enum _MANSCDP_xml_type

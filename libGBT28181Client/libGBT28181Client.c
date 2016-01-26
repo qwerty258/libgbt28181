@@ -56,6 +56,7 @@ EXPORT_SYMBOLS_API int GBT28181_client_initial(void)
     global_client_configurations.give_out_query_catalog_result = NULL;
     global_client_configurations.max_live_video_number = 0;
     global_client_configurations.live_video_context_pointer_array = NULL;
+    global_client_configurations.register_device_info = get_dy_array_handle();
 
     CHECK_NULL_AND_RETURN(global_client_configurations.exosip_context);
 }
@@ -851,6 +852,14 @@ EXPORT_SYMBOLS_API int GBT28181_free_client(void)
 
         eXosip_quit(global_client_configurations.exosip_context);
     }
+
+    uint32_t length = get_dy_array_element_number(global_client_configurations.register_device_info);
+    for(uint32_t i = 0; i < length; i++)
+    {
+        free(get_dy_array_element_by_index(global_client_configurations.register_device_info, i));
+    }
+
+    close_dy_array_handle(global_client_configurations.register_device_info);
 
     DeleteCriticalSection(&global_client_configurations.critical_section);
 
