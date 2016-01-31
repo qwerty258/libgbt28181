@@ -80,6 +80,39 @@ void* event_working_thread(void* arg)
             case EXOSIP_MESSAGE_NEW:
                 if(0 == osip_strcasecmp(event->request->sip_method, "REGISTER"))
                 {
+                    uint32_t device_number = get_dy_array_element_number(thread_parameter->register_device_info);
+                    registered_device* p_registered_device_temp = NULL;
+                    uint32_t i;
+                    if(0 != event->request->contacts.nb_elt)
+                    {
+                        for(i = 0; i < device_number; i++)
+                        {
+                            p_registered_device_temp = get_dy_array_element_by_index(thread_parameter->register_device_info, i);
+                            if(0 == osip_strcasecmp(p_registered_device_temp->device_name, osip_contact_get_displayname(event->request->contacts.node->element)))
+                            {
+                                break;
+                            }
+                        }
+                        if(i == device_number)
+                        {
+                            p_registered_device_temp = calloc(1, sizeof(registered_device));
+                            if(NULL != p_registered_device_temp)
+                            {
+                                p_registered_device_temp->device_domain = osip_malloc(50);
+                                p_registered_device_temp->device_IP = osip_malloc(50);
+                                p_registered_device_temp->device_name = osip_malloc(50);
+                                p_registered_device_temp->sz_device_port
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
                     if(0 == event->request->authentication_infos.nb_elt)
                     {
                         result = eXosip_lock(thread_parameter->exosip_context);
@@ -91,6 +124,7 @@ void* event_working_thread(void* arg)
                     {
                         result = 0;
                     }
+                    break;
                 }
                 if(0 == osip_strcasecmp(event->request->sip_method, "MESSAGE"))
                 {

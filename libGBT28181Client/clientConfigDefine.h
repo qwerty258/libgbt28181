@@ -5,6 +5,7 @@
 #include "DynamicArray.h"
 #include <stdbool.h>
 #include <osip2\osip_mt.h>
+#include <osipparser2\headers\osip_contact.h>
 #include <eXosip2\eXosip.h>
 #include <libRTP.h>
 #include <Windows.h>
@@ -36,10 +37,11 @@ typedef struct _registered_device
     char* device_IP;
     char* realm;
     char* nonce;
+    char* sz_device_port;
     uint16_t device_port;
     uint64_t expires;
     time_t register_time;
-}registered_device;
+};
 
 typedef struct _client_configurations
 {
